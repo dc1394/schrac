@@ -1,0 +1,20 @@
+﻿2012/02/19 18:14:27 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "D:\DATA\PROGRAM\C++\HydroSchDirac\CheckPoint\CheckPoint.vcxproj" (rebuild ターゲット)。
+     1>_PrepareForClean:
+         ファイル "x64\Release\CheckPoint.lastbuildstate" を削除しています。
+       InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "x64\Release\CheckPoint.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Ob1 /Oi /Ot /Oy /GT /GL /D WIN32 /D NDEBUG /D _CONSOLE /Gm- /EHsc /MT /GS /Gy /fp:fast /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc100.pdb" /Gd /TP /errorReport:prompt ChkPoint.cpp
+         ChkPoint.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\Lib.exe /OUT:"D:\DATA\PROGRAM\C++\HydroSchDirac\x64\Release\CheckPoint.lib" /LIBPATH:C:\mylib64\boost_1_47_0_ICL\stage\lib /NOLOGO /LTCG x64\Release\ChkPoint.obj
+         CheckPoint.vcxproj -> D:\DATA\PROGRAM\C++\HydroSchDirac\x64\Release\CheckPoint.lib
+       FinalizeBuildStatus:
+         ファイル "x64\Release\CheckPoint.unsuccessfulbuild" を削除しています。
+         "x64\Release\CheckPoint.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "D:\DATA\PROGRAM\C++\HydroSchDirac\CheckPoint\CheckPoint.vcxproj" (rebuild ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:02.25

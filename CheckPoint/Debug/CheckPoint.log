@@ -1,0 +1,20 @@
+﻿2012/02/13 16:08:44 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "D:\DATA\PROGRAM\C++\FastMemcpy\CheckPoint\CheckPoint.vcxproj" (rebuild ターゲット)。
+     1>_PrepareForClean:
+         ファイル "Debug\CheckPoint.lastbuildstate" を削除しています。
+       InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Debug\CheckPoint.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _ITERATOR_DEBUG_LEVEL=0 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ChkPoint.cpp
+         ChkPoint.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"D:\DATA\PROGRAM\C++\FastMemcpy\Debug\CheckPoint.lib" /NOLOGO Debug\ChkPoint.obj
+         CheckPoint.vcxproj -> D:\DATA\PROGRAM\C++\FastMemcpy\Debug\CheckPoint.lib
+       FinalizeBuildStatus:
+         ファイル "Debug\CheckPoint.unsuccessfulbuild" を削除しています。
+         "Debug\CheckPoint.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "D:\DATA\PROGRAM\C++\FastMemcpy\CheckPoint\CheckPoint.vcxproj" (rebuild ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:02.79
