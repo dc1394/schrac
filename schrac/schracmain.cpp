@@ -1,14 +1,15 @@
-#include "My_getopt.h"
-#include "WF_Save.h"
-#include "ChkPoint.h"
+#include "my_getopt.h"
+//#include "WF_Save.h"
+//#include "ChkPoint.h"
 
-namespace HydroSchDirac {
+/*namespace HydroSchDirac {
 	void showomp(const HydroSchDirac::My_getOpt & go);
-}
+}*/
 
 int main(int argc, char * argv[])
 {
-#if (_MSC_VER >= 1600)
+}
+/*#if (_MSC_VER >= 1600)
 	using std::tie;
 #else
 	using boost::tie;
@@ -115,4 +116,4 @@ namespace HydroSchDirac {
 			std::cout << "–¢Žg—p\n" << std::endl;
 		}
 	}
-}
+}*/
