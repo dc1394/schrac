@@ -1,6 +1,6 @@
 #include "RK_AdapStep.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	bool RK_AdapStep::odeint(const shared_ptr<AdapStepHelper> & pasa) const
 	{
 		AdapStepHelper::darray yscal;

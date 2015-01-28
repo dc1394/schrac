@@ -1,6 +1,6 @@
 #include "Diff.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	class RungeKutta : public Diff {
 		virtual bool solve_diff_equ_O();
 		virtual bool solve_diff_equ_I();

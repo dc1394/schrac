@@ -1,9 +1,9 @@
-#include "my_getopt.h"
+#include "getcomlineoption.h"
 #include <iostream>
 #include <boost/program_options.hpp>
 
 namespace schrac {
-    std::string const my_getopt::DEFINPNAME = "input.inp";        
+    std::string const GetComLineOption::DEFINPNAME = "input.inp";        
         
     //! A public member function.
     /*!
@@ -12,17 +12,19 @@ namespace schrac {
         \param argv コマンドライン引数
         \return 解析に成功したら0、失敗したら-1、ヘルプ表示の場合は1
     */
-    std::int32_t my_getopt::getopt(int argc, char * const argv[])
+    std::int32_t GetComLineOption::getopt(int argc, char * const argv[])
 	{
 		using namespace boost::program_options;
 
+        // オプションの設計
 		options_description opt("オプション");
+
 		// 引数の書式を定義
-		opt.add_options()
-			("help,h", "ヘルプを表示")
-			("inputfile,I", value<std::string>()->default_value(my_getopt::DEFINPNAME), "インプットファイル名")
+        opt.add_options()
+            ("help,h", "Show help")
+            ("inputfile,I", value<std::string>()->default_value(GetComLineOption::DEFINPNAME), "Specifying the input file name")
 			("tbb,T", value<bool>()->implicit_value(false),
-			 "Threading Building Blocksを使用するかどうか。デフォルトでは使用しない。");
+			 "Whether or not to use the TBB (default: is not used)");
 
 		// 引数の書式に従って実際に指定されたコマンドライン引数を解析
 		variables_map vm;
@@ -30,7 +32,7 @@ namespace schrac {
 			store(parse_command_line(argc, argv, opt), vm);
 		} catch (const std::exception & e) {
 			std::cerr << e.what()
-					  << ". コマンドライン引数が異常です。終了します。" << std::endl;
+					  << ". command line argument is valid!" << std::endl;
 
 			return -1;
 		}
@@ -60,7 +62,7 @@ namespace schrac {
     /*!
         \return インプットファイル名とTBBを使用するかどうかのstd::pair
     */
-    std::pair<std::string, bool> my_getopt::getpairdata() const
+    std::pair<std::string, bool> GetComLineOption::getpairdata() const
 	{
         return std::make_pair(inpname_, usetbb_);
     }

@@ -7,7 +7,7 @@
 
 #include "Adaptive_Step.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	class RK_AdapStep : public Adaptive_Step {
 		virtual bool odeint(const shared_ptr<AdapStepHelper> & pasa) const;
 

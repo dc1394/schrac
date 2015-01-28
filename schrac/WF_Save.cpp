@@ -1,6 +1,6 @@
 #include "WF_Save.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 #if (_MSC_VER >= 1600)
 	std::string WF_Save::make_filename(const shared_ptr<const Data> & pdata) const
 #else

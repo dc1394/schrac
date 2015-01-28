@@ -1,6 +1,6 @@
 #include "EigenValueSearch.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	const long double EigenValueSearch::TINY = 1.0E-30;
 	const long double EigenValueSearch::HUGE = 1.0E+7;
 

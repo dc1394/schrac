@@ -1,6 +1,6 @@
 #include "Diff.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	const long double Diff::MINV = 1.0E-200;
 	
 	function<long double(long double, long double, long double,
@@ -110,8 +110,8 @@ namespace HydroSchDirac {
 		const long double d = std::exp(- a * rmax);
 		const long double dm = std::exp(- a * rmaxm);
 
-		pdiffdata_->LI[0] = d / HydroSchDirac::pow(rmax, pdata_->l + 1);
-		pdiffdata_->LI[1] = dm / HydroSchDirac::pow(rmaxm, pdata_->l + 1);
+		pdiffdata_->LI[0] = d / schrac::pow(rmax, pdata_->l + 1);
+		pdiffdata_->LI[1] = dm / schrac::pow(rmaxm, pdata_->l + 1);
 		if (pdiffdata_->LI[0] < MINV) {
 			pdiffdata_->LI[0] = MINV;
 			pdiffdata_->LI[1] = MINV;

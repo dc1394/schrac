@@ -1,7 +1,7 @@
 #include "Diff.h"
 
 #ifdef _DEBUG
-namespace HydroSchDirac {
+namespace schrac {
 	class ModEuler : public Diff {
 		virtual bool solve_diff_equ_O();
 		virtual bool solve_diff_equ_I();

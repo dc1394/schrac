@@ -1,6 +1,6 @@
 #include "DiffData.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	// constructor
 	DiffData::DiffData(const shared_ptr<const Data> & pdata, long double E, long double TINY)
 	 :	pdata_(pdata), node(pdata_->n - pdata_->l - 1),

@@ -1,7 +1,7 @@
 #include "ModEuler.h"
 
 #ifdef _DEBUG
-namespace HydroSchDirac {
+namespace schrac {
 	bool ModEuler::solve_diff_equ_O()
 	{
 		for (int i = 0; i < pdiffdata_->OSIZE - 1; i++) {

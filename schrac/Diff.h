@@ -7,7 +7,7 @@
 
 #include "DiffData.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	long double fnc_V(long double r, const shared_ptr<DiffData> & pdiffdata);
 	long double dV_dr(long double r, const shared_ptr<DiffData> & pdiffdata);
 	long double dL_dx(long double M);

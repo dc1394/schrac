@@ -1,11 +1,11 @@
-#include "my_getopt.h"
+#include "getcomlineoption.h"
 #include <cstdlib>
 #include <boost/assert.hpp>
 //#include "WF_Save.h"
 //#include "ChkPoint.h"
 
-/*namespace HydroSchDirac {
-	void showomp(const HydroSchDirac::My_getOpt & go);
+/*namespace schrac {
+	void showomp(const schrac::My_getOpt & go);
 }*/
 
 int main(int argc, char * argv[])
@@ -13,7 +13,7 @@ int main(int argc, char * argv[])
     using namespace schrac;
 //	CheckPoint::ChkPoint cp("処理開始", __LINE__);
 	
-	my_getopt mg;
+	GetComLineOption mg;
 	switch (mg.getopt(argc, argv)) {
 		case -1:
 			return EXIT_FAILURE;
@@ -27,13 +27,13 @@ int main(int argc, char * argv[])
 		break;
 
 		default:
-			BOOST_ASSERT(!"何かがおかしい！！");
+			BOOST_ASSERT(false);
 		break;
 	}
 }
 	/*cp.checkpoint("コマンドラインオプション解析処理", __LINE__);
 
-	boost::optional<HydroSchDirac::EigenValueSearch> pevs;
+	boost::optional<schrac::EigenValueSearch> pevs;
 
 	try {
 		pevs = boost::in_place(go.getpData());
@@ -52,7 +52,7 @@ int main(int argc, char * argv[])
 	
 	cp.checkpoint("微分方程式の積分と固有値探索処理", __LINE__);
 
-	HydroSchDirac::WF_Normalize wfn(pevs->getpDiff());
+	schrac::WF_Normalize wfn(pevs->getpDiff());
 
 	cp.checkpoint("波動関数のコピー処理", __LINE__);
 
@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
 	
 	cp.checkpoint("波動関数の正規化処理", __LINE__);
 	
-	HydroSchDirac::WF_Save wfs;
+	schrac::WF_Save wfs;
 	if (!wfs(pevs->getpData(), wfn.getptup())) {
 		std::cerr << "ファイルを作成できませんでした。終了します。" << std::endl;
 		return EXIT_FAILURE;
@@ -72,7 +72,7 @@ int main(int argc, char * argv[])
 	cp.checkpoint("終了処理", __LINE__);
 
 	std::cout << "正常に終了しました。" << std::endl << std::endl;
-	HydroSchDirac::showomp(go);
+	schrac::showomp(go);
 
 	cp.checkpoint_print();
 	long double cpu, real;
@@ -98,8 +98,8 @@ int main(int argc, char * argv[])
 	return EXIT_SUCCESS;
 }
 
-namespace HydroSchDirac {
-	void showomp(const HydroSchDirac::My_getOpt & go)
+namespace schrac {
+	void showomp(const schrac::My_getOpt & go)
 	{
 		std::cout << "OpenMP: ";
 

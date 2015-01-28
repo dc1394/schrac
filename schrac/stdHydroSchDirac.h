@@ -56,7 +56,7 @@
 BOOST_STATIC_ASSERT(false);
 #endif
 
-namespace HydroSchDirac {
+namespace schrac {
 #ifdef _DEBUG
 	typedef std::vector<long double> ldvector;
 #else

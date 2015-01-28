@@ -6,17 +6,17 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
+#include "ci_string.h"
 #include <array>
 #include <cstdint>
 #include <boost/optional.hpp>
-#include "ci_string.h"
 
 namespace schrac {
     //! A class.
     /*!
         インプットファイルの各種データの構造体
     */
-	struct final Data {
+	struct Data final {
         // #region 列挙型
         
         //!  A enumerated type
@@ -34,15 +34,15 @@ namespace schrac {
 
         //!  A enumerated type
         /*!
-            微分方程式のソルバーの種類を表す列挙型
+            微分方程式の解法の種類を表す列挙型
         */
-		enum class solver_type {
+        enum class solver_type {
             // Adams Bashforth Moulton法
-            ADAMS_BASHFORTH_MOULTON, 
+            ADAMS_BASHFORTH_MOULTON,
             // Bulirsch-Stoer法
             BULIRSCH_STOER,
             // 誤差がコントロールされたRunge-Kutta法
-			CONTROLLED_RUNGE_KUTTA
+            CONTROLLED_RUNGE_KUTTA
         };
 
         // #endregion 列挙型
@@ -107,43 +107,43 @@ namespace schrac {
         /*!
             「ALPHA」の文字列
         */
-        static auto const ci_string ALPHA = "ALPHA";
-
-        //!  A public static member variable (constant).
-        /*!
-            元素記号の配列
-        */
-        static auto const AtomSymbol = { "H", "He" };
+        static ci_string const ALPHA;
 
         //!  A public static member variable (constant).
         /*!
             「BETA」の文字列
         */
-        static auto const ci_string BETA = "BETA";
+        static ci_string const BETA;
+
+        //!  A public static member variable (constant).
+        /*!
+        元素記号の配列
+        */
+        static std::array<std::string, 2> const Chemical_Symbol;
         
         //!  A public member variable.
         /*!
             原子名
         */
-        std::string atom_;
+        std::string chemical_symbol_;
         
         //!  A public member variable.
         /*!
             微分方程式を解くときの許容誤差
         */
-        auto eps_ = EPS_DEFAULT;
+        double eps_ = Data::EPS_DEFAULT;
 
         //!  A public member variable.
         /*!
             解く方程式のタイプ
         */
-        auto eq_type_ = eq_type::SDIRAC;
+        Data::eq_type eq_type_ = Data::eq_type::SCH;
         
         //!  A public member variable.
         /*!
             微分方程式を解くときのメッシュの数
         */
-        auto grid_num_ = GRID_NUM_DEFAULT;
+        std::int32_t grid_num_ = Data::GRID_NUM_DEFAULT;
 
         //!  A public member variable.
         /*!
@@ -167,7 +167,7 @@ namespace schrac {
         /*!
             マッチングポイント（xmin〜xmaxまでの比率で表す）
         */
-        auto mat_po_ratio_ = Data::MAT_PO_RATIO_DEFAULT;
+        double mat_po_ratio_ = Data::MAT_PO_RATIO_DEFAULT;
 
         //!  A public member variable.
         /*!
@@ -179,7 +179,7 @@ namespace schrac {
         /*!
             search_lowerE_から0までをいくつに分割して検索するか    
         */
-        auto num_of_partiton_ = Data::NUM_OF_PARTITION_DEFAULT;
+        std::int32_t num_of_partiton_ = Data::NUM_OF_PARTITION_DEFAULT;
         
         //!  A public member variable.
         /*!
@@ -197,7 +197,7 @@ namespace schrac {
         /*!
             使用する微分方程式のソルバー
         */
-		auto solve_type = Data::solve_type::BULIRSCH_STOER;
+        Data::solver_type solve_type = Data::solver_type::BULIRSCH_STOER;
 
         //!  A public member variable.
         /*!
@@ -207,27 +207,27 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            並列計算をするときのスレッド数
+            TBBを使用するかどうか
         */
-		auto threadnum_ = boost::none;
+		bool usetbb_ = false;
 
         //!  A public member variable.
         /*!
             微分方程式を解くときのメッシュの最大値
         */
-        auto xmax_ = Data::XMAX_DEFAULT;
+        double xmax_ = Data::XMAX_DEFAULT;
 
         //!  A public member variable.
         /*!
             微分方程式を解くときのメッシュの最小値
         */
-        auto xmin_ = Data::XMIN_DEFAULT;
+        double xmin_ = Data::XMIN_DEFAULT;
 
         //!  A public member variable.
         /*!
-            原子番号
+            原子核の電荷
         */
-        std::uint8_t Z_;
+        double Z_;
 
         // #endregion メンバ変数
     };

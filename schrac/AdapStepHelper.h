@@ -1,6 +1,6 @@
 #include "Diff.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	struct AdapStepHelper : 
 		private boost::noncopyable {
 			static const int OO = 0;

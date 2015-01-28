@@ -10,7 +10,7 @@ namespace schrac {
     /*!
         コマンドラインオプションを解析するクラス    
     */
-	class my_getopt final {
+	class GetComLineOption final {
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -18,7 +18,7 @@ namespace schrac {
         /*!
             何もしないコンストラクタ
         */
-        my_getopt()
+        GetComLineOption()
         {
         }
 
@@ -26,7 +26,7 @@ namespace schrac {
         /*!
             何もしないデストラクタ
         */
-        ~my_getopt()
+        ~GetComLineOption()
         {
         }
         
@@ -36,7 +36,7 @@ namespace schrac {
 
         //! A public member function.
         /*!
-            コマンドラインオプションを解析する関数の宣言
+            コマンドラインオプションを解析する
             \param argc コマンドライン引数の数
             \param argv コマンドライン引数
             \return 解析に成功したら0、失敗したら-1
@@ -73,6 +73,24 @@ namespace schrac {
         bool usetbb_ = false;
 
         // #endregion メンバ変数
+
+        // #region 禁止されたコンストラクタ・メンバ関数
+
+        //! A private copy constructor (deleted).
+        /*!
+        コピーコンストラクタ（禁止）
+        */
+        GetComLineOption(GetComLineOption const &) = delete;
+
+        //! A private member function (deleted).
+        /*!
+        operator=()の宣言（禁止）
+        \param コピー元のオブジェクト（未使用）
+        \return コピー元のオブジェクト
+        */
+        GetComLineOption & operator=(GetComLineOption const &) = delete;
+
+        // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
 }
 

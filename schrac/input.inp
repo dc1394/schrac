@@ -1,9 +1,9 @@
 #
-# Atomic number and orbital
+# Chemical Symbol and orbital
 #
 
-atomic.number				1
-orbital						1s
+chemical.symbol				H
+orbital					1s
 spin.orbital				alpha
 
 #

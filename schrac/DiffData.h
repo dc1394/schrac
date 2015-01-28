@@ -5,16 +5,18 @@
 #pragma once
 #endif
 
-#include "Data.h"
+#include <memory>
 
-namespace HydroSchDirac {
+#include "data.h"
+
+namespace schrac {
 	std::size_t round(long double val);
 
 	struct DiffData {
 		static const std::size_t AVECSIZE = 3;
 		static const std::size_t BVECSIZE = 5;
 
-		const shared_ptr<const Data> pdata_;
+		const std::shared_ptr<const Data> pdata_;
 
 		const int node;
 		int thisnode;
@@ -45,7 +47,7 @@ namespace HydroSchDirac {
 		ldvector LI;
 		ldvector MI;
 
-		DiffData(const shared_ptr<const Data> & pdata, long double E, long double TINY);
+		DiffData(const shared_ptr<const data> & pdata, long double E, long double TINY);
 		long double fnc_V(long double x) const;
 		void node_count(int i, const ldvector & WF);
 	};

@@ -7,7 +7,7 @@
 
 #include "Adaptive_Step.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	int div2(int n);
 
 	class Bulirsch_Stoer : public Adaptive_Step {

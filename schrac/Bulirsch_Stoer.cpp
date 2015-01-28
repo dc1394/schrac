@@ -1,6 +1,6 @@
 #include "Bulirsch_Stoer.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	const long double Bulirsch_Stoer::SHRINK = 0.95;
 	const long double Bulirsch_Stoer::GROW = 1.2;
 	const array<const int, AdapStepHelper::IMAX> Bulirsch_Stoer::nseq = {2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96};

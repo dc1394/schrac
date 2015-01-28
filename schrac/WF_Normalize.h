@@ -1,6 +1,6 @@
 #include "EigenValueSearch.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	class WF_Normalize
 		: private boost::noncopyable {
 	public:

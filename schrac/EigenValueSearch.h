@@ -8,7 +8,7 @@
 	#include "ModEuler.h"
 #endif
 
-namespace HydroSchDirac {
+namespace schrac {
 	template <typename T> T sign(T a, T b);
 
 	long double Eexact_sch(const shared_ptr<const Data> & pdata);

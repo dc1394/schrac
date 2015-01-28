@@ -1,18 +1,49 @@
-#include "ReadInpFile.h"
+#include "readinpfile.h"
+#include <stdexcept>
+#include <boost/algorithm/string.hpp>
+#include <boost/cast.hpp>
+#include <boost/range/algorithm.hpp>
 
-namespace HydroSchDirac {
+namespace schrac {
+    using namespace boost::algorithm;
+
+    const ci_string ReadInpFile::CHEMICAL_SYMBOL = "chemical.symbol";
+    const ci_string ReadInpFile::EQ_TYPE = "eq.type";
+    const std::array<ci_string, 4> ReadInpFile::EQ_TYPE_ARRAY =
+    {
+        ci_string("default"),
+        ci_string("sch"),
+        ci_string("sdirac"),
+        ci_string("dirac")
+    };
+    const ci_string ReadInpFile::ORBITAL = "orbital";
+    const ci_string ReadInpFile::SPIN_ORBITAL = "spin.orbital";
+    
+    ReadInpFile::ReadInpFile(std::pair<std::string, bool> const & arg) :
+        ifs_(std::get<0>(arg).c_str()),
+        lineindex_(1),
+        pdata_(std::make_shared<Data>())
+    {
+        pdata_->usetbb_ = std::get<1>(arg);
+    }
+
+    std::shared_ptr<Data> && ReadInpFile::getpData()
+    {
+        return std::move(pdata_);
+    }
+
 	void ReadInpFile::readFile()
 	{
-		if (!ifs.is_open())
+		if (!ifs_.is_open())
 			throw std::runtime_error("インプットファイルが開けませんでした");
 
 		if (!readAtom())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		if (!readEq())
-			throw std::runtime_error("インプットファイルが異常です");
+		//if (!readEq())
+		//	throw std::runtime_error("インプットファイルが異常です");
 
-		if (!readGrid())
+		/*if (!readGrid())
 			throw std::runtime_error("インプットファイルが異常です");
 
 		if (!readEps())
@@ -24,400 +55,310 @@ namespace HydroSchDirac {
 		if (!readLowerE())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		if (!readNumofp())
+		if (!readNumofZ())
 			throw std::runtime_error("インプットファイルが異常です");
 
 		if (!readRatio())
-			throw std::runtime_error("インプットファイルが異常です");
+			throw std::runtime_error("インプットファイルが異常です");*/
 	}
+    
+    void ReadInpFile::errMsg(ci_string const & s) const
+    {
+        std::cerr << "インプットファイルに" << s << "の行が見つかりませんでした" << std::endl;
+    }
 
-#if (_MSC_VER >= 1600)
-	ci_string ReadInpFile::readData(const char * const article)
-#else
-	const ci_string ReadInpFile::readData(const char * const article)
-#endif
+    void ReadInpFile::errMsg(std::int32_t line, ci_string const & s1, ci_string const & s2) const
+    {
+        std::cerr << "インプットファイルの[" << s1 << "]の行が正しくありません" << std::endl;
+        std::cerr << line << "行目, 未知のトークン:" << s2 << std::endl;
+    }
+
+    std::pair<std::int32_t, boost::optional<ReadInpFile::strvec>> ReadInpFile::getToken(ci_string const & article)
+    {
+        std::array<char, BUFSIZE> buf;
+        ifs_.getline(buf.data(), BUFSIZE);
+        ci_string const line(buf.data());
+
+        // もし一文字も読めなかったら
+        if (!ifs_.gcount()) {
+            errMsg(article);
+            return std::make_pair(-1, boost::none);
+        }
+
+        // 読み込んだ行が空、あるいはコメント行でないなら
+        if (!line.empty() && (line[0] != '#')) {
+            // トークン分割
+            strvec tokens;
+            split(tokens, line, is_any_of(" \t"), token_compress_on);
+            
+            auto itr(tokens.begin());
+
+            if (*itr != article) {
+                errMsg(lineindex_, article, *itr);
+                return std::make_pair(-1, boost::none);
+            }
+
+            return std::make_pair(0, boost::optional<strvec>(std::move(tokens)));
+        }
+        else {
+            return std::make_pair(1, boost::none);
+        }
+    }
+
+    boost::optional<ci_string> ReadInpFile::readData(ci_string const & article)
 	{
-		for (; true; i_++) {
-			char buf[BUFSIZE];
-			ifs.getline(buf, BUFSIZE);
-			const ci_string line(buf);
- 
-			// もし一文字も読めなかったら
-			if (!ifs.gcount()) {
-				errMsg(article);
-				return ci_string();
-			}
+		for (; true; lineindex_++) {
+            auto const ret = getToken(article);
 
-			// 読み込んだ行が空、あるいはコメント行でないなら
-			if (!line.empty() && (line[0] != '#')) {
-				// トークン分割
-				strvec tokens;
-				split(tokens, line, is_any_of(" \t"), token_compress_on);
-				
-				// 読み込んだトークンの数がもし2個以外だったら
-				if (tokens.size() != 2) {
-					std::cerr << "インプットファイルの" << article << "の行が正しくありません" << std::endl;
-					return ci_string();
-				}
+            switch (std::get<0>(ret))
+            {
+            case -1:
+                return boost::none;
+                break;
 
-				strvec::const_iterator citr(tokens.begin());
-				if (*citr == article) {
-					++citr;
+            case 0:
+            {
+                auto const tokens = *(std::get<1>(ret));
 
-					i_++;
-#if (_MSC_VER >= 1600)
-					return std::move(*citr);
-#else
-					return *citr;
-#endif
-				} else {
-					errMsg(article, citr->c_str());					
-					return ci_string();
-				}
-			}
+                // 読み込んだトークンの数がもし2個以外だったら
+                if (tokens.size() != 2 || tokens[1].empty()) {
+                    std::cerr << "インプットファイル" << lineindex_ << "行目の、[" << article << "]の行が正しくありません" << std::endl;
+                    return boost::none;
+                }
+
+                ++lineindex_;
+                return *(++tokens.begin());
+            }
+            case 1:
+                break;
+
+            default:
+                BOOST_ASSERT(!"何かがおかしい!");
+                break;
+            }
 		}
 	}
 
-#if (_MSC_VER >= 1600)
-	ci_string ReadInpFile::readData(const char * const article, ci_string && def)
-#else
-	const ci_string ReadInpFile::readData(const char * const article, const ci_string & def)
-#endif
+    boost::optional<ci_string> ReadInpFile::readData(ci_string const & article, ci_string const & def)
 	{
 		// グリッドを読み込む
-		for (; true; i_++) {
-			char buf[BUFSIZE];
-			ifs.getline(buf, BUFSIZE);
-			const ci_string line(buf);
- 
-			// もし一文字も読めなかったら
-			if (!ifs.gcount()) {
-				errMsg(article);
-				return ci_string();
-			}
+		for (; true; lineindex_++) {
+            auto const ret = getToken(article);
 
-			// 読み込んだ行が空、あるいはコメント行でないなら
-			if (!line.empty() && (line[0] != '#')) {
-				// トークン分割
-				strvec tokens;
-				split(tokens, line, is_any_of(" \t"), token_compress_on);
+            switch (std::get<0>(ret))
+            {
+            case -1:
+                return nullptr;
+                break;
 
-				strvec::const_iterator citr(tokens.begin());
+            case 0:
+            {
+                auto const tokens = *(std::get<1>(ret));
+                auto itr(++tokens.begin());
+                ++lineindex_;
 
-				if (*citr != article) {
-					errMsg(article, *citr);
-					return ci_string();
-				}
+                // 読み込んだトークンの数をはかる
+                switch (tokens.size()) {
+                case 1:
+                    // デフォルト値を返す
+                    return std::move(def);
+                    break;
 
-				// 読み込んだトークンの数をはかる
-				const strvec::size_type size = tokens.size();
+                case 2:
+                    return *itr == "DEFAULT" ? std::move(def) : *itr;
+                    break;
 
-				ci_string val;
-				switch (size) {
-					case 1:
-#if (_MSC_VER >= 1600)
-						return std::move(def);				// デフォルト
-#else
-						return def;
-#endif
-					break;
+                default:
+                    {
+                        auto const val = *itr;
 
-					case 2:
-						++citr;
-						if (*citr == "DEFAULT") {
-							i_++;
-#if (_MSC_VER >= 1600)
-							return std::move(def);				// デフォルト
-#else
-							return def;
-#endif
-						} else {
-							i_++;
-#if (_MSC_VER >= 1600)
-							return std::move(*citr);
-#else
-							return *citr;
-#endif
-						}
-					break;
+                        if (val == "DEFAULT" || val[0] == '#') {
+                            // デフォルト値を返す
+                            return std::move(def);
+                        }
+                        else if ((*(++itr))[0] != '#') {
+                            errMsg(lineindex_ - 1, article, *itr);
+                            return nullptr;
+                        }
 
-					default:
-						++citr;
-						val = *citr;
-						if (val == "DEFAULT" || val[0] == '#') {
-							i_++;
-#if (_MSC_VER >= 1600)
-							return std::move(def);				// デフォルト
-#else
-							return def;
-#endif
-						}
-						
-						++citr;
+                        return std::move(val);
+                        break;
+                    }
+                }
+            }
+                break;
 
-						if ((*citr)[0] != '#') {
-							errMsg(article, *citr);
-							return ci_string();
-						}
-					
-						i_++;
-#if (_MSC_VER >= 1600)
-						return std::move(val);
-#else
-						return val;
-#endif
-					break;
-				}
-			}
+            case 1:
+                break;
+
+            default:
+                BOOST_ASSERT(!"何かがおかしい!");
+                break;
+            }
 		}
 	}
 
-	const boost::optional<const ci_string> ReadInpFile::readDataAuto(const char * const article)
+    boost::optional<ci_string> ReadInpFile::readDataAuto(ci_string const & article)
 	{
-		for (; true; i_++) {
-			char buf[BUFSIZE];
-			ifs.getline(buf, BUFSIZE);
-			const ci_string line(buf);
- 
-			// もし一文字も読めなかったら
-			if (!ifs.gcount()) {
-				errMsg(article);
-				return boost::none;
-			}
+		for (; true; lineindex_++) {
+            auto const ret = getToken(article);
 
-			// 読み込んだ行が空、あるいはコメント行でないなら
-			if (!line.empty() && (line[0] != '#')) {
-				// トークン分割
-				strvec tokens;
-				split(tokens, line, is_any_of(" \t"), token_compress_on);
-				strvec::const_iterator citr(tokens.begin());
+            switch (std::get<0>(ret))
+            {
+            case -1:
+                return nullptr;
+                break;
 
-				if (*citr != article) {
-					errMsg(article, *citr);
-					return boost::none;
-				}
+            case 0:
+            {
+                auto const tokens = *(std::get<1>(ret));
+                auto itr(++tokens.begin());
+                ++lineindex_;
 
-				// 読み込んだトークンの数をはかる
-				const strvec::size_type size = tokens.size();
+                // 読み込んだトークンの数をはかる
+                switch (tokens.size()) {
+                case 1:
+                    return boost::none;
+                    break;
 
-				ci_string val;
-				switch (size) {
-					case 1:
-						return boost::optional<const ci_string>(ci_string());
-					break;
-				
-					case 2:
-						++citr;
-						if (*citr == "DEFAULT" || *citr == "AUTO") {
-							return boost::optional<const ci_string>(ci_string());			// デフォルト
-						} else {
-							return boost::optional<const ci_string>(*citr);
-						}
-					break;
-				
-					default:
-						++citr;
-						val = *citr;
-						if (val == "DEFAULT" || val == "AUTO" || val[0] == '#') {
-							return boost::optional<const ci_string>(ci_string());			// デフォルト
-						}
+                case 2:
+                    return (*itr == "DEFAULT" || *itr == "AUTO") ?
+                        boost::optional<ci_string>(ci_string()) : boost::optional<ci_string>(*itr);
+                    break;
 
-						++citr;
+                default:
+                    {
+                        auto val = *itr;
 
-						if ((*citr)[0] != '#') {
-							errMsg(article, *citr);
-							return boost::none;
-						} 
+                        if (val == "DEFAULT" || val == "AUTO" || val[0] == '#') {
+                            // デフォルト値を返す
+                            return boost::optional<ci_string>(ci_string());
+                        } else if ((*(++itr))[0] != '#') {
+                            errMsg(lineindex_ - 1, article, *itr);
 
-						return boost::optional<const ci_string>(val);
-					break;
-				}
-			}
-		}
-	}
+                            // エラー
+                            return boost::none;
+                        }
 
-	template <typename T>
-	const boost::optional<const T> ReadInpFile::readData(const char * const article, T def_val)
-	{
-		// グリッドを読み込む
-		for (; true; i_++) {
-			char buf[BUFSIZE];
-			ifs.getline(buf, BUFSIZE);
-			const ci_string line(buf);
- 
-			// もし一文字も読めなかったら
-			if (!ifs.gcount()) {
-				errMsg(article);
-				return boost::none;
-			}
+                        return boost::optional<ci_string>(std::move(val));
+                        break;
+                    }
+                }
+            }
+            break;
 
-			// 読み込んだ行が空、あるいはコメント行でないなら
-			if (!line.empty() && (line[0] != '#')) {
-				// トークン分割
-				strvec tokens;
-				split(tokens, line, is_any_of(" \t"), token_compress_on);
+            case 1:
+                break;
 
-				strvec::const_iterator citr(tokens.begin());
-
-				if (*citr != article) {
-					errMsg(article, *citr);
-					return boost::none;
-				}
-
-				// 読み込んだトークンの数をはかる
-				const strvec::size_type size = tokens.size();
-
-				if (size == 1) {
-					return boost::optional<const T>(def_val);					// デフォルト
-				} else if (size == 2) {
-					++citr;
-					if (*citr == "DEFAULT") {
-						i_++;
-						return boost::optional<const T>(def_val);				// デフォルト
-					} else {
-						try {
-							i_++;
-							return boost::optional<const T>(boost::lexical_cast<T>(citr->c_str()));
-						} catch (const boost::bad_lexical_cast &) {
-							errMsg(article, *citr);
-							return boost::none;
-						}
-					}
-				} else {
-					++citr;
-					const ci_string val(*citr);
-					if (val == "DEFAULT" || val[0] == '#') {
-						i_++;
-						return boost::optional<const T>(def_val);
-					}
-					
-					++citr;
-
-					if ((*citr)[0] != '#') {
-						errMsg(article, *citr);
-						return boost::none;
-					}
-
-					try {
-						i_++;
-						return boost::optional<const T>(boost::lexical_cast<T>(val.c_str()));
-					} catch (const boost::bad_lexical_cast &) {
-						errMsg(article, val);
-						return boost::none;
-					}
-				}
-			}
+            default:
+                BOOST_ASSERT(!"何かがおかしい!");
+                break;
+            }
 		}
 	}
 	
 	bool ReadInpFile::readAtom()
 	{
 		// 原子の種類を読み込む
-		const ci_string atomnum(readData("atomic.number"));
-		if (atomnum.empty())
-			return false;
+        auto const chemsym(readData(ReadInpFile::CHEMICAL_SYMBOL));
+        if (!chemsym) {
+            return false;
+        }
 
 		try {
-			const int tmp = boost::lexical_cast<int>(atomnum.c_str());
-			if (tmp <= 0)
-				throw boost::bad_lexical_cast();
-			
-			pdata_->Z = boost::numeric_cast<const unsigned int>(tmp);
-			if (pdata_->Z > Data::atomName.size())
-				throw boost::bad_lexical_cast();
-		} catch (const boost::bad_lexical_cast &) {
-			errMsg("atomic.number", atomnum);
+            auto const itr = boost::find(Data::Chemical_Symbol, chemsym->c_str());
+            if (itr == Data::Chemical_Symbol.end()) {
+                throw std::invalid_argument("");
+            }
+
+            pdata_->chemical_symbol_ = *itr;
+            pdata_->Z_ = static_cast<double>(std::distance(Data::Chemical_Symbol.begin(), itr)) + 1.0;
+		} catch (std::invalid_argument const &) {
+            errMsg(lineindex_ - 1, ReadInpFile::CHEMICAL_SYMBOL, *chemsym);
 			return false;
 		}
 
-		const unsigned int charge = pdata_->Z - 1;			
-		pdata_->atom += Data::atomName[charge];
-		
-		switch (charge) {
-			case 0:
-			break;
-
-			case 1:
-				pdata_->atom += '+';
-			break;
-
-			default:
-				pdata_->atom += boost::lexical_cast<std::string>(charge) + '+';
-			break;
-		}
-		
 		// 軌道を読み込む
-		const ci_string orbtmp(readData("orbital"));
-		if (orbtmp.empty()) {
+        auto const porbital(readData(ReadInpFile::ORBITAL));
+		if (!porbital) {
 			return false;
-		} else if (orbtmp.length() != 2) {
-			errMsg("orbital", orbtmp);
+		}
+        
+        auto const orbital(*porbital);
+        if (orbital.length() != 2) {
+            errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
 			return false;
 		}
 
-		if (!std::isdigit(orbtmp[0])) {
-			errMsg("orbital", orbtmp);
+		if (!std::isdigit(orbital[0])) {
+            errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
 			return false;
 		}
-		pdata_->orbital = orbtmp[0];
-		pdata_->n = boost::numeric_cast<const unsigned int>(orbtmp[0] - '0');
+		pdata_->orbital_ = orbital[0];
+		pdata_->n_ = boost::numeric_cast<std::uint8_t>(orbital[0] - '0');
 					
-		switch (orbtmp[1]) {
+		switch (orbital[1]) {
 			case 's':
-				pdata_->l = 0;
-				pdata_->orbital += 's';
+				pdata_->l_ = 0;
+				pdata_->orbital_ += 's';
 			break;
 
 			case 'p':
-				pdata_->l = 1;
-				pdata_->orbital += 'p';
+				pdata_->l_ = 1;
+				pdata_->orbital_ += 'p';
 			break;
 
 			case 'd':
-				pdata_->l = 2;
-				pdata_->orbital += 'd';
+				pdata_->l_ = 2;
+				pdata_->orbital_ += 'd';
 			break;
 
 			case 'f':
-				pdata_->l = 3;
-				pdata_->orbital += 'f';
+				pdata_->l_ = 3;
+				pdata_->orbital_ += 'f';
 			break;
 
 			case 'g':
-				pdata_->l = 4;
-				pdata_->orbital += 'g';
+				pdata_->l_ = 4;
+				pdata_->orbital_ += 'g';
 			break;
 
 			default:
-				errMsg("orbital", orbtmp);
+                errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
 				return false;
 			break;
 		}
 
-		if (pdata_->n - pdata_->l < 1) {
+		if (pdata_->n_ - pdata_->l_ < 1) {
 			std::cerr << "量子数の指定が異常です" << std::endl;
 			return false;
 		}
 
 		// スピン軌道を読み込む
-		pdata_->spin_orbital = readData("spin.orbital");
-		if (pdata_->spin_orbital.empty()) {
+        auto const pspin_orbital(readData(ReadInpFile::SPIN_ORBITAL));
+		if (!pspin_orbital) {
 			return false;
-		} else if (pdata_->spin_orbital != Data::ALPHA && pdata_->spin_orbital != Data::BETA) {
-			errMsg("spin.orbital", pdata_->spin_orbital);
+		}
+        
+        pdata_->spin_orbital_ = *pspin_orbital;
+        if (pdata_->spin_orbital_ != Data::ALPHA && pdata_->spin_orbital_ != Data::BETA) {
+            errMsg(lineindex_ - 1, ReadInpFile::SPIN_ORBITAL, pdata_->spin_orbital_);
 			return false;
 		}
 
-		if (!pdata_->l) {									// s軌道は特別なケース
-			// j = l + 1/2
+		if (!pdata_->l_) {
+            // s軌道は特別なケース
+			// j = l_ + 1/2
 			pdata_->j_ = 0.5;
-			pdata_->kappa = - 1.0;
-		} else if (pdata_->spin_orbital == Data::ALPHA) {	// j = l + 1/2に対して
-			pdata_->j_ = static_cast<const long double>(pdata_->l) + 0.5;
-			pdata_->kappa = - static_cast<const long double>(pdata_->l) - 1.0;
-		} else {											// j = l - 1/2に対して
-			pdata_->j_ = static_cast<const long double>(pdata_->l) - 0.5;
-			pdata_->kappa = static_cast<const long double>(pdata_->l);
+			pdata_->kappa_ = - 1.0;
+		} else if (pdata_->spin_orbital_ == Data::ALPHA) {
+            // j = l_ + 1/2に対して
+			pdata_->j_ = static_cast<long double>(pdata_->l_) + 0.5;
+			pdata_->kappa_ = - static_cast<long double>(pdata_->l_) - 1.0;
+		} else {
+            // j = l_ - 1/2に対して
+			pdata_->j_ = static_cast<long double>(pdata_->l_) - 0.5;
+			pdata_->kappa_ = static_cast<long double>(pdata_->l_);
 		}
 
 		return true;
@@ -425,37 +366,28 @@ namespace HydroSchDirac {
 	
 	bool ReadInpFile::readEq()
 	{
-		const ci_string eqtype(readData("eq.type", ci_string("sdirac")));
+		auto const peqtype(readData(ReadInpFile::EQ_TYPE, ci_string("sch")));
 
-		if (eqtype.empty())
+        if (!peqtype) {
+            return false;
+        }
+
+        auto const eqtype(*peqtype);
+        auto const itr(boost::find(ReadInpFile::EQ_TYPE_ARRAY, eqtype));
+        
+        if (itr == ReadInpFile::EQ_TYPE_ARRAY.end()) {
+            errMsg(lineindex_ - 1, ReadInpFile::EQ_TYPE, eqtype);
 			return false;
-
-		const array<const ci_string, 4> eqtypeary =
-			{ ci_string("Default"), ci_string("sch"),
-			  ci_string("sdirac"), ci_string("dirac") };
-
-		int i;
-		array<const ci_string, 4>::const_iterator citr(eqtypeary.begin());
-		const array<const ci_string, 4>::const_iterator citr_end(eqtypeary.end());
-		for (i = 0; citr != citr_end; ++citr, i++) {
-			if (*citr == eqtype)
-				break;
-		}
-
-		if (citr == eqtypeary.end()) {
-			errMsg("eq.type", eqtype);
-			return false;
-		} else if (!i) {
-			pdata_->eqtype = Data::def_eq_type;
-		} else {
-			pdata_->eqtype = boost::numeric_cast<const Data::eq_type>(i - 1);
+        }
+        else if (itr != ReadInpFile::EQ_TYPE_ARRAY.begin()) {
+            pdata_->eq_type_ = boost::numeric_cast<const Data::eq_type>(std::distance(ReadInpFile::EQ_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
 
 	}
 
-	bool ReadInpFile::readGrid()
+	/*bool ReadInpFile::readGrid()
 	{
 		const boost::optional<const long double &> pxmin(
 			readData<long double>("grid.xmin", pdata_->XMIN_DEFAULT));
@@ -577,5 +509,5 @@ namespace HydroSchDirac {
 		} else {
 			return false;
 		}
-	}
+	}*/
 }

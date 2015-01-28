@@ -18,13 +18,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -41,12 +41,14 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level5</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <Cpp0xSupport>true</Cpp0xSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\mylib64\boost_1_57_0\stage\ia32\icl15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -68,13 +70,14 @@
     <ClCompile Include="Adaptive_Step.cpp" />
     <ClCompile Include="Bulirsch_Stoer.cpp" />
     <ClCompile Include="ci_string.cpp" />
+    <ClCompile Include="data.cpp" />
     <ClCompile Include="Diff.cpp" />
     <ClCompile Include="DiffData.cpp" />
     <ClCompile Include="EigenValueSearch.cpp" />
+    <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="ModEuler.cpp" />
-    <ClCompile Include="my_getopt.cpp" />
-    <ClCompile Include="ReadInpFile.cpp" />
-    <ClCompile Include="ReadInpFileTest.cpp" />
+    <ClCompile Include="readinpfile.cpp" />
+    <ClCompile Include="readinpfiletest.cpp" />
     <ClCompile Include="RK_AdapStep.cpp" />
     <ClCompile Include="RungeKutta.cpp" />
     <ClCompile Include="schracmain.cpp" />
@@ -86,13 +89,13 @@
     <ClInclude Include="Adaptive_Step.h" />
     <ClInclude Include="Bulirsch_Stoer.h" />
     <ClInclude Include="ci_string.h" />
-    <ClInclude Include="Data.h" />
+    <ClInclude Include="data.h" />
     <ClInclude Include="Diff.h" />
     <ClInclude Include="DiffData.h" />
     <ClInclude Include="EigenValueSearch.h" />
+    <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="ModEuler.h" />
-    <ClInclude Include="my_getopt.h" />
-    <ClInclude Include="ReadInpFile.h" />
+    <ClInclude Include="readinpfile.h" />
     <ClInclude Include="RK_AdapStep.h" />
     <ClInclude Include="RungeKutta.h" />
     <ClInclude Include="stdHydroSchDirac.h" />

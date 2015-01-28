@@ -1,6 +1,6 @@
 #include "WF_Normalize.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	// constructor
 	WF_Normalize::WF_Normalize(const shared_ptr<Diff> & pdiff)
 	 :	pdata_(pdiff->getpDiffData()->pdata_),
@@ -38,7 +38,7 @@ namespace HydroSchDirac {
 		RV.assign(RV_O.begin(), RV_O.end());
 		XV.assign(XV_O.begin(), XV_O.end());
 		for (int i = 0; i <= MP_O; i++) {
-			RF[i] = HydroSchDirac::pow(RV[i], pdata_->l) * LO[i];
+			RF[i] = schrac::pow(RV[i], pdata_->l) * LO[i];
 			PF[i] = RV[i] * RF[i];
 		}
 
@@ -49,7 +49,7 @@ namespace HydroSchDirac {
 			const int j = MP_O + MP_I - i + 1;
 			RV[j] = RV_I[i];
 			XV[j] = XV_I[i];
-			RF[j] = HydroSchDirac::pow(RV[j], pdata_->l) * ratio * LI[i];
+			RF[j] = schrac::pow(RV[j], pdata_->l) * ratio * LI[i];
 			PF[j] = RV[j] * RF[j];
 			
 		}
@@ -80,7 +80,7 @@ namespace HydroSchDirac {
 			for (int i = 0; i <= MP_O; i++) {
 				RV[i] = RV_O[i];
 				XV[i] = XV_O[i];
-				RF[i] = HydroSchDirac::pow(RV[i], pdata_->l) * LO[i];
+				RF[i] = schrac::pow(RV[i], pdata_->l) * LO[i];
 				PF[i] = RV[i] * RF[i];
 			}
 
@@ -89,7 +89,7 @@ namespace HydroSchDirac {
 				const int j = MP_O + MP_I - i + 1;
 				RV[j] = RV_I[i];
 				XV[j] = XV_I[i];
-				RF[j] = HydroSchDirac::pow(RV[j], pdata_->l) * ratio * LI[i];
+				RF[j] = schrac::pow(RV[j], pdata_->l) * ratio * LI[i];
 				PF[j] = RV[j] * RF[j];
 			}
 		}

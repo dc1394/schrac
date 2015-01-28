@@ -1,4 +1,6 @@
-#include "ReadInpFile.h"
+#include <conio.h>
+#include <cstdlib>
+#include "readinpfile.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,11 +11,17 @@ int main(int argc, char *argv[])
 	}
 
 	try {
-		nummeth::ReadInpFile rif(argv[1]);
-	} catch (std::domain_error & e) {
+		schrac::ReadInpFile rif(std::make_pair(argv[1], false));
+        rif.readFile();
+	} catch (std::runtime_error const & e) {
 		std::cerr << e.what() << std::endl;
-		return EXIT_FAILURE;
+        
+        std::cout << "終了するには何かキーを押してください...";
+        ::_getch();
+        return EXIT_FAILURE;
 	}
 
+    std::cout << "終了するには何かキーを押してください...";
+    ::_getch();
 	return EXIT_SUCCESS;
 }

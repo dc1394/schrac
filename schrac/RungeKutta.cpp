@@ -1,6 +1,6 @@
 #include "RungeKutta.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	bool RungeKutta::solve_diff_equ_O()
 	{
 		long double k1[2], k2[2], k3[2], k4[2];

@@ -1,6 +1,6 @@
 #include "Adaptive_Step.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	void Adaptive_Step::RungeKutta()
 	{
 		long double k1[2], k2[2], k3[2], k4[2];

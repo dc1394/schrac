@@ -7,7 +7,7 @@
 
 #include "AdapStepHelper.h"
 
-namespace HydroSchDirac {
+namespace schrac {
 	class Adaptive_Step : public Diff {
 		virtual bool odeint(const shared_ptr<AdapStepHelper> & pasa) const = 0;
 		virtual bool solve_diff_equ_O();
