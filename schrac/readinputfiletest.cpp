@@ -1,6 +1,6 @@
+#include "readinputfile.h"
 #include <conio.h>
 #include <cstdlib>
-#include "readinpfile.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	}
 
 	try {
-		schrac::ReadInpFile rif(std::make_pair(argv[1], false));
+		schrac::ReadInputFile rif(std::make_pair(argv[1], false));
         rif.readFile();
 	} catch (std::runtime_error const & e) {
 		std::cerr << e.what() << std::endl;

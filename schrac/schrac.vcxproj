@@ -69,14 +69,14 @@
     <ClCompile Include="ci_string.cpp" />
     <ClCompile Include="data.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
-    <ClCompile Include="readinpfile.cpp" />
-    <ClCompile Include="readinpfiletest.cpp" />
+    <ClCompile Include="readinputfile.cpp" />
+    <ClCompile Include="readinputfiletest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="getcomlineoption.h" />
-    <ClInclude Include="readinpfile.h" />
+    <ClInclude Include="readinputfile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="input.inp" />

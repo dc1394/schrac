@@ -1,4 +1,4 @@
-#include "readinpfile.h"
+#include "readinputfile.h"
 #include <stdexcept>
 #include <boost/algorithm/string.hpp>
 #include <boost/cast.hpp>
@@ -7,26 +7,26 @@
 namespace schrac {
     using namespace boost::algorithm;
 
-    const ci_string ReadInpFile::CHEMICAL_SYMBOL = "chemical.symbol";
-    const ci_string ReadInpFile::EQ_TYPE_DEFAULT = "sch";
-    const ci_string ReadInpFile::EQ_TYPE = "eq.type";
-    const std::array<ci_string, 4> ReadInpFile::EQ_TYPE_ARRAY =
+    const ci_string ReadInputFile::CHEMICAL_SYMBOL = "chemical.symbol";
+    const ci_string ReadInputFile::EQ_TYPE_DEFAULT = "sch";
+    const ci_string ReadInputFile::EQ_TYPE = "eq.type";
+    const std::array<ci_string, 4> ReadInputFile::EQ_TYPE_ARRAY =
     {
         ci_string("sch"),
         ci_string("sdirac"),
         ci_string("dirac")
     };
-    const ci_string ReadInpFile::ORBITAL = "orbital";
-    const std::array<ci_string, 4> ReadInpFile::SOLVER_TYPE_ARRAY =
+    const ci_string ReadInputFile::ORBITAL = "orbital";
+    const std::array<ci_string, 4> ReadInputFile::SOLVER_TYPE_ARRAY =
     {
         ci_string("adams_bashforth_moulton"),
         ci_string("bulirsch_stoer"),
         ci_string("controlled_runge_kutta")
     };
-    const ci_string ReadInpFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
-    const ci_string ReadInpFile::SPIN_ORBITAL = "spin.orbital";
+    const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
+    const ci_string ReadInputFile::SPIN_ORBITAL = "spin.orbital";
     
-    ReadInpFile::ReadInpFile(std::pair<std::string, bool> const & arg) :
+    ReadInputFile::ReadInputFile(std::pair<std::string, bool> const & arg) :
         ifs_(std::get<0>(arg).c_str()),
         lineindex_(1),
         pdata_(std::make_shared<Data>())
@@ -34,12 +34,12 @@ namespace schrac {
         pdata_->usetbb_ = std::get<1>(arg);
     }
 
-    std::shared_ptr<Data> && ReadInpFile::getpData()
+    std::shared_ptr<Data> && ReadInputFile::getpData()
     {
         return std::move(pdata_);
     }
 
-	void ReadInpFile::readFile()
+	void ReadInputFile::readFile()
 	{
 		if (!ifs_.is_open())
 			throw std::runtime_error("インプットファイルが開けませんでした");
@@ -69,18 +69,18 @@ namespace schrac {
 			throw std::runtime_error("インプットファイルが異常です");*/
 	}
     
-    void ReadInpFile::errMsg(ci_string const & s) const
+    void ReadInputFile::errMsg(ci_string const & s) const
     {
         std::cerr << "インプットファイルに" << s << "の行が見つかりませんでした" << std::endl;
     }
 
-    void ReadInpFile::errMsg(std::int32_t line, ci_string const & s1, ci_string const & s2) const
+    void ReadInputFile::errMsg(std::int32_t line, ci_string const & s1, ci_string const & s2) const
     {
         std::cerr << "インプットファイルの[" << s1 << "]の行が正しくありません" << std::endl;
         std::cerr << line << "行目, 未知のトークン:" << s2 << std::endl;
     }
 
-    std::pair<std::int32_t, boost::optional<ReadInpFile::strvec>> ReadInpFile::getToken(ci_string const & article)
+    std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> ReadInputFile::getToken(ci_string const & article)
     {
         std::array<char, BUFSIZE> buf;
         ifs_.getline(buf.data(), BUFSIZE);
@@ -112,7 +112,7 @@ namespace schrac {
         }
     }
 
-    boost::optional<ci_string> ReadInpFile::readData(ci_string const & article)
+    boost::optional<ci_string> ReadInputFile::readData(ci_string const & article)
 	{
 		for (; true; lineindex_++) {
             auto const ret = getToken(article);
@@ -146,7 +146,7 @@ namespace schrac {
 		}
 	}
 
-    boost::optional<ci_string> ReadInpFile::readData(ci_string const & article, ci_string const & def)
+    boost::optional<ci_string> ReadInputFile::readData(ci_string const & article, ci_string const & def)
 	{
 		// グリッドを読み込む
 		for (; true; lineindex_++) {
@@ -205,7 +205,7 @@ namespace schrac {
 		}
 	}
 
-    boost::optional<ci_string> ReadInpFile::readDataAuto(ci_string const & article)
+    boost::optional<ci_string> ReadInputFile::readDataAuto(ci_string const & article)
 	{
 		for (; true; lineindex_++) {
             auto const ret = getToken(article);
@@ -264,10 +264,10 @@ namespace schrac {
 		}
 	}
 	
-	bool ReadInpFile::readAtom()
+	bool ReadInputFile::readAtom()
 	{
 		// 原子の種類を読み込む
-        auto const chemsym(readData(ReadInpFile::CHEMICAL_SYMBOL));
+        auto const chemsym(readData(ReadInputFile::CHEMICAL_SYMBOL));
         if (!chemsym) {
             return false;
         }
@@ -281,24 +281,24 @@ namespace schrac {
             pdata_->chemical_symbol_ = *itr;
             pdata_->Z_ = static_cast<double>(std::distance(Data::Chemical_Symbol.begin(), itr)) + 1.0;
 		} catch (std::invalid_argument const &) {
-            errMsg(lineindex_ - 1, ReadInpFile::CHEMICAL_SYMBOL, *chemsym);
+            errMsg(lineindex_ - 1, ReadInputFile::CHEMICAL_SYMBOL, *chemsym);
 			return false;
 		}
 
 		// 軌道を読み込む
-        auto const porbital(readData(ReadInpFile::ORBITAL));
+        auto const porbital(readData(ReadInputFile::ORBITAL));
 		if (!porbital) {
 			return false;
 		}
         
         auto const orbital(*porbital);
         if (orbital.length() != 2) {
-            errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
+            errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 			return false;
 		}
 
 		if (!std::isdigit(orbital[0])) {
-            errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
+            errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 			return false;
 		}
 		pdata_->orbital_ = orbital[0];
@@ -331,7 +331,7 @@ namespace schrac {
 			break;
 
 			default:
-                errMsg(lineindex_ - 1, ReadInpFile::ORBITAL, orbital);
+                errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 				return false;
 			break;
 		}
@@ -342,14 +342,14 @@ namespace schrac {
 		}
 
 		// スピン軌道を読み込む
-        auto const pspin_orbital(readData(ReadInpFile::SPIN_ORBITAL));
+        auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL));
 		if (!pspin_orbital) {
 			return false;
 		}
         
         pdata_->spin_orbital_ = *pspin_orbital;
         if (pdata_->spin_orbital_ != Data::ALPHA && pdata_->spin_orbital_ != Data::BETA) {
-            errMsg(lineindex_ - 1, ReadInpFile::SPIN_ORBITAL, pdata_->spin_orbital_);
+            errMsg(lineindex_ - 1, ReadInputFile::SPIN_ORBITAL, pdata_->spin_orbital_);
 			return false;
 		}
 
@@ -371,7 +371,7 @@ namespace schrac {
 		return true;
 	}
 	
-    bool ReadInpFile::readEps()
+    bool ReadInputFile::readEps()
     {
         if (auto const peps = readData<long double>("eps", pdata_->EPS_DEFAULT)) {
             pdata_->eps_ = *peps;
@@ -383,29 +383,29 @@ namespace schrac {
         return true;
     }
 
-	bool ReadInpFile::readEq()
+	bool ReadInputFile::readEq()
 	{
-        auto const peqtype(readData(ReadInpFile::EQ_TYPE, ReadInpFile::EQ_TYPE_DEFAULT));
+        auto const peqtype(readData(ReadInputFile::EQ_TYPE, ReadInputFile::EQ_TYPE_DEFAULT));
 
         if (!peqtype) {
             return false;
         }
 
         auto const eqtype(*peqtype);
-        auto const itr(boost::find(ReadInpFile::EQ_TYPE_ARRAY, eqtype));
+        auto const itr(boost::find(ReadInputFile::EQ_TYPE_ARRAY, eqtype));
         
-        if (itr == ReadInpFile::EQ_TYPE_ARRAY.end()) {
-            errMsg(lineindex_ - 1, ReadInpFile::EQ_TYPE, eqtype);
+        if (itr == ReadInputFile::EQ_TYPE_ARRAY.end()) {
+            errMsg(lineindex_ - 1, ReadInputFile::EQ_TYPE, eqtype);
 			return false;
         }
-        else if (itr != ReadInpFile::EQ_TYPE_ARRAY.begin()) {
-            pdata_->eq_type_ = boost::numeric_cast<const Data::Eq_type>(std::distance(ReadInpFile::EQ_TYPE_ARRAY.begin(), itr));
+        else if (itr != ReadInputFile::EQ_TYPE_ARRAY.begin()) {
+            pdata_->eq_type_ = boost::numeric_cast<const Data::Eq_type>(std::distance(ReadInputFile::EQ_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
 	}
 
-    bool ReadInpFile::readGrid()
+    bool ReadInputFile::readGrid()
     {
         if (auto const pxmin = readData<double>("grid.xmin", pdata_->XMIN_DEFAULT)) {
             pdata_->xmin_ = *pxmin;
@@ -430,7 +430,7 @@ namespace schrac {
         return true;
 	}
 
-    bool ReadInpFile::readLowerE()
+    bool ReadInputFile::readLowerE()
     {
         if (auto const val = readDataAuto("search.LowerE")) {
             if (!val->empty()) {
@@ -458,50 +458,46 @@ namespace schrac {
         return true;
     }
 
-	bool ReadInpFile::readType()
+    bool ReadInputFile::readNumofp()
+    {
+        if (auto const pnumofp = readData<std::size_t>("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT)) {
+            pdata_->num_of_partiton_ = *pnumofp;
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
+    bool ReadInputFile::readRatio()
+    {
+        if (auto const pmpr = readData<double>("matching.point.ratio", pdata_->MAT_PO_RATIO_DEFAULT)) {
+            pdata_->mat_po_ratio_ = *pmpr;
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
+	bool ReadInputFile::readType()
 	{
-        auto const psolvetype(readData("solver.type", ReadInpFile::SOLVER_TYPE_DEFAULT));
+        auto const psolvetype(readData("solver.type", ReadInputFile::SOLVER_TYPE_DEFAULT));
         if (!psolvetype) {
             return false;
         }
 
         auto const solvertype = *psolvetype;
-		auto const itr = boost::find(ReadInpFile::SOLVER_TYPE_ARRAY, solvertype);
-        if (itr == ReadInpFile::SOLVER_TYPE_ARRAY.end()) {
+		auto const itr = boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype);
+        if (itr == ReadInputFile::SOLVER_TYPE_ARRAY.end()) {
 			errMsg(lineindex_ - 1, "solver.type", solvertype);
 			return false;
 		} else {
-            pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(std::distance(ReadInpFile::SOLVER_TYPE_ARRAY.begin(), itr));
+            pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(std::distance(ReadInputFile::SOLVER_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
-	}
-    	
-	/*bool ReadInpFile::readNumofp()
-	{
-		const boost::optional<std::size_t> p(
-			readData<std::size_t>("num.of.partition",
-								  Data::NUM_OF_PARTITION_DEFAULT));
-		if (p) {
-			pdata_->num_of_partiton = *p;
-
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	bool ReadInpFile::readRatio()
-	{
-		const boost::optional<const long double &> p(
-			readData<long double>("matching.point.ratio",
-								  pdata_->MAT_PO_RATIO_DEFAULT));
-		if (p) {
-			pdata_->mat_po_ratio = *p;
-
-			return true;
-		} else {
-			return false;
-		}
-	}*/
+	}    
 }

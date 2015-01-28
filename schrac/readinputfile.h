@@ -1,5 +1,5 @@
-#ifndef _READINPFILE_H_
-#define _READINPFILE_H_
+#ifndef _READINPUTFILE_H_
+#define _READINPUTFILE_H_
 
 #include "ci_string.h"
 #include "data.h"
@@ -15,7 +15,7 @@ namespace schrac {
     /*!
         インプットファイルを読み込み、Dataクラスのオブジェクトに格納するクラス    
     */
-	class ReadInpFile final {
+	class ReadInputFile final {
         // #region 型エイリアス
 
         using strvec = std::vector<ci_string>;
@@ -29,13 +29,13 @@ namespace schrac {
         /*!
             唯一のコンストラクタ
         */
-        ReadInpFile(std::pair<std::string, bool> const & arg);
+        ReadInputFile(std::pair<std::string, bool> const & arg);
 
         //! A destructor.
         /*!
         何もしないデストラクタ
         */
-        ~ReadInpFile()
+        ~ReadInputFile()
         {
         }
 
@@ -83,7 +83,7 @@ namespace schrac {
             \param article 解析対象の文字列
             \return 関数が成功したかどうかと、トークンのstd::pair
         */
-        std::pair<std::int32_t, boost::optional<ReadInpFile::strvec>> getToken(ci_string const & article);
+        std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> getToken(ci_string const & article);
 
         //! A private member function.
         /*!
@@ -160,7 +160,7 @@ namespace schrac {
             原子番号の値を読み込む
             \return 読み込みが成功したかどうか
         */
-        bool readNumof();
+        bool readNumofp();
 
         //! A private member function.
         /*!
@@ -260,13 +260,13 @@ namespace schrac {
         /*!
             デフォルトコンストラクタ（禁止）
         */
-        ReadInpFile() = delete;
+        ReadInputFile() = delete;
 
         //! A private copy constructor (deleted).
         /*!
             コピーコンストラクタ（禁止）
         */
-        ReadInpFile(ReadInpFile const &) = delete;
+        ReadInputFile(ReadInputFile const &) = delete;
 
         //! A private member function (deleted).
         /*!
@@ -274,13 +274,13 @@ namespace schrac {
             \param コピー元のオブジェクト（未使用）
             \return コピー元のオブジェクト
         */
-        ReadInpFile & operator=(ReadInpFile const &) = delete;
+        ReadInputFile & operator=(ReadInputFile const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
 
     template <typename T>
-    boost::optional<T> ReadInpFile::readData(ci_string const & article, T const & def_val)
+    boost::optional<T> ReadInputFile::readData(ci_string const & article, T const & def_val)
     {
         // グリッドを読み込む
         for (; true; lineindex_++) {
@@ -356,4 +356,4 @@ namespace schrac {
     }
 }
 
-#endif	// _READINWFILE_H_
+#endif	// _READINPUTFILE_H_
