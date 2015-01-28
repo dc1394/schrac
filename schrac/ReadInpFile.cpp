@@ -8,15 +8,22 @@ namespace schrac {
     using namespace boost::algorithm;
 
     const ci_string ReadInpFile::CHEMICAL_SYMBOL = "chemical.symbol";
+    const ci_string ReadInpFile::EQ_TYPE_DEFAULT = "sch";
     const ci_string ReadInpFile::EQ_TYPE = "eq.type";
     const std::array<ci_string, 4> ReadInpFile::EQ_TYPE_ARRAY =
     {
-        ci_string("default"),
         ci_string("sch"),
         ci_string("sdirac"),
         ci_string("dirac")
     };
     const ci_string ReadInpFile::ORBITAL = "orbital";
+    const std::array<ci_string, 4> ReadInpFile::SOLVER_TYPE_ARRAY =
+    {
+        ci_string("adams_bashforth_moulton"),
+        ci_string("bulirsch_stoer"),
+        ci_string("controlled_runge_kutta")
+    };
+    const ci_string ReadInpFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
     const ci_string ReadInpFile::SPIN_ORBITAL = "spin.orbital";
     
     ReadInpFile::ReadInpFile(std::pair<std::string, bool> const & arg) :
@@ -40,10 +47,10 @@ namespace schrac {
 		if (!readAtom())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		//if (!readEq())
-		//	throw std::runtime_error("インプットファイルが異常です");
+		if (!readEq())
+			throw std::runtime_error("インプットファイルが異常です");
 
-		/*if (!readGrid())
+		if (!readGrid())
 			throw std::runtime_error("インプットファイルが異常です");
 
 		if (!readEps())
@@ -55,7 +62,7 @@ namespace schrac {
 		if (!readLowerE())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		if (!readNumofZ())
+		/*if (!readNumofZ())
 			throw std::runtime_error("インプットファイルが異常です");
 
 		if (!readRatio())
@@ -206,7 +213,7 @@ namespace schrac {
             switch (std::get<0>(ret))
             {
             case -1:
-                return nullptr;
+                return boost::none;
                 break;
 
             case 0:
@@ -364,9 +371,21 @@ namespace schrac {
 		return true;
 	}
 	
+    bool ReadInpFile::readEps()
+    {
+        if (auto const peps = readData<long double>("eps", pdata_->EPS_DEFAULT)) {
+            pdata_->eps_ = *peps;
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
 	bool ReadInpFile::readEq()
 	{
-		auto const peqtype(readData(ReadInpFile::EQ_TYPE, ci_string("sch")));
+        auto const peqtype(readData(ReadInpFile::EQ_TYPE, ReadInpFile::EQ_TYPE_DEFAULT));
 
         if (!peqtype) {
             return false;
@@ -380,110 +399,85 @@ namespace schrac {
 			return false;
         }
         else if (itr != ReadInpFile::EQ_TYPE_ARRAY.begin()) {
-            pdata_->eq_type_ = boost::numeric_cast<const Data::eq_type>(std::distance(ReadInpFile::EQ_TYPE_ARRAY.begin(), itr));
+            pdata_->eq_type_ = boost::numeric_cast<const Data::Eq_type>(std::distance(ReadInpFile::EQ_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
-
 	}
 
-	/*bool ReadInpFile::readGrid()
-	{
-		const boost::optional<const long double &> pxmin(
-			readData<long double>("grid.xmin", pdata_->XMIN_DEFAULT));
-		if (pxmin)
-			pdata_->xmin = *pxmin;
-		else
-			return false;
+    bool ReadInpFile::readGrid()
+    {
+        if (auto const pxmin = readData<double>("grid.xmin", pdata_->XMIN_DEFAULT)) {
+            pdata_->xmin_ = *pxmin;
+        }
+        else {
+            return false;
+        }
 
-		const boost::optional<const long double &> pxmax(
-			readData<long double>("grid.xmax", pdata_->XMAX_DEFAULT));
-		if (pxmax)
-			pdata_->xmax = *pxmax;
-		else
-			return false;
+        if (auto const pxmax = readData<double>("grid.xmax", pdata_->XMAX_DEFAULT)) {
+            pdata_->xmax_ = *pxmax;
+        }
+        else {
+            return false;
+        }
 
-		const boost::optional<const std::size_t &> p(
-			readData<std::size_t>("grid.num", Data::GRID_NUM_DEFAULT));
-		if (p) {
-			pdata_->grid_num = *p;
-
-			return true;
+        if (auto const pgrid_num = readData<std::size_t>("grid.num", Data::GRID_NUM_DEFAULT)) {
+			pdata_->grid_num_ = *pgrid_num;
 		} else {
 			return false;
 		}
+
+        return true;
 	}
 
-	bool ReadInpFile::readEps()
-	{
-		const boost::optional<const long double &> p(
-			readData<long double>("eps", pdata_->EPS_DEFAULT));
-		if (p) {
-			pdata_->eps = *p;
+    bool ReadInpFile::readLowerE()
+    {
+        if (auto const val = readDataAuto("search.LowerE")) {
+            if (!val->empty()) {
+                try {
+                    std::size_t idx;
+                    auto const v = std::stod(val->c_str(), &idx);
+                    if (idx != val->length()) {
+                        throw std::invalid_argument("");
+                    }
+                    pdata_->search_lowerE_ = boost::optional<double>(v);
+                }
+                catch (std::invalid_argument const &) {
+                    errMsg(lineindex_ - 1, "search.LowerE", *val);
+                    return false;
+                }
+            }
+            else {
+                pdata_->search_lowerE_ = boost::none;
+            }
+        }
+        else {
+            return false;
+        }
 
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return true;
+    }
 
 	bool ReadInpFile::readType()
 	{
-		const ci_string solvetype(readData("solve.type", ci_string("Bulirsch_Stoer")));
+        auto const psolvetype(readData("solver.type", ReadInpFile::SOLVER_TYPE_DEFAULT));
+        if (!psolvetype) {
+            return false;
+        }
 
-		if (solvetype.empty())
+        auto const solvertype = *psolvetype;
+		auto const itr = boost::find(ReadInpFile::SOLVER_TYPE_ARRAY, solvertype);
+        if (itr == ReadInpFile::SOLVER_TYPE_ARRAY.end()) {
+			errMsg(lineindex_ - 1, "solver.type", solvertype);
 			return false;
-
-		const array<const ci_string, 5> stypeary =
-			{ ci_string("Default"), ci_string("Mod_Euler"),
-			  ci_string("Runge_Kutta"), ci_string("RK_AdapStep"),
-			  ci_string("Bulirsch_Stoer") };
-
-		int i;
-		array<const ci_string, 5>::const_iterator citr(stypeary.begin());
-		const array<const ci_string, 5>::const_iterator citr_end(stypeary.end());
-		for (i = 0; citr != citr_end; ++citr, i++) {
-			if (*citr == solvetype)
-				break;
-		}
-
-		if (citr == stypeary.end()) {
-			errMsg("solve.type", solvetype);
-			return false;
-		} else if (!i) {
-			pdata_->stype = Data::def_solve_type;
 		} else {
-			pdata_->stype = boost::numeric_cast<const Data::solve_type>(i - 1);
+            pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(std::distance(ReadInpFile::SOLVER_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
 	}
-
-	bool ReadInpFile::readLowerE()
-	{
-		const boost::optional<const ci_string &> val(readDataAuto("search.LowerE"));
-
-		if (val) {
-			if (!val->empty()) {
-				try {
-					pdata_->search_lowerE = boost::optional<const long double>(
-						boost::lexical_cast<long double>(val->c_str()));
-				} catch (const boost::bad_lexical_cast &) {
-					errMsg("search.LowerE", *val);
-					return false;
-				}
-			} else {
-				pdata_->search_lowerE = boost::none;
-			}
-		} else {
-			return false;
-		}
-		
-		i_++;
-		return true;
-	}
-
-	bool ReadInpFile::readNumofp()
+    	
+	/*bool ReadInpFile::readNumofp()
 	{
 		const boost::optional<std::size_t> p(
 			readData<std::size_t>("num.of.partition",

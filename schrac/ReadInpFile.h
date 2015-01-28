@@ -194,13 +194,19 @@ namespace schrac {
 
         //! A private member variable (constant).
         /*!
+            デフォルトの「eq.type」の文字列
+        */
+        static const ci_string EQ_TYPE_DEFAULT;
+
+        //! A private member variable (constant).
+        /*!
             「eq.type」の文字列
         */
         static const ci_string EQ_TYPE;
 
         //! A private member variable (constant).
         /*!
-            方程式の種類の配列
+            方程式の種類の文字列の配列
         */
         static const std::array<ci_string, 4> EQ_TYPE_ARRAY;
 
@@ -209,6 +215,18 @@ namespace schrac {
             「orbital」の文字列
         */
         static const ci_string ORBITAL;
+
+        //! A private member variable (constant).
+        /*!
+            微分方程式の数値解法の文字列の配列
+        */
+        static const std::array<ci_string, 4> SOLVER_TYPE_ARRAY;
+
+        //! A private member variable (constant).
+        /*!
+            デフォルトの微分方程式の数値解法
+        */
+        static const ci_string SOLVER_TYPE_DEFAULT;
 
         //! A private member variable (constant).
         /*!
@@ -265,7 +283,7 @@ namespace schrac {
     boost::optional<T> ReadInpFile::readData(ci_string const & article, T const & def_val)
     {
         // グリッドを読み込む
-        for (; true; i_++) {
+        for (; true; lineindex_++) {
             auto const ret = getToken(article);
 
             switch (std::get<0>(ret))
@@ -277,9 +295,9 @@ namespace schrac {
             case 0:
             {
                 auto const tokens = *(std::get<1>(ret));
-
                 auto itr(++tokens.begin());
 
+                lineindex_++;
                 // 読み込んだトークンの数をはかる
                 switch (tokens.size()) {
                 case 1:
@@ -289,17 +307,15 @@ namespace schrac {
 
                 case 2:
                     if (*(++itr) == "DEFAULT") {
-                        lineindex_++;
                         // デフォルト値を返す
                         return boost::optional<T>(def_val);
                     }
                     else {
                         try {
-                            lineindex_++;
                             return boost::optional<T>(boost::lexical_cast<T>(itr->c_str()));
                         }
                         catch (boost::bad_lexical_cast const &) {
-                            errMsg(article, *itr);
+                            errMsg(lineindex_ - 1, article, *itr);
                             return boost::none;
                         }
                     }
@@ -309,20 +325,18 @@ namespace schrac {
                     auto val = *itr;
 
                     if (val == "DEFAULT" || val[0] == '#') {
-                        lineindex_++;
                         return boost::optional<T>(def_val);
                     }
                     else if ((*(++itr))[0] != '#') {
-                        errMsg(article, *itr);
+                        errMsg(lineindex_ - 1, article, *itr);
                         return boost::none;
                     }
 
                     try {
-                        lineindex_++;
                         return boost::optional<T>(boost::lexical_cast<T>(val.c_str()));
                     }
                     catch (boost::bad_lexical_cast const &) {
-                        errMsg(article, val);
+                        errMsg(lineindex_ - 1, article, val);
                         return boost::none;
                     }
                     break;

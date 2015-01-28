@@ -41,7 +41,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level5</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <Cpp0xSupport>true</Cpp0xSupport>
@@ -66,41 +66,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AdapStepHelper.cpp" />
-    <ClCompile Include="Adaptive_Step.cpp" />
-    <ClCompile Include="Bulirsch_Stoer.cpp" />
     <ClCompile Include="ci_string.cpp" />
     <ClCompile Include="data.cpp" />
-    <ClCompile Include="Diff.cpp" />
-    <ClCompile Include="DiffData.cpp" />
-    <ClCompile Include="EigenValueSearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
-    <ClCompile Include="ModEuler.cpp" />
     <ClCompile Include="readinpfile.cpp" />
     <ClCompile Include="readinpfiletest.cpp" />
-    <ClCompile Include="RK_AdapStep.cpp" />
-    <ClCompile Include="RungeKutta.cpp" />
-    <ClCompile Include="schracmain.cpp" />
-    <ClCompile Include="WF_Normalize.cpp" />
-    <ClCompile Include="WF_Save.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AdapStepHelper.h" />
-    <ClInclude Include="Adaptive_Step.h" />
-    <ClInclude Include="Bulirsch_Stoer.h" />
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
-    <ClInclude Include="Diff.h" />
-    <ClInclude Include="DiffData.h" />
-    <ClInclude Include="EigenValueSearch.h" />
     <ClInclude Include="getcomlineoption.h" />
-    <ClInclude Include="ModEuler.h" />
     <ClInclude Include="readinpfile.h" />
-    <ClInclude Include="RK_AdapStep.h" />
-    <ClInclude Include="RungeKutta.h" />
-    <ClInclude Include="stdHydroSchDirac.h" />
-    <ClInclude Include="WF_Normalize.h" />
-    <ClInclude Include="WF_Save.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="input.inp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

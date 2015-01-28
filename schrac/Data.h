@@ -23,7 +23,7 @@ namespace schrac {
         /*!
             解く方程式のタイプを表す列挙型
         */
-        enum class eq_type {
+        enum class Eq_type {
             // Schrödinger方程式
             SCH,
             // スカラ相対論補正
@@ -36,7 +36,7 @@ namespace schrac {
         /*!
             微分方程式の解法の種類を表す列挙型
         */
-        enum class solver_type {
+        enum class Solver_type {
             // Adams Bashforth Moulton法
             ADAMS_BASHFORTH_MOULTON,
             // Bulirsch-Stoer法
@@ -137,7 +137,7 @@ namespace schrac {
         /*!
             解く方程式のタイプ
         */
-        Data::eq_type eq_type_ = Data::eq_type::SCH;
+        Data::Eq_type eq_type_ = Data::Eq_type::SCH;
         
         //!  A public member variable.
         /*!
@@ -197,7 +197,7 @@ namespace schrac {
         /*!
             使用する微分方程式のソルバー
         */
-        Data::solver_type solve_type = Data::solver_type::BULIRSCH_STOER;
+        Data::Solver_type solver_type_ = Data::Solver_type::BULIRSCH_STOER;
 
         //!  A public member variable.
         /*!
