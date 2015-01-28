@@ -98,7 +98,7 @@ namespace schrac {
             \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
             \return “Ç‚İ‚±‚ñ‚¾•¶š—ñƒf[ƒ^
         */
-        boost::optional<ci_string> readData(ci_string const &);
+        boost::optional<ci_string> readData(ci_string const & article);
         
         //! A private member function.
         /*!

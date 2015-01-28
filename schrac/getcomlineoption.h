@@ -45,7 +45,8 @@ namespace schrac {
 
         //! A public member function (constant).
         /*!
-            \return インプットファイルと並列計算するときのスレッド数のstd::pair
+            インプットファイル名とTBBを使用するかどうかを、std::pairで返す
+            \return インプットファイル名とTBBを使用するかどうかのstd::pair
         */
         std::pair<std::string, bool> getpairdata() const;
 
