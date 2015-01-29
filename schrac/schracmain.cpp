@@ -1,5 +1,7 @@
-#include "getcomlineoption.h"
+﻿#include "getcomlineoption.h"
+#include <conio.h>
 #include <cstdlib>
+#include <iostream>
 #include <boost/assert.hpp>
 //#include "WF_Save.h"
 //#include "ChkPoint.h"
@@ -11,39 +13,54 @@
 int main(int argc, char * argv[])
 {
     using namespace schrac;
-//	CheckPoint::ChkPoint cp("処理開始", __LINE__);
-	
-	GetComLineOption mg;
-	switch (mg.getopt(argc, argv)) {
-		case -1:
-			return EXIT_FAILURE;
-		break;
+    //	CheckPoint::ChkPoint cp("処理開始", __LINE__);
 
-		case 0:
-		break;
+    GetComLineOption mg;
+    switch (mg.getopt(argc, argv)) {
+    case -1:
+        std::cout << "終了するには何かキーを押してください..." << std::endl;
 
-   		case 1:
-			return EXIT_SUCCESS;
-		break;
+#if defined(_WIN32) || defined(_WIN64)
+        ::_getch();
+#else
+        std::getchar();
+#endif
+        return EXIT_FAILURE;
+        break;
 
-		default:
-			BOOST_ASSERT(false);
-		break;
-	}
+    case 0:
+        break;
+
+    case 1:
+        std::cout << "終了するには何かキーを押してください..." << std::endl;
+
+#if defined(_WIN32) || defined(_WIN64)
+        ::_getch();
+#else
+        std::getchar();
+#endif
+        return EXIT_SUCCESS;
+        break;
+
+    default:
+        BOOST_ASSERT(false);
+        break;
+    }
+
+    //cp.checkpoint("コマンドラインオプション解析処理", __LINE__);
+
+    boost::optional<schrac::EigenValueSearch> pevs;
+
+    try {
+        pevs = boost::in_place(go.getpData());
+    }
+    catch (const std::runtime_error & e) {
+        std::cerr << e.what() << std::endl;
+
+        return EXIT_FAILURE;
+    }
 }
-	/*cp.checkpoint("コマンドラインオプション解析処理", __LINE__);
-
-	boost::optional<schrac::EigenValueSearch> pevs;
-
-	try {
-		pevs = boost::in_place(go.getpData());
-	} catch (const std::runtime_error & e) {
-		std::cerr << e.what() << std::endl;
-
-		return EXIT_FAILURE;
-	}
-
-	cp.checkpoint("入力ファイル読み込み処理", __LINE__);
+	/*cp.checkpoint("入力ファイル読み込み処理", __LINE__);
 
 	if (!pevs->search()) {
 		std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
@@ -75,7 +92,7 @@ int main(int argc, char * argv[])
 	schrac::showomp(go);
 
 	cp.checkpoint_print();
-	long double cpu, real;
+	double cpu, real;
 	tie(cpu, real) = cp.totalpassageoftime();
 
 	std::cout << "総処理時間： CPU:" << boost::format("%.4f") % cpu

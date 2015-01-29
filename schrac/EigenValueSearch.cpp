@@ -1,116 +1,203 @@
-#include "EigenValueSearch.h"
+ï»¿#include "EigenValueSearch.h"
+#include <cmath>
+#include <iomanip>
+#include <tuple>
+#include <boost/cast.hpp>
 
 namespace schrac {
-	const long double EigenValueSearch::TINY = 1.0E-30;
-	const long double EigenValueSearch::HUGE = 1.0E+7;
-
-	// constructor
-	EigenValueSearch::EigenValueSearch(const tuple<const std::string, const int> & arg)
-	 :	i_(1), bNoden(false)
+	EigenValueSearch::EigenValueSearch(std::pair<std::string, bool> const & arg)
+	 :	loop_(1), noden_(false)
 	{
-#ifdef _OPENMP
-		ReadInpFile rif(arg);			// ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+		ReadInputFile rif(arg);			// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 		rif.readFile();
 		pdata_ = rif.getpData();
 		
 		msg();
 
-		const int nthread = pdata_->ompthread_;
-		if (nthread) {
-			// OpenMP‚Ì“®“I’²®—LŒø
-			omp_set_dynamic(true);
-			// OpenMP‚Åg—p‚·‚éƒXƒŒƒbƒh‚ğw’è
-			omp_set_num_threads(nthread);
-		}
-
-		EPS = pdata_->eps;
-		TOL = EPS * 10.0;
+        eps_ = pdata_->eps_;
+		tol_ = eps_ * 10.0;
 
 		init();
-		setExp();
-#else
-		BOOST_STATIC_ASSERT(false);
-#endif
+		setoutstream();
 	}
+
+    /* public method */
+
+    const std::shared_ptr<Data> & EigenValueSearch::getpData() const
+    {
+        return pdata_;
+    }
+
+    const std::shared_ptr<Diff> & EigenValueSearch::getpDiff() const
+    {
+        return pdiff_;
+    }
+
+    bool EigenValueSearch::search()
+    {
+        for (; loop_ < EigenValueSearch::EVALSEARCHMAX; loop_++) {
+            if (!rough_search()) {
+                return false;
+            }
+
+            bool b;
+            try {
+                b = zbrent();
+            }
+            catch (const std::runtime_error & e) {
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+
+            if (b && noden_) {
+                info(E);
+                return true;
+            }
+            else {
+                E += DE;
+
+                if (E > 0.0) {
+                    return false;
+                }
+
+                pdiff_->Initialize(E);
+            }
+        }
+
+        return false;
+    }
 
 	/*	private method	*/
 	
+    boost::optional<double> EigenValueSearch::fnc_D()
+    {
+        if (!pdiff_->solve_diff_equ()) {
+            std::cerr << "å¾®åˆ†æ–¹ç¨‹å¼ãŒæ­£å¸¸ã«è§£ã‘ã¾ã›ã‚“ã§ã—ãŸã€‚" << std::endl;
+            return boost::none;
+        }
+
+        noden_ = pdiffdata_->node == pdiffdata_->thisnode;
+
+        std::array<double, 2> L, M;
+        std::tie(L, M) = pdiff_->getMPval();
+        return boost::optional<double>(M[0] - (L[0] / L[1]) * M[1]);
+    }
+
+    inline void EigenValueSearch::info() const
+    {
+        std::cout << "i = " << loop_ << ", D = " << Dold << ", node = "
+            << pdiffdata_->thisnode;
+
+        if (noden_) {
+            std::cout << " (OK)" << std::endl;
+        } 
+        else {
+            std::cout << " (NG)" << std::endl;
+        }
+    }
+
+    void EigenValueSearch::info(double E) const
+    {
+        std::cout << "ãƒãƒ¼ãƒ‰æ•°ãŒä¸€è‡´ã™ã‚‹å›ºæœ‰å€¤ã‚’ç™ºè¦‹ã—ã¾ã—ãŸï¼" << std::endl;
+        //std::cout << "E(å³å¯†)   = " << Erough_exact_ << " (Hartree)" << std::endl;
+        std::cout << "E(è¨ˆç®—å€¤) = " << E << " (Hartree)" << std::endl;
+
+    }
+
+    inline void EigenValueSearch::info(double b, double fb) const
+    {
+        std::cout << "i = " << loop_ << ", D = "
+            << fb << ", E = " << b
+            << ", node = "
+            << pdiffdata_->thisnode;
+
+        if (noden_) {
+            std::cout << " (OK)" << std::endl;
+        } 
+        else {
+            std::cout << " (NG)" << std::endl;
+        }
+    }
+
 	void EigenValueSearch::init()
 	{
-		switch (pdata_->eqtype) {
-			case Data::SCH:
-				Eexact = Eexact_sch(pdata_);
+		switch (pdata_->eq_type_) {
+        case Data::Eq_type::SCH:
+				Erough_exact_ = Eexact_sch(pdata_);
 			break;
 
-			case Data::SDIRAC:
-				Eexact = Eexact_sdirac(pdata_);
+        case Data::Eq_type::SDIRAC:
+				Erough_exact_ = Eexact_sdirac(pdata_);
 			break;
 
-			case Data::DIRAC:
-				Eexact = Eexact_dirac(pdata_);
+        case Data::Eq_type::DIRAC:
+				Erough_exact_ = Eexact_dirac(pdata_);
 			break;
 
-			default:
-				BOOST_ASSERT("‰½‚©‚ª‚¨‚©‚µ‚¢II");
+        default:
+				BOOST_ASSERT("ä½•ã‹ãŒãŠã‹ã—ã„ï¼ï¼");
 			break;
 		}
 
-		if (pdata_->search_lowerE) {
-			E = *(pdata_->search_lowerE);
-			DE = - E / static_cast<const long double>(pdata_->num_of_partiton);
+		if (pdata_->search_lowerE_) {
+			E = *pdata_->search_lowerE_;
+			DE = - E / static_cast<double>(pdata_->num_of_partition_);
 		} else {
-			E = Eexact;
-			DE = - E / static_cast<const long double>(pdata_->num_of_partiton);
+			E = Erough_exact_;
+			DE = - E / static_cast<const double>(pdata_->num_of_partition_);
 			E -= 3.0 * DE;
 		}
 
-		switch (pdata_->stype) {
-			case Data::MOD_EULER:
-#ifdef _DEBUG
-				pdiff_ = make_shared<ModEuler>(pdata_, E, TINY);
-#else
-				throw std::runtime_error("usolve.typeFMod_Eulerv‚ÍƒfƒoƒbƒO—p‚ÌƒIƒvƒVƒ‡ƒ“‚Å‚·I");
-#endif
+		switch (pdata_->solver_type_) {
+        case Data::Solver_type::BULIRSCH_STOER:
+            pdiff_ = std::make_shared<Bulirsch_Stoer>(pdata_, E, TINY);
 			break;
 
-			case Data::RUNGE_KUTTA:
-				pdiff_ = make_shared<RungeKutta>(pdata_, E, TINY);
-			break;
+			//case Data::RK_ADAPSTEP:
+			//	pdiff_ = make_shared<RK_AdapStep>(pdata_, E, TINY);
+			//break;
 
-			case Data::RK_ADAPSTEP:
-				pdiff_ = make_shared<RK_AdapStep>(pdata_, E, TINY);
-			break;
-
-			case Data::BULIRSCH_STOER:
-				pdiff_ = make_shared<Bulirsch_Stoer>(pdata_, E, TINY);
-			break;
+			//case Data::BULIRSCH_STOER:
+			//	pdiff_ = make_shared<Bulirsch_Stoer>(pdata_, E, TINY);
+			//break;
 
 			default:
-				BOOST_ASSERT(!"‰½‚©‚ª‚¨‚©‚µ‚¢II");
+				BOOST_ASSERT(!"ä½•ã‹ãŒãŠã‹ã—ã„ï¼ï¼");
 			break;
 		}
 
 		pdiffdata_ = pdiff_->getpDiffData();
 	}
 
-	const boost::optional<const long double> EigenValueSearch::fnc_D()
-	{
-		if (!pdiff_->solve_diff_equ()) {
-			std::cerr << "”÷•ª•û’ö®‚ª³í‚É‰ğ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½B" << std::endl;
-			return boost::none;
-		}
+    void EigenValueSearch::msg() const
+    {
+        std::cout << pdata_->chemical_symbol_;
 
-		bNoden = (pdiffdata_->node == pdiffdata_->thisnode);
+        switch (static_cast<std::int32_t>(pdata_->Z_)) {
+        case 1:
+            std::cout << "åŸå­ã®";
+            break;
 
-		array<long double, 2> L, M;
-		tie(L, M) = pdiff_->getMPval();
-		const long double ratio = L[0] / L[1];
-		return boost::optional<const long double>(M[0] - ratio * M[1]);
-	}
+        default:
+            std::cout << "ã‚¤ã‚ªãƒ³ã®";
+            break;
+        }
+
+        std::cout << pdata_->orbital_ << "è»Œé“";
+
+        if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::ALPHA) {
+            std::cout << "ã‚¹ãƒ”ãƒ³ä¸Šå‘ãã®";
+        }
+        else if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::BETA) {
+            std::cout << "ã‚¹ãƒ”ãƒ³ä¸‹å‘ãã®";
+        }
+
+        std::cout << "æ³¢å‹•é–¢æ•°ã¨ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã‚’è¨ˆç®—ã—ã¾ã™ã€‚\n" << std::endl;
+    }
 
 	bool EigenValueSearch::rough_search()
 	{
-		const boost::optional<const long double> pDold(fnc_D());
+		const boost::optional<const double> pDold(fnc_D());
 		if (pDold)
 			Dold = *pDold;
 		else
@@ -118,9 +205,9 @@ namespace schrac {
 
 		info();
 
-		i_++;
+		loop_++;
 
-		for (; i_ < EVALSEARCHMAX; i_++) {
+        for (; loop_ < EVALSEARCHMAX; loop_++) {
    			E += DE;
 
 			if (E > 0.0)
@@ -128,8 +215,8 @@ namespace schrac {
 
 			pdiff_->Initialize(E);
 
-			const boost::optional<const long double> pDnew(fnc_D());
-			long double Dnew;
+			auto const pDnew = fnc_D();
+			double Dnew;
 			if (pDnew)
 				Dnew = *pDnew;
 			else
@@ -149,29 +236,37 @@ namespace schrac {
 			info();
 		}
 
-		return (i_ != EVALSEARCHMAX);
+		return loop_ != EVALSEARCHMAX;
 	}
+
+
+    void EigenValueSearch::setoutstream() const
+    {
+        std::cout.setf(std::ios::fixed, std::ios::floatfield);
+        std::cout << std::setprecision(
+            boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))) - 2);
+    }
 
 	bool EigenValueSearch::zbrent()
 	{
-		long double a = Emin, b = Emax, c = Emax, d = 0.0, e = 0.0;
-		long double fa = Dmin, fb = Dmax;
-		long double fc = fb;
+		double a = Emin, b = Emax, c = Emax, d = 0.0, e = 0.0;
+		double fa = Dmin, fb = Dmax;
+		double fc = fb;
 
 		if (fa * fb > 0.0) {
 			BOOST_ASSERT(!"Root must be bracketed in zbrent");
 		}
 
-		for (; i_ < EVALSEARCHMAX; i_++) {
+		for (; loop_ < EVALSEARCHMAX; loop_++) {
 			info(b, fb);
 
 			if (std::fabs(fb) > HUGE) {
-				std::cerr << "ŠÖ”D‚É‹É‚ª‚ ‚è‚Ü‚·B‹É‚ğ–³‹‚µ‚Ä’Tõ‚ğ‘±‚¯‚Ü‚·..." << std::endl;
+				std::cerr << "é–¢æ•°Dã«æ¥µãŒã‚ã‚Šã¾ã™ã€‚æ¥µã‚’ç„¡è¦–ã—ã¦æ¢ç´¢ã‚’ç¶šã‘ã¾ã™..." << std::endl;
 				return false;
 			}
 
 			if (fb * fc > 0.0) {
-				c = a;														// a, b, c‚Ì–¼‘O‚ğ•t‚¯‘Ö‚¦‚Ä‹æŠÔ•’²®
+				c = a;														// a, b, cã®åå‰ã‚’ä»˜ã‘æ›¿ãˆã¦åŒºé–“å¹…èª¿æ•´
 				fc = fa;
 				e = d = b - a;
 			}
@@ -184,8 +279,8 @@ namespace schrac {
 				fc = fa;
 			}
 
-			const long double tol1 = 2.0 * EPS * std::fabs(b) + 0.5 * TOL;	// û‘©‚Ìƒ`ƒFƒbƒN
-			const long double xm = 0.5 * (c - b);
+			const double tol1 = 2.0 * EPS * std::fabs(b) + 0.5 * TOL;	// åæŸã®ãƒã‚§ãƒƒã‚¯
+			const double xm = 0.5 * (c - b);
 
 			if (std::fabs(xm) <= tol1 || std::fabs(fb) < TINY) {
 				E = b;
@@ -193,8 +288,8 @@ namespace schrac {
 			}
 
 			if (fabs(e) >= tol1 && fabs(fa) > fabs(fb)) {
-				const long double s = fb / fa;								// ‹t“ñæ•âŠÔ‚ğ‚İ‚é
-				long double q, r, p;
+				const double s = fb / fa;								// é€†äºŒä¹—è£œé–“ã‚’è©¦ã¿ã‚‹
+				double q, r, p;
 
 				if (std::fabs(a - c) < TINY) {
 					p = 2.0 * xm * s;
@@ -206,35 +301,35 @@ namespace schrac {
 					q = (q - 1.0) * (r - 1.0) * (s - 1.0);
 				}
 				if (p > 0.0)
-					q = - q;												// ‹æŠÔ“à‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+					q = - q;												// åŒºé–“å†…ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 
 				p = std::fabs(p);
-				const long double min1 = 3.0 * xm * q - std::fabs(tol1 * q);
-				const long double min2 = std::fabs(e * q);
-				const long double min = min1 < min2 ? min1 : min2;
+				const double min1 = 3.0 * xm * q - std::fabs(tol1 * q);
+				const double min2 = std::fabs(e * q);
+				const double min = min1 < min2 ? min1 : min2;
 
 				if (2.0 * p < min) {
-					e = d;													// •âŠÔ’l‚ğÌ—p
+					e = d;													// è£œé–“å€¤ã‚’æ¡ç”¨
 					d = p / q;
 				} else {
-					d = xm;													// •âŠÔ¸”sA“ñ•ª–@‚ğg‚¤
+					d = xm;													// è£œé–“å¤±æ•—ã€äºŒåˆ†æ³•ã‚’ä½¿ã†
 					e = d;
 				}
-			} else {														// ‹æŠÔ•‚ÌŒ¸­‚ª’x‚·‚¬‚é‚Ì‚Å“ñ•ª–@‚ğg‚¤
+			} else {														// åŒºé–“å¹…ã®æ¸›å°‘ãŒé…ã™ãã‚‹ã®ã§äºŒåˆ†æ³•ã‚’ä½¿ã†
 				d = xm;
 				e = d;
 			}
 
-			a = b;															// ‹æŠÔ•‚ÌÅ—Ç’l‚ğa‚ÉˆÚ‚·
+			a = b;															// åŒºé–“å¹…ã®æœ€è‰¯å€¤ã‚’aã«ç§»ã™
 			fa = fb;
 
-			if (fabs(d) > tol1)												// V‚µ‚¢ª‚ÌŒó•â‚ğŒvZ
+			if (fabs(d) > tol1)												// æ–°ã—ã„æ ¹ã®å€™è£œã‚’è¨ˆç®—
 				b += d;
 			else
-				b += sign<long double>(tol1, xm);
+				b += sign<double>(tol1, xm);
 			
 			pdiff_->Initialize(b);
-			const boost::optional<const long double> pfb(fnc_D());
+			const boost::optional<const double> pfb(fnc_D());
 			if (pfb)
 				fb = *pfb;
 			else
@@ -243,60 +338,37 @@ namespace schrac {
 
 		throw std::runtime_error("Maximum number of iterations exceeded in zbrent");
 	}
-
-	void EigenValueSearch::msg() const
-	{
-		std::cout << pdata_->atom;
-
-		switch (pdata_->Z) {
-			case 1:
-				std::cout << "Œ´q‚Ì";
-			break;
-
-			default:
-				std::cout << "ƒCƒIƒ“‚Ì";
-			break;
-		}
-
-		std::cout << pdata_->orbital << "‹O“¹";
-
-		if (pdata_->eqtype == Data::DIRAC && pdata_->spin_orbital == Data::ALPHA)
-				std::cout << "ƒXƒsƒ“ãŒü‚«‚Ì";
-		else if (pdata_->eqtype == Data::DIRAC && pdata_->spin_orbital == Data::BETA)
-				std::cout << "ƒXƒsƒ“‰ºŒü‚«‚Ì";
-
-		std::cout << "”g“®ŠÖ”‚ÆƒGƒlƒ‹ƒM[ŒÅ—L’l‚ğŒvZ‚µ‚Ü‚·B\n" << std::endl;
-
-	}
 	
-	/*	public method	*/
+    // #endregion privateãƒ¡ãƒ³ãƒé–¢æ•° 
 
-	bool EigenValueSearch::search()
-	{
-		for (; i_ < EVALSEARCHMAX; i_++) {
-			if (!rough_search())
-				return false;
+    // #region éãƒ¡ãƒ³ãƒé–¢æ•°
 
-			bool b;
-			try {
-				b = zbrent();
-			} catch (const std::runtime_error & e) {
-				std::cerr << e.what() << std::endl;
+    double Eexact_dirac(std::shared_ptr<Data> const & pdata)
+    {
+        auto const nr = static_cast<double>(pdata->n_) - pdata->j_ - 0.5;
+        auto const lambda = std::sqrt(sqr(pdata->kappa_) -
+            sqr(pdata->Z_ / Data::c));
+        auto const denominator = std::sqrt(sqr(nr + lambda) +
+            sqr(pdata->Z_ / Data::c));
 
-				return false;
-			}
+        return ((nr + lambda) / denominator - 1.0) * sqr(Data::c);
+    }
 
-			if (b && bNoden) {
-				info(E);
-				return true;
-			} else {
-				E += DE;
-				if (E > 0.0)
-					return false;
-				pdiff_->Initialize(E);
-			}
-		}
+    double Eexact_sch(std::shared_ptr<Data> const & pdata)
+    {
+        return -sqr(pdata->Z_ /
+            static_cast<double>(pdata->n_)) / 2.0;
+    }
 
-		return false;
-	}
+    double Eexact_sdirac(std::shared_ptr<Data> const & pdata)
+    {
+        auto const nr = static_cast<double>(pdata->n_) - 1.0;
+        auto const lambda = std::sqrt(1.0 - sqr(pdata->Z_ / Data::c));
+        auto const denominator = std::sqrt(sqr(nr + lambda) +
+            sqr(pdata->Z_ / Data::c));
+
+        return ((nr + lambda) / denominator - 1.0) * sqr(Data::c);
+    }
+
+    // #endregion éãƒ¡ãƒ³ãƒé–¢æ•°
 }

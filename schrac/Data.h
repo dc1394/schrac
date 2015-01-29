@@ -179,7 +179,7 @@ namespace schrac {
         /*!
             search_lowerE_から0までをいくつに分割して検索するか    
         */
-        std::int32_t num_of_partiton_ = Data::NUM_OF_PARTITION_DEFAULT;
+        std::int32_t num_of_partition_ = Data::NUM_OF_PARTITION_DEFAULT;
         
         //!  A public member variable.
         /*!

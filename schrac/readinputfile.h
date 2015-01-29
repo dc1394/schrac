@@ -28,12 +28,13 @@ namespace schrac {
         //! A constructor.
         /*!
             唯一のコンストラクタ
+            \param arg インプットファイル名と、TBBを使用するかどうかのstd::pair
         */
-        ReadInputFile(std::pair<std::string, bool> const & arg);
+        explicit ReadInputFile(std::pair<std::string, bool> const & arg);
 
         //! A destructor.
         /*!
-        何もしないデストラクタ
+            何もしないデストラクタ
         */
         ~ReadInputFile()
         {
@@ -59,7 +60,6 @@ namespace schrac {
         void readFile();
 
     private:
-
         //! A private member function (const).
         /*!
             エラーを表示する
@@ -87,7 +87,7 @@ namespace schrac {
 
         //! A private member function.
         /*!
-            原子名を読み込む
+            原子に関するデータを読み込む
             \return 読み込みが成功したかどうか
         */
         bool readAtom();
@@ -129,13 +129,6 @@ namespace schrac {
 
         //! A private member function.
         /*!
-            許容誤差を読み込む
-            \return 読み込みが成功したかどうか
-        */
-        bool readEps();
-
-        //! A private member function.
-        /*!
             対象の方程式を読み込む
             \return 読み込みが成功したかどうか
         */
@@ -143,25 +136,11 @@ namespace schrac {
 
         //! A private member function.
         /*!
-            メッシュの設定を読み込む
-            \return 読み込みが成功したかどうか
-        */
-        bool readGrid();
-
-        //! A private member function.
-        /*!
             固有値の検索を始める値を読み込む
             \return 読み込みが成功したかどうか
         */
         bool readLowerE();
-
-        //! A private member function.
-        /*!
-            原子番号の値を読み込む
-            \return 読み込みが成功したかどうか
-        */
-        bool readNumofp();
-
+        
         //! A private member function.
         /*!
             微分方程式の解法を読み込む
@@ -171,10 +150,14 @@ namespace schrac {
 
         //! A private member function.
         /*!
-            マッチングポイントを読み込む
+            対象の要素の値をその行から読み込む
+            \param article 要素名
+            \param default_value デフォルトの値
+            \param value 読み込んだ値
             \return 読み込みが成功したかどうか
         */
-        bool readRatio();
+        template <typename T>
+        void readValue(ci_string const & article, T const & default_val, T & value) const;
 
         // #endregion メンバ関数
 
@@ -352,6 +335,17 @@ namespace schrac {
                 BOOST_ASSERT(!"何かがおかしい!");
                 break;
             }
+        }
+    }
+
+    template <typename T>
+    void ReadInputFile::readValue(ci_string const & article, T const & default_val, T & value) const
+    {
+        if (auto const p = readData<T>(article, default_val)) {
+            value = *p;
+        }
+        else {
+            throw std::runtime_error("インプットファイルが異常です");
         }
     }
 }

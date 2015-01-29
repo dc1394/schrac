@@ -1,132 +1,300 @@
-#include "Diff.h"
-#include "ReadInpFile.h"
-#include "RungeKutta.h"
-#include "RK_AdapStep.h"
+#ifndef _EIGENVALUESEARCH_H_
+#define _EIGENVALUESEARCH_H_
+
 #include "Bulirsch_Stoer.h"
+#include "Diff.h"
+#include "ReadInputFile.h"
+#include "RK_AdapStep.h"
+#include "RungeKutta.h"
 
 #ifdef _DEBUG
 	#include "ModEuler.h"
 #endif
 
 namespace schrac {
-	template <typename T> T sign(T a, T b);
+	class EigenValueSearch final {
+        // #region コンストラクタ・デストラクタ
 
-	long double Eexact_sch(const shared_ptr<const Data> & pdata);
-	long double Eexact_sdirac(const shared_ptr<const Data> & pdata);
-	long double Eexact_dirac(const shared_ptr<const Data> & pdata);
+    public:
 
-	class EigenValueSearch
-		: private boost::noncopyable {
-		static const int EVALSEARCHMAX = 1000;
+        //! A constructor.
+        /*!
+            唯一のコンストラクタ
+            \param arg インプットファイル名とTBBを使用するかどうかのstd::pair
+        */
+        explicit EigenValueSearch(std::pair<std::string, bool> const & arg);
 
-		static const long double TINY;
-		static const long double HUGE;
+        //! A destructor.
+        /*!
+            何もしないデストラクタ
+        */
+        ~EigenValueSearch()
+        {
+        }
 
-		long double EPS;
-		long double TOL;
+        // #endregion コンストラクタ・デストラクタ
+
+        // #region メンバ関数
+
+    public:
+        //! A public member function.
+        /*!
+            データオブジェクトを得る
+            \return データオブジェクト
+        */
+        const std::shared_ptr<Data> & getpData() const;
+        
+        //! A public member function.
+        /*!
+            微分方程式オブジェクトを得る
+            \return 微分方程式オブジェクト
+        */
+        const std::shared_ptr<Diff> & getpDiff() const;
+
+        //! A public member function.
+        /*!
+            固有値を検索する
+            \return 固有値が見つかったかどうか
+        */
+        bool search();
+
+    private:
+        //! A private member function.
+        /*!
+            関数Dの値を返す
+            \return 関数Dの値（微分方程式が正常に解けなかったときはboost::none）
+        */
+        boost::optional<double> fnc_D();
+
+        //! A private member function (const).
+        /*!
+            現在のループをメッセージで報告する
+        */
+        void info() const;
+
+        //! A private member function (const).
+        /*!
+            固有値が見つかったことをメッセージで報告する
+        */
+        void info(double E) const;
+
+        //! A private member function (const).
+        /*!
+            固有値が見つかったことをメッセージで報告する
+            \param b 関数Dの引数b
+            \param fb 関数Dの引数fb
+        */
+        void info(double b, double fb) const;
+
+        //! A private member function (const).
+        /*!
+            状態の初期化を行う
+        */
+        void init();
+
+        //! A private member function (const).
+        /*!
+            解く微分方程式についてメッセージを表示する
+        */
+        void msg() const;
+
+        //! A private member function.
+        /*!
+            固有値をおおざっぱに検索する
+            \return 固有値が見つかったかどうか
+        */
+        bool rough_search();
+
+        //! A private member function (const).
+        /*!
+            表示する浮動小数点の桁を設定する
+        */
+        void setoutstream() const;
+
+        // #endregion メンバ関数
+
+        // #region メンバ変数
+
+        //! A private member variable (constant expression).
+        /*!
+            エネルギー固有値探索の最大のループ回数
+        */
+		static constexpr auto EVALSEARCHMAX = 1000;
+
+        //! A private member variable (constant expression).
+        /*!
+            閾値（絶対値の大きい方）
+        */
+        static constexpr auto HUGE = 1.0E+7;
+
+        //! A private member variable (constant expression).
+        /*!
+            閾値（絶対値の小さい方）
+        */
+		static constexpr auto TINY = 1.0E-30;
+        
+        //! A private member variable (constant).
+        /*!
+            許容誤差
+        */
+		double eps_;
+
+        //! A private member variable (constant).
+        /*!
+            許容誤差（eps * 10.0）
+        */
+        double tol_;
+
+        //! A private member variable.
+        /*!
+            二分法における関数Dの大きい方
+        */
+        double Dmax;
+
+        //! A private member variable.
+        /*!
+            二分法における関数Dの小さい方
+        */
+        double Dmin;
+
+        //! A private member variable.
+        /*!
+            前のループと今のエネルギー固有値の差
+        */
+        double DE;
+
+        //! A private member variable.
+        /*!
+            エネルギー固有値
+        */
+        double E;
+
+        //! A private member variable.
+        /*!
+            二分法におけるエネルギー固有値の大きい方
+        */
+        double Emax;
+
+        //! A private member variable.
+        /*!
+            二分法におけるエネルギー固有値の小さい方
+        */
+        double Emin;
+
+        //! A private member variable.
+        /*!
+            エネルギー固有値の大体の値
+        */
+        double Erough_exact_;
+
+        //! A private member variable.
+        /*!
+            二分法における関数Dの古い値
+        */
+        double Dold;
 		
+        //! A private member variable.
+        /*!
+            エネルギー固有値探索のループ回数
+        */
+        std::int32_t loop_;
+
+        //! A private member variable.
+        /*!
+            固有関数のノードが一致しているかどうか
+        */
+        bool noden_;
+
+        //! A private member variable.
+        /*!
+            インプットファイルのデータオブジェクト
+        */
+		std::shared_ptr<Data> pdata_;
+
+        //! A private member variable.
+        /*!
+            微分方程式オブジェクト
+        */
+		std::shared_ptr<Diff> pdiff_;
+
+        //! A private member variable.
+        /*!
+            微分方程式データのオブジェクト
+        */
+		std::shared_ptr<DiffData> pdiffdata_;
+        
+
+
+        // #endregion メンバ関数
 		
-		shared_ptr<const Data> pdata_;
-		shared_ptr<Diff> pdiff_;
-		shared_ptr<DiffData> pdiffdata_;
-
-		int i_;
-		bool bNoden;
-
-		long double Eexact;
-		long double E;
-		long double DE;
-		long double Emax;
-		long double Emin;
-		long double Dold;
-		long double Dmax;
-		long double Dmin;
-
-		const boost::optional<const long double> fnc_D();
-		bool rough_search();
 		bool zbrent();
-		void setExp() const;
-		void msg() const;
-		void info() const;
-		void info(long double E) const;
-		void info(long double b, long double fb) const;
-		void init();
 
-	public:
-		explicit EigenValueSearch(const tuple<const std::string, const int> & arg);
-		bool search();
-		const shared_ptr<const Data> & getpData() const
-		{ return pdata_; }
-		const shared_ptr<Diff> & getpDiff() const
-		{ return pdiff_; }
+    private:
+        // #region 禁止されたコンストラクタ・メンバ関数
+
+        //! A private constructor (deleted).
+        /*!
+        デフォルトコンストラクタ（禁止）
+        */
+        EigenValueSearch() = delete;
+
+        //! A private copy constructor (deleted).
+        /*!
+        コピーコンストラクタ（禁止）
+        */
+        EigenValueSearch(EigenValueSearch const &) = delete;
+
+        //! A private member function (deleted).
+        /*!
+        operator=()の宣言（禁止）
+        \param コピー元のオブジェクト（未使用）
+        \return コピー元のオブジェクト
+        */
+        EigenValueSearch & operator=(EigenValueSearch const &) = delete;
+
+        // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
 
-	inline void EigenValueSearch::setExp() const
-	{
-		std::cout.setf(std::ios::fixed, std::ios::floatfield);
-		std::cout << std::setprecision(
-			boost::numeric_cast<const std::streamsize>(std::fabs(std::log10(pdata_->eps))) - 2);
-	}
+    // #region 非メンバ関数
 
-	inline void EigenValueSearch::info() const
-	{
-		std::cout << "i = " << i_ << ", D = " << Dold << ", node = "
-				  << pdiffdata_->thisnode;
-		if (bNoden)
-			std::cout << " (OK)" << std::endl;
-		else
-			std::cout << " (NG)" << std::endl;
-	}
+    //! A function.
+    /*!
+        対象の方程式がDirac方程式の場合に、大体のエネルギー固有値を求める
+        \param pdata データオブジェクト
+        \return 大体のエネルギー固有値
+    */
+    double Eexact_dirac(std::shared_ptr<Data> const & pdata);
+    
+    //! A function.
+    /*!
+        対象の方程式がSch方程式の場合に、大体のエネルギー固有値を求める
+        \param pdata データオブジェクト
+        \return 大体のエネルギー固有値
+    */
+    double Eexact_sch(std::shared_ptr<Data> const & pdata);
 
-	inline void EigenValueSearch::info(long double E) const
-	{
-		std::cout << "ノード数が一致する固有値を発見しました！" << std::endl;
-		std::cout << "E(厳密)   = " << Eexact << " (Hartree)" << std::endl;
-		std::cout << "E(計算値) = " << E << " (Hartree)" << std::endl;
-	}
+    //! A function.
+    /*!
+        対象の方程式がscalar Dirac方程式の場合に、大体のエネルギー固有値を求める
+        \param pdata データオブジェクト
+        \return 大体のエネルギー固有値
+    */
+    double Eexact_sdirac(std::shared_ptr<Data> const & pdata);
 
-	inline void EigenValueSearch::info(long double b, long double fb) const
-	{
-		std::cout << "i = " << i_ << ", D = "
-				  << fb << ", E = " << b
-				  << ", node = "
-				  << pdiffdata_->thisnode;
-		if (bNoden)
-			std::cout << " (OK)" << std::endl;
-		else
-			std::cout << " (NG)" << std::endl;
-	}
-
+    //! A function (template function).
+    /*!
+        bが正の値の場合にaの絶対値を、bが負の値の場合はaの絶対値に-をかけた値を返す
+        \param a 対象の値
+        \param b 正負を判断するための値
+        \return bが正の値の場合はaの絶対値、bが負の値の場合はaの絶対値に-をかけた値
+    */
 	template <typename T>
 	inline T sign(T a, T b)
 	{
 		return (b >= 0.0) ? std::fabs(a) : - std::fabs(a);
 	}
 
-	inline long double Eexact_sch(const shared_ptr<const Data> & pdata)
-	{
-		return - sqr<long double>(static_cast<const long double>(pdata->Z) /
-			   static_cast<const long double>(pdata->n)) / 2.0;
-	}
-
-	inline long double Eexact_sdirac(const shared_ptr<const Data> & pdata)
-	{
-		const long double nr = static_cast<const long double>(pdata->n) - 1;
-		const long double lambda = std::sqrt(1 - sqr(static_cast<const long double>(pdata->Z) / Data::c));
-		const long double denominator = std::sqrt(sqr(nr + lambda) +
-			sqr(static_cast<const long double>(pdata->Z) / Data::c));
-
-		return ((nr + lambda) / denominator - 1.0) * sqr(Data::c);
-	}
-
-	inline long double Eexact_dirac(const shared_ptr<const Data> & pdata)
-	{
-		const long double nr = static_cast<const long double>(pdata->n) - pdata->j_- 0.5;
-		const long double lambda = std::sqrt(sqr(pdata->kappa) -
-			sqr(static_cast<const long double>(pdata->Z) / Data::c));
-		const long double denominator = std::sqrt(sqr(nr + lambda) +
-			sqr(static_cast<const long double>(pdata->Z) / Data::c));
-
-		return ((nr + lambda) / denominator - 1.0) * sqr(Data::c);
-	}
+    // #endregion 非メンバ関数
 }
+
+#endif // _EIGENVALUESEARCH_H_

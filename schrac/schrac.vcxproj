@@ -66,15 +66,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bulirsch_Stoer.cpp" />
     <ClCompile Include="ci_string.cpp" />
     <ClCompile Include="data.cpp" />
+    <ClCompile Include="Diff.cpp" />
+    <ClCompile Include="DiffData.cpp" />
+    <ClCompile Include="EigenValueSearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="readinputfile.cpp" />
-    <ClCompile Include="readinputfiletest.cpp" />
+    <ClCompile Include="schracmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bulirsch_Stoer.h" />
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
+    <ClInclude Include="Diff.h" />
+    <ClInclude Include="DiffData.h" />
+    <ClInclude Include="EigenValueSearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="readinputfile.h" />
   </ItemGroup>

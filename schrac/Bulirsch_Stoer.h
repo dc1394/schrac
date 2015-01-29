@@ -13,20 +13,20 @@ namespace schrac {
 	class Bulirsch_Stoer : public Adaptive_Step {
 		static const int THRESHOLD = 3;
 
-		static const long double SHRINK;
-		static const long double GROW;
+		static const double SHRINK;
+		static const double GROW;
 
 		static const array<const int, AdapStepHelper::IMAX> nseq;
 
 		virtual bool odeint(const shared_ptr<AdapStepHelper> & pasa) const;
 
-		bool bsstep(long double htry, const AdapStepHelper::darray & yscal,
+		bool bsstep(double htry, const AdapStepHelper::darray & yscal,
 					const shared_ptr<AdapStepHelper> & pasa) const;
-		void rzextr(std::size_t iest, long double xest,
+		void rzextr(std::size_t iest, double xest,
 					const AdapStepHelper::darray & yest,
 					AdapStepHelper::darray & dy,
 					const shared_ptr<AdapStepHelper> & pasa) const;
-		void mmid(long double xs, long double htot,
+		void mmid(double xs, double htot,
 				  int nstep,
 				  AdapStepHelper::darray & y,
 				  AdapStepHelper::darray & dydx,
@@ -35,7 +35,7 @@ namespace schrac {
 
 	public:
 		Bulirsch_Stoer(const shared_ptr<const Data> & pdata,
-					   long double E, long double TINY)
+					   double E, double TINY)
 		 :	Adaptive_Step(pdata, E, TINY) {}
 		virtual ~Bulirsch_Stoer() {}
 	};

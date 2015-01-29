@@ -1,24 +1,67 @@
 #ifndef _DIFFDATA_H_
 #define _DIFFDATA_H_
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
-#endif
-
-#include <memory>
 
 #include "data.h"
+#include <memory>
+#include <vector>
 
 namespace schrac {
-	std::size_t round(long double val);
+    using dvectpr = std::vector < double > ;
 
 	struct DiffData {
-		static const std::size_t AVECSIZE = 3;
-		static const std::size_t BVECSIZE = 5;
+        // #region コンストラクタ・デストラクタ
+
+        //! A constructor.
+        /*!
+            唯一のコンストラクタ
+            \param E エネルギー固有値 
+            \param pdata データオブジェクト
+            \param TINY 絶対値が小さい方の閾値
+        */
+        DiffData(double E, std::shared_ptr<Data> const & pdata, double TINY);
+
+        //! A destructor.
+        /*!
+            何もしないデストラクタ
+        */
+        ~DiffData()
+        {
+        }
+
+        // #endregion コンストラクタ・デストラクタ
+
+        // #region メンバ変数
+
+    private:
+        //!  A private static member variable (constant expression).
+        /*!
+            行列Aのサイズ
+        */
+		static std::size_t constexpr AVECSIZE = 3;
+		
+        //!  A private static member variable (constant expression).
+        /*!
+            行列Bのサイズ
+        */
+        static std::size_t constexpr BVECSIZE = 5;
+        
+        //!  A private member variable (constant).
+        /*!
+            節の数
+        */
+        std::int32_t const node_;
+
+        //!  A private static member variable (constant expression).
+        /*!
+            行列Bのサイズ
+        */
+        double E_;
 
 		const std::shared_ptr<const Data> pdata_;
 
-		const int node;
+		
 		int thisnode;
 
 		std::size_t MP_O;
@@ -26,15 +69,15 @@ namespace schrac {
 		int OSIZE;
 		int ISIZE;
 
-		const long double TINY_;
+		const double TINY_;
 
-		long double Z;
-		long double DX;
-		long double E_;
+		double Z;
+		double DX;
+		
 
 
-		array<long double, AVECSIZE> V_A;
-		array<long double, BVECSIZE> V_B;
+		array<double, AVECSIZE> V_A;
+		array<double, BVECSIZE> V_B;
 
 		ldvector XV_I;
 		ldvector XV_O;
@@ -47,12 +90,13 @@ namespace schrac {
 		ldvector LI;
 		ldvector MI;
 
-		DiffData(const shared_ptr<const data> & pdata, long double E, long double TINY);
-		long double fnc_V(long double x) const;
-		void node_count(int i, const ldvector & WF);
+		
 	};
 
-	inline long double DiffData::fnc_V(long double x) const
+    double fnc_V(double x);
+    void node_count(int i, const ldvector & WF);
+
+	inline double DiffData::fnc_V(double x) const
 	{
 		return - Z * std::exp(- x);
 	}
@@ -61,17 +105,6 @@ namespace schrac {
 	{
 		if (WF[i] * WF[i - 1] < 0.0)
 			thisnode++;
-	}
-
-	inline std::size_t round(long double val)
-	{
-		std::ostringstream oss;
-
-		// ***** 丸めを行い文字列に変換 *****
-		oss << boost::format("%.0f") % val;
-
-		// ***** 文字列から数値に再変換して返す *****
-		return boost::lexical_cast<std::size_t>(oss.str());
 	}
 }
 

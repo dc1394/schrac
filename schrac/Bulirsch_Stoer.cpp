@@ -1,14 +1,14 @@
 #include "Bulirsch_Stoer.h"
 
 namespace schrac {
-	const long double Bulirsch_Stoer::SHRINK = 0.95;
-	const long double Bulirsch_Stoer::GROW = 1.2;
+	const double Bulirsch_Stoer::SHRINK = 0.95;
+	const double Bulirsch_Stoer::GROW = 1.2;
 	const array<const int, AdapStepHelper::IMAX> Bulirsch_Stoer::nseq = {2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96};
 
 	bool Bulirsch_Stoer::odeint(const shared_ptr<AdapStepHelper> & pasa) const
 	{
 		AdapStepHelper::darray yscal;
-		long double h = (pasa->x1_ < pasa->x2_) ? std::fabs(pasa->H1) : - std::fabs(pasa->H1);
+		double h = (pasa->x1_ < pasa->x2_) ? std::fabs(pasa->H1) : - std::fabs(pasa->H1);
 		int cnt = 0;
 
 		for (unsigned int nstp = 0; nstp < pasa->MAXSTEP; nstp++) {					// Take at most MAXSTP steps
@@ -30,7 +30,7 @@ namespace schrac {
 				h = (*pasa->xp_)[pasa->i_] - pasa->xx_;
 			}
 
-			const long double xold = pasa->xx_;
+			const double xold = pasa->xx_;
 			const AdapStepHelper::darray yold = pasa->y_;
 			if (cnt || !bsstep(h, yscal, pasa)) {
 				pasa->xx_ = xold;
@@ -64,7 +64,7 @@ namespace schrac {
 		return false;
 	}
 
-	bool Bulirsch_Stoer::bsstep(long double htry, const AdapStepHelper::darray & yscal,
+	bool Bulirsch_Stoer::bsstep(double htry, const AdapStepHelper::darray & yscal,
 								const shared_ptr<AdapStepHelper> & pasa) const
 	{
 		AdapStepHelper::darray ynew, dynew, yseq, yerr;
@@ -75,17 +75,17 @@ namespace schrac {
 			dynew[i] = pasa->dydx_[i];
 		}
 
-		long double xnew = pasa->xx_;
+		double xnew = pasa->xx_;
 
 		while (true) {
 			for (std::size_t i = 0; i < AdapStepHelper::IMAX; i++) {				// 修正中点の系列を計算
 				mmid(xnew, htry, nseq[i], ynew, dynew, yseq, pasa);
-				long double xest = sqr<long double>
-									(htry / static_cast<const long double>(nseq[i]));	// 誤差の級数が偶なので二乗する
+				double xest = sqr<double>
+									(htry / static_cast<const double>(nseq[i]));	// 誤差の級数が偶なので二乗する
 				rzextr(i, xest, yseq, yerr, pasa);									// 有理関数補外実行
 
 				if (i > 2) {														// 初期の段階でもっともらしい収束が生じないための予防
-					long double errmax = 0.0;
+					double errmax = 0.0;
 
 					for (std::size_t j = 0; j < AdapStepHelper::NVAR; j++) {		// 局所打ち切り誤差のチェック
 						if (errmax < std::fabs(yerr[j] / yscal[j]))
@@ -103,8 +103,8 @@ namespace schrac {
 						} else if (i == AdapStepHelper::NUSE - 2) {
 							pasa->hnext_ = htry * GROW;
 						} else {
-							pasa->hnext_ = (htry * static_cast<const long double>(nseq[AdapStepHelper::NUSE - 2])) /
-										   static_cast<const long double>(nseq[i]);
+							pasa->hnext_ = (htry * static_cast<const double>(nseq[AdapStepHelper::NUSE - 2])) /
+										   static_cast<const double>(nseq[i]);
 						}
 
 						return true;
@@ -125,12 +125,12 @@ namespace schrac {
 		}
 	}
 
-	void Bulirsch_Stoer::rzextr(std::size_t iest, long double xest,
+	void Bulirsch_Stoer::rzextr(std::size_t iest, double xest,
 								const AdapStepHelper::darray & yest,
 								AdapStepHelper::darray & dy,
 								const shared_ptr<AdapStepHelper> & pasa) const
 	{
-		array<long double, AdapStepHelper::NUSE> fx;
+		array<double, AdapStepHelper::NUSE> fx;
 
 		pasa->x_[iest] = xest;												// 現在の独立変数を保存
 		if (!iest) {
@@ -143,15 +143,15 @@ namespace schrac {
 				fx[k] = pasa->x_[iest - k] / xest;
 
 			for (std::size_t j = 0; j < AdapStepHelper::NVAR; j++) {
-				long double v = pasa->d_[j][0];
-				long double yy = yest[j];
-				long double c = yest[j];
+				double v = pasa->d_[j][0];
+				double yy = yest[j];
+				double c = yest[j];
 				pasa->d_[j][0] = yest[j];
-				long double ddy = 0.0;
+				double ddy = 0.0;
 
 				for (std::size_t k = 1; k < m1; k++) {
-					const long double b1 = fx[k] * v;
-					long double b = b1 - c;
+					const double b1 = fx[k] * v;
+					double b = b1 - c;
 
 					if (std::fabs(b) > pasa->TINY) {
 						b = (c - v) / b;
@@ -174,7 +174,7 @@ namespace schrac {
 		}
 	}
 
-	void Bulirsch_Stoer::mmid(long double xs, long double htot,
+	void Bulirsch_Stoer::mmid(double xs, double htot,
 							  int nstep,
 							  AdapStepHelper::darray & y,
 							  AdapStepHelper::darray & dydx,
@@ -182,7 +182,7 @@ namespace schrac {
 							  const shared_ptr<AdapStepHelper> & pasa) const
 	{
 		AdapStepHelper::darray ym, yn;
-		const long double h = htot / static_cast<const long double>(nstep);	// このメソッドでの刻み幅
+		const double h = htot / static_cast<const double>(nstep);	// このメソッドでの刻み幅
 
 		ym[0] = y[0];
 		ym[1] = y[1];
@@ -190,13 +190,13 @@ namespace schrac {
 			yn[i] = y[i] + h * dydx[i];										// 第一ステップ
 		}
 
-		long double x = xs + h;
+		double x = xs + h;
 		derivs(x, yn, yout);												// 微分の一時的な格納としてyoutを使う
-		const long double h2 = 2.0 * h;
+		const double h2 = 2.0 * h;
 
 		for (int n = 2; n <= nstep; n++) {									// 一般のステップ
 			for (std::size_t i = 0; i < AdapStepHelper::NVAR; i++) {
-				const long double swap = ym[i] + h2 * yout[i];
+				const double swap = ym[i] + h2 * yout[i];
 				ym[i] = yn[i];
 				yn[i] = swap;
 			}

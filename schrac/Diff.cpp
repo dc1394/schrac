@@ -1,13 +1,13 @@
 #include "Diff.h"
 
 namespace schrac {
-	const long double Diff::MINV = 1.0E-200;
+	const double Diff::MINV = 1.0E-200;
 	
-	function<long double(long double, long double, long double,
+	function<double(double, double, double,
 			const shared_ptr<DiffData> &)> Diff::dM_dx;
 
 	// constructor
-	Diff::Diff(const shared_ptr<const Data> & pdata, long double E, long double TINY)
+	Diff::Diff(const shared_ptr<const Data> & pdata, double E, double TINY)
 	 :	pdata_(pdata), pdiffdata_(make_shared<DiffData>(pdata, E, TINY))
 	{
 		switch (pdata_->eqtype) {
@@ -35,11 +35,11 @@ namespace schrac {
 
 	bool Diff::a_init()
 	{
-		array<array<long double, DiffData::AVECSIZE>, DiffData::AVECSIZE> a;
-		array<long double, DiffData::AVECSIZE> y;
+		array<array<double, DiffData::AVECSIZE>, DiffData::AVECSIZE> a;
+		array<double, DiffData::AVECSIZE> y;
 
 		for (std::size_t i = 0; i < DiffData::AVECSIZE; i++) {
-			long double rtmp = 1.0;
+			double rtmp = 1.0;
 
 			for (std::size_t j = 0; j < DiffData::AVECSIZE; j++) {
 				a[i][j] = rtmp;
@@ -49,7 +49,7 @@ namespace schrac {
 			y[i] = pdiffdata_->VP_O[i];
 		}
 
-		const boost::optional<const array<long double, DiffData::AVECSIZE> > pV_A(
+		const boost::optional<const array<double, DiffData::AVECSIZE> > pV_A(
 			 S_gausswp(a, y));
 		if (pV_A)
 			pdiffdata_->V_A = *pV_A;
@@ -64,15 +64,15 @@ namespace schrac {
 		pdiffdata_->V_B[0] = 1.0;
 		pdiffdata_->V_B[1] = 0.0;
 		pdiffdata_->V_B[2] = (pdiffdata_->V_A[0] - pdiffdata_->E_) /
-							 static_cast<const long double>(2 * pdata_->l + 3) * pdiffdata_->V_B[0];
-		pdiffdata_->V_B[3] = pdiffdata_->V_A[1] / static_cast<const long double>(3 * pdata_->l + 6) *
+							 static_cast<const double>(2 * pdata_->l + 3) * pdiffdata_->V_B[0];
+		pdiffdata_->V_B[3] = pdiffdata_->V_A[1] / static_cast<const double>(3 * pdata_->l + 6) *
 							 pdiffdata_->V_B[0];
 		pdiffdata_->V_B[4] = (pdiffdata_->V_A[0] * pdiffdata_->V_B[2] + pdiffdata_->V_A[2] * pdiffdata_->V_B[0] -
 							  pdiffdata_->E_ * pdiffdata_->V_B[2]) /
-							  static_cast<const long double>(4 * pdata_->l + 10);
+							  static_cast<const double>(4 * pdata_->l + 10);
 	}
 
-	void Diff::Initialize(long double E)
+	void Diff::Initialize(double E)
 	{
 		pdiffdata_->E_ = E;			// エネルギーを代入
 		pdiffdata_->thisnode = 0;	// ノード数初期化
@@ -97,18 +97,18 @@ namespace schrac {
 
 		for (int i = DiffData::BVECSIZE - 2; i > 0; i--) {
 			pdiffdata_->MO[0] *= pdiffdata_->RV_O[0];
-			pdiffdata_->MO[0] += static_cast<const long double>(i) * pdiffdata_->V_B[i];
+			pdiffdata_->MO[0] += static_cast<const double>(i) * pdiffdata_->V_B[i];
 		}
 		pdiffdata_->MO[0] *= pdiffdata_->RV_O[0];
 	}
 
 	void Diff::init_LM_I()
 	{
-		const long double rmax = pdiffdata_->RV_I[0];
-		const long double rmaxm = pdiffdata_->RV_I[1];
-		const long double a = std::sqrt(- 2.0 * pdiffdata_->E_);
-		const long double d = std::exp(- a * rmax);
-		const long double dm = std::exp(- a * rmaxm);
+		const double rmax = pdiffdata_->RV_I[0];
+		const double rmaxm = pdiffdata_->RV_I[1];
+		const double a = std::sqrt(- 2.0 * pdiffdata_->E_);
+		const double d = std::exp(- a * rmax);
+		const double dm = std::exp(- a * rmaxm);
 
 		pdiffdata_->LI[0] = d / schrac::pow(rmax, pdata_->l + 1);
 		pdiffdata_->LI[1] = dm / schrac::pow(rmaxm, pdata_->l + 1);
@@ -118,23 +118,23 @@ namespace schrac {
 		}
 
 		pdiffdata_->MI[0] = - pdiffdata_->LI[0] *  
-						  (a * rmax + static_cast<const long double>(pdata_->l + 1));
+						  (a * rmax + static_cast<const double>(pdata_->l + 1));
 		pdiffdata_->MI[1] = - pdiffdata_->LI[1] *  
-						  (a * rmaxm + static_cast<const long double>(pdata_->l + 1));
+						  (a * rmaxm + static_cast<const double>(pdata_->l + 1));
 		if (std::fabs(pdiffdata_->MI[0]) < MINV) {
 			pdiffdata_->MI[0] = - MINV;
 			pdiffdata_->MI[1] = - MINV;
 		}
 	}
 
-	const boost::optional<const array<long double, DiffData::AVECSIZE> >
-			Diff::S_gausswp(array<array<long double, DiffData::AVECSIZE>, DiffData::AVECSIZE> & a,
-								array<long double, DiffData::AVECSIZE> & b) const
+	const boost::optional<const array<double, DiffData::AVECSIZE> >
+			Diff::S_gausswp(array<array<double, DiffData::AVECSIZE>, DiffData::AVECSIZE> & a,
+								array<double, DiffData::AVECSIZE> & b) const
 	{
 		// defnition
 		unsigned int j = 0, pk;
 		unsigned int p[DiffData::AVECSIZE];
-		array<long double, DiffData::AVECSIZE> x;
+		array<double, DiffData::AVECSIZE> x;
 
 		for (unsigned int k = 0; k < DiffData::AVECSIZE; k++) {
     		// initial pivotting number
@@ -143,9 +143,9 @@ namespace schrac {
 
 		for (unsigned int k = 0; k < DiffData::AVECSIZE - 1; k++) {
 			pk = p[k];
-			long double max = 0.0;
+			double max = 0.0;
 			for (unsigned int i = k; i < DiffData::AVECSIZE; i++) {
-				const long double aik = a[p[i]][k];
+				const double aik = a[p[i]][k];
 				if (std::fabs(aik) > max) {
             		max = std::fabs(aik);
 					j = i;
@@ -165,11 +165,11 @@ namespace schrac {
 			}
 
 			// forward elimanation
-			long double pivot = 1.0 / a[pk][k];
+			double pivot = 1.0 / a[pk][k];
 
 			for (unsigned int j = k + 1; j < DiffData::AVECSIZE; j++) {
 				int pj = p[j]; 
-				long double multi = a[pj][k] * pivot;
+				double multi = a[pj][k] * pivot;
 				if (std::fabs(multi) > pdiffdata_->TINY_) {
 					a[pj][k] = multi;
 
@@ -194,7 +194,7 @@ namespace schrac {
 									a[p[DiffData::AVECSIZE - 1]][DiffData::AVECSIZE - 1];
 		for (int k = DiffData::AVECSIZE - 2; k >= 0; k--) {
 			pk = p[k];
-			long double sum = b[pk];
+			double sum = b[pk];
 
 			for (unsigned int i = k + 1; i < DiffData::AVECSIZE; i++)
 				sum -= a[pk][i] * x[i];
@@ -202,7 +202,7 @@ namespace schrac {
 				x[k] = sum / a[pk][k];
 		}
 	    
-		return boost::optional<const array<long double, DiffData::AVECSIZE> >(x);
+		return boost::optional<const array<double, DiffData::AVECSIZE> >(x);
 	}
 
 	bool Diff::solve_diff_equ()
@@ -242,12 +242,12 @@ namespace schrac {
         dM/dx = -(2NL + 1)M + 2r^2(V - ep)L
         dL/dx = M
 	*****************************************************/
-	long double dM_dx_sch(long double x, long double L, long double M,
+	double dM_dx_sch(double x, double L, double M,
 						  const shared_ptr<DiffData> & pdiffdata)
 	{
-		const long double r = std::exp(x);
+		const double r = std::exp(x);
 
-		return - (2.0 * static_cast<const long double>(pdiffdata->pdata_->l) + 1.0) * M +
+		return - (2.0 * static_cast<const double>(pdiffdata->pdata_->l) + 1.0) * M +
 			      2.0 * sqr(r) * (fnc_V(r, pdiffdata) - pdiffdata->E_) * L;
 	}
 
@@ -260,18 +260,18 @@ namespace schrac {
 		dM/dx = -(2*NL + 1 + d)M
 				+(2*r^2*MQ(V - ep) - d*NL)L
 	************************************************************/
-	long double dM_dx_sdirac(long double x, long double L, long double M,
+	double dM_dx_sdirac(double x, double L, double M,
 							 const shared_ptr<DiffData> & pdiffdata)
 	{
-		const long double r = std::exp(x);
+		const double r = std::exp(x);
 
-		const long double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		const long double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
-		const long double l = static_cast<const long double>(pdiffdata->pdata_->l);
+		const double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
+		const double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
+		const double l = static_cast<const double>(pdiffdata->pdata_->l);
 
 		// scaler treatment
-		const long double d1 = - (2.0 * l + 1.0 + d) * M;
-		const long double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
+		const double d1 = - (2.0 * l + 1.0 + d) * M;
+		const double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
 								d * l) * L;
 		return d1 + d2;
 	}
@@ -286,19 +286,19 @@ namespace schrac {
                 - d*(NL+1+kappa)*L
         dL/dx = M
 	*****************************************************/
-	long double dM_dx_dirac(long double x, long double L, long double M,
+	double dM_dx_dirac(double x, double L, double M,
 							const shared_ptr<DiffData> & pdiffdata)
 	{
-		const long double r = std::exp(x);
+		const double r = std::exp(x);
 
-		const long double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		const long double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
+		const double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
+		const double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
 		const shared_ptr<const Data> & pdata(pdiffdata->pdata_);
-		const long double l = static_cast<const long double>(pdata->l);
+		const double l = static_cast<const double>(pdata->l);
 
 		// dependence on all angular momentum
-		const long double d1 = - (2.0 * l + 1.0 + d) * M;
-		const long double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
+		const double d1 = - (2.0 * l + 1.0 + d) * M;
+		const double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
 								d * (l + 1.0 + pdata->kappa)) * L;
 		return d1 + d2;
 	}

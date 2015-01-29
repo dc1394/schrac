@@ -45,16 +45,22 @@ namespace schrac {
 			throw std::runtime_error("インプットファイルが開けませんでした");
 
 		if (!readAtom())
-			throw std::runtime_error("インプットファイルが異常です");
+            goto L_END;
 
 		if (!readEq())
-			throw std::runtime_error("インプットファイルが異常です");
+            goto L_END;
 
-		if (!readGrid())
-			throw std::runtime_error("インプットファイルが異常です");
+        // グリッドの最小値を読み込む
+        readValue("grid.xmin", Data::XMIN_DEFAULT, pdata_->xmin_);
 
-		if (!readEps())
-			throw std::runtime_error("インプットファイルが異常です");
+        // グリッドの最大値を読み込む
+        readValue("grid.xmax", Data::XMAX_DEFAULT, pdata_->xmax_);
+
+        // グリッドのサイズを読み込む
+        readValue("grid.num", Data::GRID_NUM_DEFAULT, pdata_->grid_num_);
+
+        // 許容誤差を読み込む
+        readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
 
 		if (!readType())
 			throw std::runtime_error("インプットファイルが異常です");
@@ -62,11 +68,16 @@ namespace schrac {
 		if (!readLowerE())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		if (!readNumofp())
-			throw std::runtime_error("インプットファイルが異常です");
+        // 固有値検索の間隔を読み込む
+        readValue("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT, pdata_->num_of_partition_);
 
-		if (!readRatio())
-			throw std::runtime_error("インプットファイルが異常です");
+        // マッチングポイントを読み込む
+        readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
+
+        return;
+
+    L_END:
+        throw std::runtime_error("インプットファイルが異常です");
 	}
     
     void ReadInputFile::errMsg(ci_string const & s) const
@@ -360,28 +371,16 @@ namespace schrac {
 			pdata_->kappa_ = - 1.0;
 		} else if (pdata_->spin_orbital_ == Data::ALPHA) {
             // j = l_ + 1/2に対して
-			pdata_->j_ = static_cast<long double>(pdata_->l_) + 0.5;
-			pdata_->kappa_ = - static_cast<long double>(pdata_->l_) - 1.0;
+			pdata_->j_ = static_cast<double>(pdata_->l_) + 0.5;
+			pdata_->kappa_ = - static_cast<double>(pdata_->l_) - 1.0;
 		} else {
             // j = l_ - 1/2に対して
-			pdata_->j_ = static_cast<long double>(pdata_->l_) - 0.5;
-			pdata_->kappa_ = static_cast<long double>(pdata_->l_);
+			pdata_->j_ = static_cast<double>(pdata_->l_) - 0.5;
+			pdata_->kappa_ = static_cast<double>(pdata_->l_);
 		}
 
 		return true;
 	}
-	
-    bool ReadInputFile::readEps()
-    {
-        if (auto const peps = readData<long double>("eps", pdata_->EPS_DEFAULT)) {
-            pdata_->eps_ = *peps;
-        }
-        else {
-            return false;
-        }
-
-        return true;
-    }
 
 	bool ReadInputFile::readEq()
 	{
@@ -403,31 +402,6 @@ namespace schrac {
 		}
 
 		return true;
-	}
-
-    bool ReadInputFile::readGrid()
-    {
-        if (auto const pxmin = readData<double>("grid.xmin", pdata_->XMIN_DEFAULT)) {
-            pdata_->xmin_ = *pxmin;
-        }
-        else {
-            return false;
-        }
-
-        if (auto const pxmax = readData<double>("grid.xmax", pdata_->XMAX_DEFAULT)) {
-            pdata_->xmax_ = *pxmax;
-        }
-        else {
-            return false;
-        }
-
-        if (auto const pgrid_num = readData<std::size_t>("grid.num", Data::GRID_NUM_DEFAULT)) {
-			pdata_->grid_num_ = *pgrid_num;
-		} else {
-			return false;
-		}
-
-        return true;
 	}
 
     bool ReadInputFile::readLowerE()
@@ -457,31 +431,7 @@ namespace schrac {
 
         return true;
     }
-
-    bool ReadInputFile::readNumofp()
-    {
-        if (auto const pnumofp = readData<std::size_t>("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT)) {
-            pdata_->num_of_partiton_ = *pnumofp;
-        }
-        else {
-            return false;
-        }
-
-        return true;
-    }
-
-    bool ReadInputFile::readRatio()
-    {
-        if (auto const pmpr = readData<double>("matching.point.ratio", pdata_->MAT_PO_RATIO_DEFAULT)) {
-            pdata_->mat_po_ratio_ = *pmpr;
-        }
-        else {
-            return false;
-        }
-
-        return true;
-    }
-
+    
 	bool ReadInputFile::readType()
 	{
         auto const psolvetype(readData("solver.type", ReadInputFile::SOLVER_TYPE_DEFAULT));

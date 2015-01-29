@@ -55,19 +55,19 @@ namespace schrac {
     private:
         // #region メンバ変数
 
-        //!  A public static member variable (constant).
+        //!  A private static member variable (constant).
         /*!
             デフォルトのインプットファイル名
         */
         static std::string const DEFINPNAME;
         
-        //!  A public member variable.
+        //!  A private member variable.
         /*!
             デフォルトのインプットファイル名
         */
         std::string inpname_;
 
-        //!  A public member variable.
+        //!  A private member variable.
         /*!
             TBBを使用するかどうか    
         */

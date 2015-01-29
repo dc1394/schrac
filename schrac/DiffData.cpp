@@ -2,22 +2,22 @@
 
 namespace schrac {
 	// constructor
-	DiffData::DiffData(const shared_ptr<const Data> & pdata, long double E, long double TINY)
+	DiffData::DiffData(const shared_ptr<const Data> & pdata, double E, double TINY)
 	 :	pdata_(pdata), node(pdata_->n - pdata_->l - 1),
 		thisnode(0), TINY_(TINY), E_(E)
 	{
 #ifdef _OPENMP
-		Z = static_cast<const long double>(pdata_->Z);
+		Z = static_cast<const double>(pdata_->Z);
 
 		const std::size_t GRID_NUM = pdata_->grid_num;
 
-		MP_O = round(static_cast<const long double>(GRID_NUM - 1) * pdata_->mat_po_ratio);
+		MP_O = round(static_cast<const double>(GRID_NUM - 1) * pdata_->mat_po_ratio);
 		MP_I = GRID_NUM - MP_O - 1;
 		
 		OSIZE = boost::numeric_cast<const int>(MP_O + 1);
 		ISIZE = boost::numeric_cast<const int>(MP_I + 1);
 
-		DX = (pdata_->xmax - pdata_->xmin) / static_cast<const long double>(GRID_NUM - 1);
+		DX = (pdata_->xmax - pdata_->xmin) / static_cast<const double>(GRID_NUM - 1);
 
 		// ÉÅÉÇÉäämï€
 		XV_O.resize(OSIZE);
@@ -37,14 +37,14 @@ namespace schrac {
 			{
 				#pragma omp for nowait
 				for (int i = 0; i < OSIZE; i++) {
-					const long double x = pdata_->xmin + static_cast<const long double>(i) * DX;
+					const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 					XV_O[i] = x;
 					RV_O[i] = std::exp(x);
 					VP_O[i] = fnc_V(x);
 				}
 				#pragma omp for nowait
 				for (int i = boost::numeric_cast<const int>(GRID_NUM - 1); i >= len; i--) {
-					const long double x = pdata_->xmin + static_cast<const long double>(i) * DX;
+					const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 					XV_I[GRID_NUM - 1 - i] = x;
 					RV_I[GRID_NUM - 1 - i] = std::exp(x);
 					VP_I[GRID_NUM - 1 - i] = fnc_V(x);
@@ -52,13 +52,13 @@ namespace schrac {
 			}
 		} else {
 			for (int i = 0; i < OSIZE; i++) {
-				const long double x = pdata_->xmin + static_cast<const long double>(i) * DX;
+				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 				XV_O[i] = x;
 				RV_O[i] = std::exp(x);
 				VP_O[i] = fnc_V(x);
 			}
 			for (int i = boost::numeric_cast<const int>(GRID_NUM - 1); i >= len; i--) {
-				const long double x = pdata_->xmin + static_cast<const long double>(i) * DX;
+				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 				XV_I[GRID_NUM - 1 - i] = x;
 				RV_I[GRID_NUM - 1 - i] = std::exp(x);
 				VP_I[GRID_NUM - 1 - i] = fnc_V(x);

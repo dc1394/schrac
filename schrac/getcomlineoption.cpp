@@ -17,7 +17,7 @@ namespace schrac {
 		using namespace boost::program_options;
 
         // オプションの設計
-		options_description opt("オプション");
+		options_description opt("option");
 
 		// 引数の書式を定義
         opt.add_options()
