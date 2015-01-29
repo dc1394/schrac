@@ -62,11 +62,11 @@ namespace schrac {
 		if (!readLowerE())
 			throw std::runtime_error("インプットファイルが異常です");
 
-		/*if (!readNumofZ())
+		if (!readNumofp())
 			throw std::runtime_error("インプットファイルが異常です");
 
 		if (!readRatio())
-			throw std::runtime_error("インプットファイルが異常です");*/
+			throw std::runtime_error("インプットファイルが異常です");
 	}
     
     void ReadInputFile::errMsg(ci_string const & s) const
