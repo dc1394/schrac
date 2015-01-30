@@ -1,111 +1,204 @@
+﻿/*! \file diffdata.h
+    \brief 微分方程式のデータを集めた構造体の宣言
+
+    Copyright ©  2015 @dc1394 All Rights Reserved.
+*/
+
 #ifndef _DIFFDATA_H_
 #define _DIFFDATA_H_
 
 #pragma once
 
 #include "data.h"
-#include <memory>
-#include <vector>
+#include <memory>   // for std::shared_ptr
+#include <vector>   // for std::vector
 
 namespace schrac {
-    using dvectpr = std::vector < double > ;
+    // #region 型エイリアス
 
-	struct DiffData {
-        // #region �R���X�g���N�^�E�f�X�g���N�^
+    using dvector = std::vector < double > ;
+
+    // #endregion 型エイリアス
+
+    //! A struct.
+    /*!
+        微分方程式のデータを集めた構造体
+    */
+	struct DiffData final {
+        // #region コンストラクタ・デストラクタ
 
         //! A constructor.
         /*!
-            �B��̃R���X�g���N�^
-            \param E �G�l���M�[�ŗL�l 
-            \param pdata �f�[�^�I�u�W�F�N�g
-            \param TINY ��Βl������������臒l
+            唯一のコンストラクタ
+            \param E エネルギー固有値 
+            \param pdata データオブジェクト
+            \param TINY 絶対値が小さい方の閾値
         */
         DiffData(double E, std::shared_ptr<Data> const & pdata, double TINY);
 
         //! A destructor.
         /*!
-            �������Ȃ��f�X�g���N�^
+            何もしないデストラクタ
         */
         ~DiffData()
         {
         }
 
-        // #endregion �R���X�g���N�^�E�f�X�g���N�^
+        // #endregion コンストラクタ・デストラクタ
 
-        // #region �����o�ϐ�
+        // #region メンバ関数
 
-    private:
+        //!  A public member function (const).
+        /*!
+            xのメッシュにおけるV、すなわちV(x)を計算する
+            \param x xの値
+            \return V(x)の値
+        */
+        double fnc_V(double x) const;
+        
+        //!  A public member function.
+        /*!
+            波動関数の節の数を調べる
+            \param i メッシュのインデックス
+            \param WF 波動関数φ
+        */
+        void node_count(std::int32_t i, dvector const & WF);
+
+        // #endregion メンバ関数
+
+        // #region メンバ変数
+            
         //!  A private static member variable (constant expression).
         /*!
-            �s��A�̃T�C�Y
+            行列Aのサイズ
         */
 		static std::size_t constexpr AVECSIZE = 3;
 		
         //!  A private static member variable (constant expression).
         /*!
-            �s��B�̃T�C�Y
+            行列Bのサイズ
         */
         static std::size_t constexpr BVECSIZE = 5;
         
-        //!  A private member variable (constant).
+        //!  A public member variable (constant).
         /*!
-            �߂̐�
+            節の数
         */
         std::int32_t const node_;
 
-        //!  A private static member variable (constant expression).
+        //!  A public member variable (constant).
         /*!
-            �s��B�̃T�C�Y
+            データオブジェクト
+        */
+        std::shared_ptr<Data> const pdata_;
+        
+        //!  A public member variable (constant).
+        /*!
+            絶対値が小さい方の閾値
+        */
+        double const TINY_;
+        
+        //!  A public member variable (constant).
+        /*!
+            原子核の電荷
+        */
+        double const Z_;
+
+        //!  A public member variable (constant).
+        /*!
+            微分方程式を解くときのメッシュの間隔
+        */
+        double DX_;
+
+        //!  A public member variable.
+        /*!
+            エネルギー固有値
         */
         double E_;
 
-		const std::shared_ptr<const Data> pdata_;
+        //!  A public member variable.
+        /*!
+            無限遠に近い点から解いた関数Lの数表が格納された可変長配列
+        */
+        dvector LI_;
 
+        //!  A public member variable.
+        /*!
+            原点に近い点から解いた関数Lの数表が格納された可変長配列
+        */
+        dvector LO_;
+
+        //!  A public member variable.
+        /*!
+            無限遠に近い点から解いた関数Mの数表が格納された可変長配列
+        */
+        dvector MI_;
+        
+        //!  A public member variable.
+        /*!
+            原点に近い点から解いた関数Mの数表が格納された可変長配列
+        */
+        dvector MO_;
+
+        //!  A public member variable.
+        /*!
+            無限遠に近い点から数えたマッチングポイント
+        */
+        std::int32_t MP_I_;
+        
+        //!  A public member variable.
+        /*!
+            原点から近い方から数えたマッチングポイント
+        */
+        std::int32_t MP_O_;
+
+        //!  A public member variable.
+        /*!
+            無限遠に近い点からRのメッシュが格納された可変長配列
+        */
+        dvector RV_I_;
+
+        //!  A public member variable.
+        /*!
+            原点に近い点からRのメッシュが格納された可変長配列
+        */
+        dvector RV_O_;
+
+        //!  A public member variable.
+        /*!
+            今回微分方程式を解くことによって得た節の数
+        */
+        std::int32_t thisnode_;
+
+        //!  A public member variable.
+        /*!
+            行列A
+        */
+        std::array<double, AVECSIZE> V_A_;
+
+        //!  A public member variable.
+        /*!
+            行列B
+        */
+        std::array<double, BVECSIZE> V_B_;
+        
+        //!  A public member variable.
+        /*!
+            原点に近い点から微分方程式を解くときに使うポテンシャルVの可変長配列（Rのメッシュ）
+        */
+        dvector VP_O_;
+
+		dvector XV_I;
+		dvector XV_O;
+
+		//dvector VP_I;
 		
-		int thisnode;
 
-		std::size_t MP_O;
-		std::size_t MP_I;
-		int OSIZE;
-		int ISIZE;
+        //int OSIZE;
+        //int ISIZE;
 
-		const double TINY_;
-
-		double Z;
-		double DX;
-		
-
-
-		array<double, AVECSIZE> V_A;
-		array<double, BVECSIZE> V_B;
-
-		ldvector XV_I;
-		ldvector XV_O;
-		ldvector RV_I;
-		ldvector RV_O;
-		ldvector VP_I;
-		ldvector VP_O;
-		ldvector LO;
-		ldvector MO;
-		ldvector LI;
-		ldvector MI;
-
-		
+        // #endregion メンバ変数
 	};
-
-    double fnc_V(double x);
-    void node_count(int i, const ldvector & WF);
-
-	inline double DiffData::fnc_V(double x) const
-	{
-		return - Z * std::exp(- x);
-	}
-
-	inline void DiffData::node_count(int i, const ldvector & WF)
-	{
-		if (WF[i] * WF[i - 1] < 0.0)
-			thisnode++;
-	}
 }
 
 #endif	// _DIFFDATA_H_

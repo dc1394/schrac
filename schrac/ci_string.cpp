@@ -1,20 +1,20 @@
+ï»¿/*! \file ci_string.cpp
+    \brief å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„æ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹ã®å®Ÿè£…
+
+    Copyright Â©  2015 @dc1394 All Rights Reserved.
+*/
+
 #include "ci_string.h"
-#include <cstring>
+#include <cstring>          // for _memicmp, std::toupper
 
 #ifndef _MSC_VER
     #include <algorithm>    // std::mismatch
 #endif
 
 namespace schrac {
-    //! A public static member function.
-    /*!
-        2ŒÂ‚Ìƒoƒbƒtƒ@[ (‘å•¶š‚Æ¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢) ‚ğ”äŠr‚·‚éŠÖ”‚ÌÀ‘•
-        \param s1 ˆê‚Â–Ú‚Ì•¶š—ñ
-        \param s2 “ñ‚Â–Ú‚Ì•¶š—ñ
-        \param •¶š—ñ‚Ì’·‚³
-        \return std::strcmp‚Ì–ß‚è’l‚Æ“¯—l
-    */
-	int ci_char_traits::compare(char const * s1, char const * s2, std::size_t n)
+    // #region staticãƒ¡ãƒ³ãƒé–¢æ•°
+
+    int ci_char_traits::compare(char const * s1, char const * s2, std::size_t n)
 	{
 #ifdef _MSC_VER
 		return _memicmp(s1, s2, n);
@@ -22,21 +22,17 @@ namespace schrac {
 		return memIcmp(s1, s2, n);
 #endif
 	}
+    
+    // #region staticãƒ¡ãƒ³ãƒé–¢æ•°
+
+    // #region éãƒ¡ãƒ³ãƒé–¢æ•°
 
 #ifndef _MSC_VER
-    //! A function.
-    /*!
-        2ŒÂ‚Ìƒoƒbƒtƒ@[ (‘å•¶š‚Æ¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢) ‚ğ”äŠr‚·‚éŠÖ”‚ÌÀ‘•
-        \param s1 ˆê‚Â–Ú‚Ì•¶š—ñ
-        \param s2 “ñ‚Â–Ú‚Ì•¶š—ñ
-        \param •¶š—ñ‚Ì’·‚³
-        \return std::strcmp‚Ì–ß‚è’l‚Æ“¯—l
-    */
-    int memIcmp(char const * s1, char const * s2, size_t n)
+    int memIcmp(char const * s1, char const * s2, std::size_t n)
     {
-        typedef std::pair<char const*, char const*> ci_diff_pair;
+        using ci_diff_pair = std::pair<char const *, char const *>;
 
-        auto p = std::mismatch(p1, p1 + n, p2, [](char left, char right) {
+        auto const p = std::mismatch(p1, p1 + n, p2, [](char left, char right) {
             return std::toupper(left) == std::toupper(right);
         });
 
@@ -49,17 +45,12 @@ namespace schrac {
     }
 #endif
 
-    //! A function.
-    /*!
-        ci_string‚É‘Î‚·‚éoperator<<‚ÌÀ‘•
-        \param os ‘ÎÛ‚Ìstd::ostream
-        \param s ‘ÎÛ‚Ìi‘å•¶š¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢j•¶š—ñ
-        \return Œ‹‰Ê‚ÌQÆ
-    */
 	std::ostream & operator<<(std::ostream & os, const ci_string & s)
 	{
 		os << s.c_str();
 
 		return os;
 	}
+
+    // #endregion éãƒ¡ãƒ³ãƒé–¢æ•°
 }

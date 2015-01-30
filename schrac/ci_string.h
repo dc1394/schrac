@@ -1,3 +1,9 @@
+ï»¿/*! \file ci_string.h
+    \brief å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„æ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹ã®å®£è¨€
+
+    Copyright Â©  2015 @dc1394 All Rights Reserved.
+*/
+
 #ifndef _CI_STRING_H_
 #define _CI_STRING_H_
 
@@ -9,76 +15,78 @@
 namespace schrac {
     //! A class.
     /*!
-        ‘å•¶š¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢•¶š—ñƒNƒ‰ƒX
+        å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„æ–‡å­—åˆ—ã‚¯ãƒ©ã‚¹
     */
 	struct ci_char_traits : public std::char_traits<char> {
-        // #region staticƒƒ“ƒoŠÖ”
+        // #region staticãƒ¡ãƒ³ãƒé–¢æ•°
 
         //! A public static member function.
         /*!
-            2ŒÂ‚Ìƒoƒbƒtƒ@[ (‘å•¶š‚Æ¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢) ‚ğ”äŠr‚·‚é
-            \param s1 ˆê‚Â–Ú‚Ì•¶š—ñ
-            \param s2 “ñ‚Â–Ú‚Ì•¶š—ñ
-            \param •¶š—ñ‚Ì’·‚³
-            \return std::strcmp‚Ì–ß‚è’l‚Æ“¯—l
+            2å€‹ã®ãƒãƒƒãƒ•ã‚¡ãƒ¼ (å¤§æ–‡å­—ã¨å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„) ã‚’æ¯”è¼ƒã™ã‚‹
+            \param s1 ä¸€ã¤ç›®ã®æ–‡å­—åˆ—
+            \param s2 äºŒã¤ç›®ã®æ–‡å­—åˆ—
+            \param æ–‡å­—åˆ—ã®é•·ã•
+            \return std::strcmpã®æˆ»ã‚Šå€¤ã¨åŒæ§˜
         */
         static int compare(char const * s1, char const * s2, std::size_t n);
 
         //! A public static member function.
         /*!
-            ˆø”‚Å—^‚¦‚ç‚ê‚½“ñ‚Â‚Ì•¶š‚ª“™‚µ‚¢‚©‚Ç‚¤‚©‚ğ”»•Ê‚·‚é‚ÆÀ‘•
-            \param lhs ˆê‚Â–Ú‚Ì•¶š
-            \param rhs “ñ‚Â–Ú‚Ì•¶š
-            \return “ñ‚Â‚Ì•¶š‚ª“™‚µ‚¢‚©‚Ç‚¤‚©
+            å¼•æ•°ã§ä¸ãˆã‚‰ã‚ŒãŸäºŒã¤ã®æ–‡å­—ãŒç­‰ã—ã„ã‹ã©ã†ã‹ã‚’åˆ¤åˆ¥ã™ã‚‹
+            \param lhs ä¸€ã¤ç›®ã®æ–‡å­—
+            \param rhs äºŒã¤ç›®ã®æ–‡å­—
+            \return äºŒã¤ã®æ–‡å­—ãŒç­‰ã—ã„ã‹ã©ã†ã‹
         */
-		static bool eq(char lhs, char rhs) {
+		static bool eq(char lhs, char rhs)
+        {
 			return std::toupper(lhs) == std::toupper(rhs);
 		}
 		
         //! A public static member function.
         /*!
-            ˆø”‚Å—^‚¦‚ç‚ê‚½“ñ‚Â‚Ì•¶š‚Ì‘å¬ŠÖŒW‚ğ”»•Ê‚·‚é‚ÆÀ‘•
-            \param lhs ˆê‚Â–Ú‚Ì•¶š
-            \param rhs “ñ‚Â–Ú‚Ì•¶š
-            \return “ñ‚Â‚Ì•¶š‚Ì‘å¬ŠÖŒW
+            å¼•æ•°ã§ä¸ãˆã‚‰ã‚ŒãŸäºŒã¤ã®æ–‡å­—ã®å¤§å°é–¢ä¿‚ã‚’åˆ¤åˆ¥ã™ã‚‹
+            \param lhs ä¸€ã¤ç›®ã®æ–‡å­—
+            \param rhs äºŒã¤ç›®ã®æ–‡å­—
+            \return äºŒã¤ã®æ–‡å­—ã®å¤§å°é–¢ä¿‚
         */
-        static bool lt(char lhs, char rhs) {
+        static bool lt(char lhs, char rhs)
+        {
 			return std::toupper(lhs) < std::toupper(rhs);
 		}
 
-        // #endregion staticƒƒ“ƒoŠÖ”
+        // #endregion staticãƒ¡ãƒ³ãƒé–¢æ•°
 	};
 
-    // #region Œ^ƒGƒCƒŠƒAƒX
+    // #region å‹ã‚¨ã‚¤ãƒªã‚¢ã‚¹
 
     using ci_string = std::basic_string < char, ci_char_traits >;
 
-    // #endregion Œ^ƒGƒCƒŠƒAƒX
+    // #endregion å‹ã‚¨ã‚¤ãƒªã‚¢ã‚¹
 
-    // #region ”ñƒƒ“ƒoŠÖ”
+    // #region éãƒ¡ãƒ³ãƒé–¢æ•°
 
 #ifndef _MSC_VER
     //! A function.
     /*!
-        2ŒÂ‚Ìƒoƒbƒtƒ@[ (‘å•¶š‚Æ¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢) ‚ğ”äŠr‚·‚é
-        \param s1 ˆê‚Â–Ú‚Ì•¶š—ñ
-        \param s2 “ñ‚Â–Ú‚Ì•¶š—ñ
-        \param •¶š—ñ‚Ì’·‚³
-        \return std::strcmp‚Ì–ß‚è’l‚Æ“¯—l
+        2å€‹ã®ãƒãƒƒãƒ•ã‚¡ãƒ¼ (å¤§æ–‡å­—ã¨å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„) ã‚’æ¯”è¼ƒã™ã‚‹
+        \param s1 ä¸€ã¤ç›®ã®æ–‡å­—åˆ—
+        \param s2 äºŒã¤ç›®ã®æ–‡å­—åˆ—
+        \param æ–‡å­—åˆ—ã®é•·ã•
+        \return std::strcmpã®æˆ»ã‚Šå€¤ã¨åŒæ§˜
     */
     int memIcmp(char const * s1, char const * s2, std::size_t n);
 #endif
 
     //! A function.
     /*!
-        ci_string‚É‘Î‚·‚éoperator<<‚ÌéŒ¾
-        \param os ‘ÎÛ‚Ìstd::ostream
-        \param s ‘ÎÛ‚Ìi‘å•¶š¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢j•¶š—ñ
-        \return Œ‹‰Ê‚ÌQÆ
+        ci_stringã«å¯¾ã™ã‚‹operator<<()
+        \param os å¯¾è±¡ã®std::ostream
+        \param s å¯¾è±¡ã®ï¼ˆå¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„ï¼‰æ–‡å­—åˆ—
+        \return çµæœã®å‚ç…§
     */
     std::ostream & operator<<(std::ostream & os, ci_string const & s);
 
-    // #endregion ”ñƒƒ“ƒoŠÖ”
+    // #endregion éãƒ¡ãƒ³ãƒé–¢æ•°
 }
 
 #endif	// _CISTRING_H_

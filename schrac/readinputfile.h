@@ -1,278 +1,279 @@
+ï»¿/*! \file readinputfile.h
+    \brief ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ã®å®£è¨€
+
+    Copyright Â©  2015 @dc1394 All Rights Reserved.
+*/
+
 #ifndef _READINPUTFILE_H_
 #define _READINPUTFILE_H_
 
+#pragma once
+
 #include "ci_string.h"
 #include "data.h"
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <vector>
-#include <boost/lexical_cast.hpp>
-#include <boost/optional.hpp>
+#include <fstream>                  // for std::ifstream
+#include <memory>                   // for std::shared_ptr
+#include <vector>                   // for std::vector
+#include <boost/lexical_cast.hpp>   // for boost::lexical_cast
+#include <boost/optional.hpp>       // for boost::optional
 
 namespace schrac {
     //! A class.
     /*!
-        ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İADataƒNƒ‰ƒX‚ÌƒIƒuƒWƒFƒNƒg‚ÉŠi”[‚·‚éƒNƒ‰ƒX    
+        ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã€Dataã‚¯ãƒ©ã‚¹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«æ ¼ç´ã™ã‚‹ã‚¯ãƒ©ã‚¹
     */
 	class ReadInputFile final {
-        // #region Œ^ƒGƒCƒŠƒAƒX
+        // #region å‹ã‚¨ã‚¤ãƒªã‚¢ã‚¹
 
         using strvec = std::vector<ci_string>;
 
-        // #endregion Œ^ƒGƒCƒŠƒAƒX
+        // #endregion å‹ã‚¨ã‚¤ãƒªã‚¢ã‚¹
 
-        // #region ƒRƒ“ƒXƒgƒ‰ƒNƒ^EƒfƒXƒgƒ‰ƒNƒ^
+        // #region ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 
     public:
         //! A constructor.
         /*!
-            —Bˆê‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
-            \param arg ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹–¼‚ÆATBB‚ğg—p‚·‚é‚©‚Ç‚¤‚©‚Ìstd::pair
+            å”¯ä¸€ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+            \param arg ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«åã¨ã€TBBã‚’ä½¿ç”¨ã™ã‚‹ã‹ã©ã†ã‹ã®std::pair
         */
         explicit ReadInputFile(std::pair<std::string, bool> const & arg);
 
         //! A destructor.
         /*!
-            ‰½‚à‚µ‚È‚¢ƒfƒXƒgƒ‰ƒNƒ^
+            ä½•ã‚‚ã—ãªã„ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         */
         ~ReadInputFile()
         {
         }
 
-        // #region ƒRƒ“ƒXƒgƒ‰ƒNƒ^EƒfƒXƒgƒ‰ƒNƒ^
+        // #region ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         
-        // #region ƒƒ“ƒoŠÖ”
+        // #region ãƒ¡ãƒ³ãƒé–¢æ•°
 
     public:
         //! A public member function.
         /*!
-            “Ç‚İ‚ñ‚¾ƒf[ƒ^‚ğ•Ô‚·
-            \return “Ç‚İ‚ñ‚¾ƒf[ƒ^
+            èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿ã‚’è¿”ã™
+            \return èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿
         */
         std::shared_ptr<Data> && getpData();
         
         //! A public member function.
         /*!
-            ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         void readFile();
 
     private:
         //! A private member function (const).
         /*!
-            ƒGƒ‰[‚ğ•\¦‚·‚é
-            \param s ƒGƒ‰[‚Ìƒg[ƒNƒ“
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            ã‚¨ãƒ©ãƒ¼ã‚’è¡¨ç¤ºã™ã‚‹
+            \param s ã‚¨ãƒ©ãƒ¼ã®ãƒˆãƒ¼ã‚¯ãƒ³
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         void errMsg(ci_string const & s) const;
 
         //! A private member function (const).
         /*!
-            ƒGƒ‰[‚ğ•\¦‚·‚é
-            \param line ƒGƒ‰[‚Ì‚ ‚és
-            \param s1 ƒGƒ‰[‚Ìƒg[ƒNƒ“
-            \param s2 ƒGƒ‰[‚Ìƒg[ƒNƒ“2
+            ã‚¨ãƒ©ãƒ¼ã‚’è¡¨ç¤ºã™ã‚‹
+            \param line ã‚¨ãƒ©ãƒ¼ã®ã‚ã‚‹è¡Œ
+            \param s1 ã‚¨ãƒ©ãƒ¼ã®ãƒˆãƒ¼ã‚¯ãƒ³
+            \param s2 ã‚¨ãƒ©ãƒ¼ã®ãƒˆãƒ¼ã‚¯ãƒ³2
         */
         void errMsg(std::int32_t line, ci_string const & s, ci_string const & s2) const;
 
         //! A private member function (const).
         /*!
-            ‰ğÍ‘ÎÛ‚Ì•¶š—ñ‚ğƒg[ƒNƒ“‚É•ªŠ„‚·‚é
-            \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
-            \return ŠÖ”‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©‚ÆAƒg[ƒNƒ“‚Ìstd::pair
+            è§£æå¯¾è±¡ã®æ–‡å­—åˆ—ã‚’ãƒˆãƒ¼ã‚¯ãƒ³ã«åˆ†å‰²ã™ã‚‹
+            \param article è§£æå¯¾è±¡ã®æ–‡å­—åˆ—
+            \return é–¢æ•°ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹ã¨ã€ãƒˆãƒ¼ã‚¯ãƒ³ã®std::pair
         */
         std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> getToken(ci_string const & article);
 
         //! A private member function.
         /*!
-            Œ´q‚ÉŠÖ‚·‚éƒf[ƒ^‚ğ“Ç‚İ‚Ş
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            åŸå­ã«é–¢ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         bool readAtom();
 
         //! A private member function.
         /*!
-            •¶š—ñ‚ğ‰ğÍ‚µ‚ÄAƒf[ƒ^‚Æ‚µ‚Ä“Ç‚İ‚ñ‚Å•Ô‚·
-            \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
-            \return “Ç‚İ‚±‚ñ‚¾•¶š—ñƒf[ƒ^
+            æ–‡å­—åˆ—ã‚’è§£æã—ã¦ã€ãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦èª­ã¿è¾¼ã‚“ã§è¿”ã™
+            \param article è§£æå¯¾è±¡ã®æ–‡å­—åˆ—
+            \return èª­ã¿ã“ã‚“ã æ–‡å­—åˆ—ãƒ‡ãƒ¼ã‚¿
         */
         boost::optional<ci_string> readData(ci_string const & article);
         
         //! A private member function.
         /*!
-            ƒf[ƒ^‚ğ“Ç‚İ‚Ş
-            \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
-            \param def ƒfƒtƒHƒ‹ƒg‚Ì•¶š—ñ
-            \return “Ç‚İ‚±‚ñ‚¾•¶š—ñ
+            ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+            \param article è§£æå¯¾è±¡ã®æ–‡å­—åˆ—
+            \param def ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®æ–‡å­—åˆ—
+            \return èª­ã¿ã“ã‚“ã æ–‡å­—åˆ—
         */
         boost::optional<ci_string> readData(ci_string const & article, ci_string const & def);
         
         //! A private member function (template function).
         /*!
-            ƒf[ƒ^‚ğ“Ç‚İ‚Ş
-            \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
-            \param def_val ƒfƒtƒHƒ‹ƒg’l
-            \return “Ç‚İ‚±‚ñ‚¾•¶š—ñ
+            ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+            \param article è§£æå¯¾è±¡ã®æ–‡å­—åˆ—
+            \param default_value ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
+            \return èª­ã¿ã“ã‚“ã æ–‡å­—åˆ—
         */
         template <typename T>
-        boost::optional<T> readData(ci_string const & article, T const & def_val);
+        boost::optional<T> readData(ci_string const & article, T const & default_value);
         
         //! A private member function.
         /*!
-            ƒf[ƒ^‚ğ“Ç‚İ‚Ş
-            \param article ‰ğÍ‘ÎÛ‚Ì•¶š—ñ
-            \return “Ç‚İ‚±‚ñ‚¾•¶š—ñi“Ç‚İ‚İ‚É¸”s‚µ‚½‚È‚çboost::nonej
+            ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+            \param article è§£æå¯¾è±¡ã®æ–‡å­—åˆ—
+            \return èª­ã¿ã“ã‚“ã æ–‡å­—åˆ—ï¼ˆèª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ãŸãªã‚‰boost::noneï¼‰
         */
         boost::optional<ci_string> readDataAuto(ci_string const & article);
 
         //! A private member function.
         /*!
-            ‘ÎÛ‚Ì•û’ö®‚ğ“Ç‚İ‚Ş
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            å¯¾è±¡ã®æ–¹ç¨‹å¼ã‚’èª­ã¿è¾¼ã‚€
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         bool readEq();
 
         //! A private member function.
         /*!
-            ŒÅ—L’l‚ÌŒŸõ‚ğn‚ß‚é’l‚ğ“Ç‚İ‚Ş
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            å›ºæœ‰å€¤ã®æ¤œç´¢ã‚’å§‹ã‚ã‚‹å€¤ã‚’èª­ã¿è¾¼ã‚€
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         bool readLowerE();
         
         //! A private member function.
         /*!
-            ”÷•ª•û’ö®‚Ì‰ğ–@‚ğ“Ç‚İ‚Ş
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            å¾®åˆ†æ–¹ç¨‹å¼ã®è§£æ³•ã‚’èª­ã¿è¾¼ã‚€
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         bool readType();
 
         //! A private member function.
         /*!
-            ‘ÎÛ‚Ì—v‘f‚Ì’l‚ğ‚»‚Ìs‚©‚ç“Ç‚İ‚Ş
-            \param article —v‘f–¼
-            \param default_value ƒfƒtƒHƒ‹ƒg‚Ì’l
-            \param value “Ç‚İ‚ñ‚¾’l
-            \return “Ç‚İ‚İ‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
+            å¯¾è±¡ã®è¦ç´ ã®å€¤ã‚’ãã®è¡Œã‹ã‚‰èª­ã¿è¾¼ã‚€
+            \param article è¦ç´ å
+            \param default_value ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®å€¤
+            \param value èª­ã¿è¾¼ã‚“ã å€¤
+            \return èª­ã¿è¾¼ã¿ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹
         */
         template <typename T>
-        void readValue(ci_string const & article, T const & default_val, T & value) const;
+        void readValue(ci_string const & article, T const & default_value, T & value);
 
-        // #endregion ƒƒ“ƒoŠÖ”
+        // #endregion ãƒ¡ãƒ³ãƒé–¢æ•°
 
-        // #region ƒƒ“ƒo•Ï”
-
-        //! A private member variable (constant expression).
-        /*!
-            ƒoƒbƒtƒ@ƒTƒCƒY
-        */
-        static constexpr std::streamsize BUFSIZE = 1024;
+        // #region ãƒ¡ãƒ³ãƒå¤‰æ•°
 
         //! A private member variable (constant).
         /*!
-            uchemical.symbolv‚Ì•¶š—ñ
+            ã€Œchemical.symbolã€ã®æ–‡å­—åˆ—
         */
         static const ci_string CHEMICAL_SYMBOL;
 
         //! A private member variable (constant).
         /*!
-            ƒfƒtƒHƒ‹ƒg‚Ìueq.typev‚Ì•¶š—ñ
+            ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã€Œeq.typeã€ã®æ–‡å­—åˆ—
         */
         static const ci_string EQ_TYPE_DEFAULT;
 
         //! A private member variable (constant).
         /*!
-            ueq.typev‚Ì•¶š—ñ
+            ã€Œeq.typeã€ã®æ–‡å­—åˆ—
         */
         static const ci_string EQ_TYPE;
 
         //! A private member variable (constant).
         /*!
-            •û’ö®‚Ìí—Ş‚Ì•¶š—ñ‚Ì”z—ñ
+            æ–¹ç¨‹å¼ã®ç¨®é¡ã®æ–‡å­—åˆ—ã®é…åˆ—
         */
         static const std::array<ci_string, 4> EQ_TYPE_ARRAY;
 
         //! A private member variable (constant).
         /*!
-            uorbitalv‚Ì•¶š—ñ
+            ã€Œorbitalã€ã®æ–‡å­—åˆ—
         */
         static const ci_string ORBITAL;
 
         //! A private member variable (constant).
         /*!
-            ”÷•ª•û’ö®‚Ì”’l‰ğ–@‚Ì•¶š—ñ‚Ì”z—ñ
+            å¾®åˆ†æ–¹ç¨‹å¼ã®æ•°å€¤è§£æ³•ã®æ–‡å­—åˆ—ã®é…åˆ—
         */
         static const std::array<ci_string, 4> SOLVER_TYPE_ARRAY;
 
         //! A private member variable (constant).
         /*!
-            ƒfƒtƒHƒ‹ƒg‚Ì”÷•ª•û’ö®‚Ì”’l‰ğ–@
+            ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®å¾®åˆ†æ–¹ç¨‹å¼ã®æ•°å€¤è§£æ³•
         */
         static const ci_string SOLVER_TYPE_DEFAULT;
 
         //! A private member variable (constant).
         /*!
-            uspin_orbitalv‚Ì•¶š—ñ
+            ã€Œspin_orbitalã€ã®æ–‡å­—åˆ—
         */
         static const ci_string SPIN_ORBITAL;
 
         //! A private member variable.
         /*!
-            ƒtƒ@ƒCƒ‹“Ç‚İ‚İ—p‚ÌƒXƒgƒŠ[ƒ€
+            ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ç”¨ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ 
         */
         std::ifstream ifs_;
         
         //! A private member variable.
         /*!
-            Œ»İ‚Ìs”
+            ç¾åœ¨ã®è¡Œæ•°
         */
 	    std::size_t lineindex_;
 
         //! A private member variable.
         /*!
-            ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚ñ‚¾ƒf[ƒ^
+            ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿
         */
 		std::shared_ptr<Data> pdata_;
         	
-        // #endregion ƒƒ“ƒo•Ï”
+        // #endregion ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-        // #region ‹Ö~‚³‚ê‚½ƒRƒ“ƒXƒgƒ‰ƒNƒ^Eƒƒ“ƒoŠÖ”
+        // #region ç¦æ­¢ã•ã‚ŒãŸã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ¡ãƒ³ãƒé–¢æ•°
 
         //! A private constructor (deleted).
         /*!
-            ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^i‹Ö~j
+            ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆç¦æ­¢ï¼‰
         */
         ReadInputFile() = delete;
 
         //! A private copy constructor (deleted).
         /*!
-            ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^i‹Ö~j
+            ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆç¦æ­¢ï¼‰
         */
         ReadInputFile(ReadInputFile const &) = delete;
 
         //! A private member function (deleted).
         /*!
-            operator=()‚ÌéŒ¾i‹Ö~j
-            \param ƒRƒs[Œ³‚ÌƒIƒuƒWƒFƒNƒgi–¢g—pj
-            \return ƒRƒs[Œ³‚ÌƒIƒuƒWƒFƒNƒg
+            operator=()ã®å®£è¨€ï¼ˆç¦æ­¢ï¼‰
+            \param ã‚³ãƒ”ãƒ¼å…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆæœªä½¿ç”¨ï¼‰
+            \return ã‚³ãƒ”ãƒ¼å…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         */
         ReadInputFile & operator=(ReadInputFile const &) = delete;
 
-        // #endregion ‹Ö~‚³‚ê‚½ƒRƒ“ƒXƒgƒ‰ƒNƒ^Eƒƒ“ƒoŠÖ”
+        // #endregion ç¦æ­¢ã•ã‚ŒãŸã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ¡ãƒ³ãƒé–¢æ•°
 	};
 
     template <typename T>
-    boost::optional<T> ReadInputFile::readData(ci_string const & article, T const & def_val)
+    boost::optional<T> ReadInputFile::readData(ci_string const & article, T const & default_value)
     {
-        // ƒOƒŠƒbƒh‚ğ“Ç‚İ‚Ş
+        // ã‚°ãƒªãƒƒãƒ‰ã‚’èª­ã¿è¾¼ã‚€
         for (; true; lineindex_++) {
             auto const ret = getToken(article);
 
             switch (std::get<0>(ret))
             {
             case -1:
-                return nullptr;
+                return boost::none;
                 break;
 
             case 0:
@@ -281,17 +282,17 @@ namespace schrac {
                 auto itr(++tokens.begin());
 
                 lineindex_++;
-                // “Ç‚İ‚ñ‚¾ƒg[ƒNƒ“‚Ì”‚ğ‚Í‚©‚é
+                // èª­ã¿è¾¼ã‚“ã ãƒˆãƒ¼ã‚¯ãƒ³ã®æ•°ã‚’ã¯ã‹ã‚‹
                 switch (tokens.size()) {
                 case 1:
-                    // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·
-                    return boost::optional<T>(def_val);
+                    // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™
+                    return boost::optional<T>(default_value);
                     break;
 
                 case 2:
                     if (*(++itr) == "DEFAULT") {
-                        // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·
-                        return boost::optional<T>(def_val);
+                        // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™
+                        return boost::optional<T>(default_value);
                     }
                     else {
                         try {
@@ -308,7 +309,7 @@ namespace schrac {
                     auto val = *itr;
 
                     if (val == "DEFAULT" || val[0] == '#') {
-                        return boost::optional<T>(def_val);
+                        return boost::optional<T>(default_value);
                     }
                     else if ((*(++itr))[0] != '#') {
                         errMsg(lineindex_ - 1, article, *itr);
@@ -332,20 +333,20 @@ namespace schrac {
                 break;
 
             default:
-                BOOST_ASSERT(!"‰½‚©‚ª‚¨‚©‚µ‚¢!");
+                BOOST_ASSERT(!"ä½•ã‹ãŒãŠã‹ã—ã„!");
                 break;
             }
         }
     }
 
     template <typename T>
-    void ReadInputFile::readValue(ci_string const & article, T const & default_val, T & value) const
+    void ReadInputFile::readValue(ci_string const & article, T const & default_value, T & value)
     {
-        if (auto const p = readData<T>(article, default_val)) {
+        if (auto const p = readData(article, default_value)) {
             value = *p;
         }
         else {
-            throw std::runtime_error("ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ªˆÙí‚Å‚·");
+            throw std::runtime_error("ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒç•°å¸¸ã§ã™");
         }
     }
 }

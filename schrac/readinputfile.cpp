@@ -1,11 +1,18 @@
+ï»¿/*! \file readinputfile.cpp
+    \brief ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ã®å®Ÿè£…
+
+    Copyright Â©  2015 @dc1394 All Rights Reserved.
+*/
+
 #include "readinputfile.h"
-#include <stdexcept>
-#include <boost/algorithm/string.hpp>
-#include <boost/cast.hpp>
-#include <boost/range/algorithm.hpp>
+#include <iostream>                     // for std::cerr
+#include <stdexcept>                    // for std::runtime_error
+#include <boost/algorithm/string.hpp>   // for boost::algorithm
+#include <boost/cast.hpp>               // for boost::numeric_cast
+#include <boost/range/algorithm.hpp>    // for boost::find
 
 namespace schrac {
-    using namespace boost::algorithm;
+    // #region staticãƒ¡ãƒ³ãƒå¤‰æ•°
 
     const ci_string ReadInputFile::CHEMICAL_SYMBOL = "chemical.symbol";
     const ci_string ReadInputFile::EQ_TYPE_DEFAULT = "sch";
@@ -26,6 +33,10 @@ namespace schrac {
     const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
     const ci_string ReadInputFile::SPIN_ORBITAL = "spin.orbital";
     
+    // #endregion staticãƒ¡ãƒ³ãƒå¤‰æ•°
+
+    // #region ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+
     ReadInputFile::ReadInputFile(std::pair<std::string, bool> const & arg) :
         ifs_(std::get<0>(arg).c_str()),
         lineindex_(1),
@@ -33,6 +44,10 @@ namespace schrac {
     {
         pdata_->usetbb_ = std::get<1>(arg);
     }
+
+    // #endregion ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+
+    // #region publicãƒ¡ãƒ³ãƒé–¢æ•°
 
     std::shared_ptr<Data> && ReadInputFile::getpData()
     {
@@ -42,7 +57,7 @@ namespace schrac {
 	void ReadInputFile::readFile()
 	{
 		if (!ifs_.is_open())
-			throw std::runtime_error("ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½");
+			throw std::runtime_error("ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ");
 
 		if (!readAtom())
             goto L_END;
@@ -50,66 +65,72 @@ namespace schrac {
 		if (!readEq())
             goto L_END;
 
-        // ƒOƒŠƒbƒh‚ÌÅ¬’l‚ğ“Ç‚İ‚Ş
+        // ã‚°ãƒªãƒƒãƒ‰ã®æœ€å°å€¤ã‚’èª­ã¿è¾¼ã‚€
         readValue("grid.xmin", Data::XMIN_DEFAULT, pdata_->xmin_);
 
-        // ƒOƒŠƒbƒh‚ÌÅ‘å’l‚ğ“Ç‚İ‚Ş
+        // ã‚°ãƒªãƒƒãƒ‰ã®æœ€å¤§å€¤ã‚’èª­ã¿è¾¼ã‚€
         readValue("grid.xmax", Data::XMAX_DEFAULT, pdata_->xmax_);
 
-        // ƒOƒŠƒbƒh‚ÌƒTƒCƒY‚ğ“Ç‚İ‚Ş
+        // ã‚°ãƒªãƒƒãƒ‰ã®ã‚µã‚¤ã‚ºã‚’èª­ã¿è¾¼ã‚€
         readValue("grid.num", Data::GRID_NUM_DEFAULT, pdata_->grid_num_);
 
-        // ‹–—eŒë·‚ğ“Ç‚İ‚Ş
+        // è¨±å®¹èª¤å·®ã‚’èª­ã¿è¾¼ã‚€
         readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
 
 		if (!readType())
-			throw std::runtime_error("ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ªˆÙí‚Å‚·");
+			throw std::runtime_error("ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒç•°å¸¸ã§ã™");
 
 		if (!readLowerE())
-			throw std::runtime_error("ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ªˆÙí‚Å‚·");
+			throw std::runtime_error("ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒç•°å¸¸ã§ã™");
 
-        // ŒÅ—L’lŒŸõ‚ÌŠÔŠu‚ğ“Ç‚İ‚Ş
+        // å›ºæœ‰å€¤æ¤œç´¢ã®é–“éš”ã‚’èª­ã¿è¾¼ã‚€
         readValue("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT, pdata_->num_of_partition_);
 
-        // ƒ}ƒbƒ`ƒ“ƒOƒ|ƒCƒ“ƒg‚ğ“Ç‚İ‚Ş
+        // ãƒãƒƒãƒãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆã‚’èª­ã¿è¾¼ã‚€
         readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
 
         return;
 
     L_END:
-        throw std::runtime_error("ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚ªˆÙí‚Å‚·");
+        throw std::runtime_error("ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒç•°å¸¸ã§ã™");
 	}
     
+    // #endregion publicãƒ¡ãƒ³ãƒé–¢æ•°
+
+    // #region privateãƒ¡ãƒ³ãƒé–¢æ•°
+
     void ReadInputFile::errMsg(ci_string const & s) const
     {
-        std::cerr << "ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚É" << s << "‚Ìs‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½" << std::endl;
+        std::cerr << "ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã«" << s << "ã®è¡ŒãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ" << std::endl;
     }
 
     void ReadInputFile::errMsg(std::int32_t line, ci_string const & s1, ci_string const & s2) const
     {
-        std::cerr << "ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚Ì[" << s1 << "]‚Ìs‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñ" << std::endl;
-        std::cerr << line << "s–Ú, –¢’m‚Ìƒg[ƒNƒ“:" << s2 << std::endl;
+        std::cerr << "ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®[" << s1 << "]ã®è¡ŒãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“" << std::endl;
+        std::cerr << line << "è¡Œç›®, æœªçŸ¥ã®ãƒˆãƒ¼ã‚¯ãƒ³:" << s2 << std::endl;
     }
 
     std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> ReadInputFile::getToken(ci_string const & article)
     {
-        std::array<char, BUFSIZE> buf;
-        ifs_.getline(buf.data(), BUFSIZE);
+        using namespace boost::algorithm;
+
+        std::string buf;
+        std::getline(ifs_, buf);
         ci_string const line(buf.data());
 
-        // ‚à‚µˆê•¶š‚à“Ç‚ß‚È‚©‚Á‚½‚ç
+        // ã‚‚ã—ä¸€æ–‡å­—ã‚‚èª­ã‚ãªã‹ã£ãŸã‚‰
         if (!ifs_.gcount()) {
             errMsg(article);
             return std::make_pair(-1, boost::none);
         }
 
-        // “Ç‚İ‚ñ‚¾s‚ª‹óA‚ ‚é‚¢‚ÍƒRƒƒ“ƒgs‚Å‚È‚¢‚È‚ç
+        // èª­ã¿è¾¼ã‚“ã è¡ŒãŒç©ºã€ã‚ã‚‹ã„ã¯ã‚³ãƒ¡ãƒ³ãƒˆè¡Œã§ãªã„ãªã‚‰
         if (!line.empty() && (line[0] != '#')) {
-            // ƒg[ƒNƒ“•ªŠ„
+            // ãƒˆãƒ¼ã‚¯ãƒ³åˆ†å‰²
             strvec tokens;
             split(tokens, line, is_any_of(" \t"), token_compress_on);
             
-            auto itr(tokens.begin());
+            auto const itr(tokens.begin());
 
             if (*itr != article) {
                 errMsg(lineindex_, article, *itr);
@@ -126,7 +147,7 @@ namespace schrac {
     boost::optional<ci_string> ReadInputFile::readData(ci_string const & article)
 	{
 		for (; true; lineindex_++) {
-            auto const ret = getToken(article);
+            auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
             {
@@ -136,11 +157,11 @@ namespace schrac {
 
             case 0:
             {
-                auto const tokens = *(std::get<1>(ret));
+                auto const tokens(*(std::get<1>(ret)));
 
-                // “Ç‚İ‚ñ‚¾ƒg[ƒNƒ“‚Ì”‚ª‚à‚µ2ŒÂˆÈŠO‚¾‚Á‚½‚ç
+                // èª­ã¿è¾¼ã‚“ã ãƒˆãƒ¼ã‚¯ãƒ³ã®æ•°ãŒã‚‚ã—2å€‹ä»¥å¤–ã ã£ãŸã‚‰
                 if (tokens.size() != 2 || tokens[1].empty()) {
-                    std::cerr << "ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹" << lineindex_ << "s–Ú‚ÌA[" << article << "]‚Ìs‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñ" << std::endl;
+                    std::cerr << "ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«" << lineindex_ << "è¡Œç›®ã®ã€[" << article << "]ã®è¡ŒãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“" << std::endl;
                     return boost::none;
                 }
 
@@ -151,7 +172,7 @@ namespace schrac {
                 break;
 
             default:
-                BOOST_ASSERT(!"‰½‚©‚ª‚¨‚©‚µ‚¢!");
+                BOOST_ASSERT(!"ä½•ã‹ãŒãŠã‹ã—ã„!");
                 break;
             }
 		}
@@ -159,44 +180,44 @@ namespace schrac {
 
     boost::optional<ci_string> ReadInputFile::readData(ci_string const & article, ci_string const & def)
 	{
-		// ƒOƒŠƒbƒh‚ğ“Ç‚İ‚Ş
+		// ã‚°ãƒªãƒƒãƒ‰ã‚’èª­ã¿è¾¼ã‚€
 		for (; true; lineindex_++) {
-            auto const ret = getToken(article);
+            auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
             {
             case -1:
-                return nullptr;
+                return boost::none;
                 break;
 
             case 0:
             {
-                auto const tokens = *(std::get<1>(ret));
+                auto const tokens(*(std::get<1>(ret)));
                 auto itr(++tokens.begin());
                 ++lineindex_;
 
-                // “Ç‚İ‚ñ‚¾ƒg[ƒNƒ“‚Ì”‚ğ‚Í‚©‚é
+                // èª­ã¿è¾¼ã‚“ã ãƒˆãƒ¼ã‚¯ãƒ³ã®æ•°ã‚’ã¯ã‹ã‚‹
                 switch (tokens.size()) {
                 case 1:
-                    // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·
-                    return std::move(def);
+                    // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™
+                    return def;
                     break;
 
                 case 2:
-                    return *itr == "DEFAULT" ? std::move(def) : *itr;
+                    return *itr == "DEFAULT" ? def : *itr;
                     break;
 
                 default:
                     {
-                        auto const val = *itr;
+                        auto val(*itr);
 
                         if (val == "DEFAULT" || val[0] == '#') {
-                            // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·
+                            // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™
                             return std::move(def);
                         }
                         else if ((*(++itr))[0] != '#') {
                             errMsg(lineindex_ - 1, article, *itr);
-                            return nullptr;
+                            return boost::none;
                         }
 
                         return std::move(val);
@@ -210,7 +231,7 @@ namespace schrac {
                 break;
 
             default:
-                BOOST_ASSERT(!"‰½‚©‚ª‚¨‚©‚µ‚¢!");
+                BOOST_ASSERT(!"ä½•ã‹ãŒãŠã‹ã—ã„!");
                 break;
             }
 		}
@@ -219,7 +240,7 @@ namespace schrac {
     boost::optional<ci_string> ReadInputFile::readDataAuto(ci_string const & article)
 	{
 		for (; true; lineindex_++) {
-            auto const ret = getToken(article);
+            auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
             {
@@ -229,11 +250,11 @@ namespace schrac {
 
             case 0:
             {
-                auto const tokens = *(std::get<1>(ret));
+                auto const tokens(*(std::get<1>(ret)));
                 auto itr(++tokens.begin());
                 ++lineindex_;
 
-                // “Ç‚İ‚ñ‚¾ƒg[ƒNƒ“‚Ì”‚ğ‚Í‚©‚é
+                // èª­ã¿è¾¼ã‚“ã ãƒˆãƒ¼ã‚¯ãƒ³ã®æ•°ã‚’ã¯ã‹ã‚‹
                 switch (tokens.size()) {
                 case 1:
                     return boost::none;
@@ -249,12 +270,12 @@ namespace schrac {
                         auto val = *itr;
 
                         if (val == "DEFAULT" || val == "AUTO" || val[0] == '#') {
-                            // ƒfƒtƒHƒ‹ƒg’l‚ğ•Ô‚·
+                            // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’è¿”ã™
                             return boost::optional<ci_string>(ci_string());
                         } else if ((*(++itr))[0] != '#') {
                             errMsg(lineindex_ - 1, article, *itr);
 
-                            // ƒGƒ‰[
+                            // ã‚¨ãƒ©ãƒ¼
                             return boost::none;
                         }
 
@@ -269,7 +290,7 @@ namespace schrac {
                 break;
 
             default:
-                BOOST_ASSERT(!"‰½‚©‚ª‚¨‚©‚µ‚¢!");
+                BOOST_ASSERT(!"ä½•ã‹ãŒãŠã‹ã—ã„!");
                 break;
             }
 		}
@@ -277,14 +298,14 @@ namespace schrac {
 	
 	bool ReadInputFile::readAtom()
 	{
-		// Œ´q‚Ìí—Ş‚ğ“Ç‚İ‚Ş
+		// åŸå­ã®ç¨®é¡ã‚’èª­ã¿è¾¼ã‚€
         auto const chemsym(readData(ReadInputFile::CHEMICAL_SYMBOL));
         if (!chemsym) {
             return false;
         }
 
 		try {
-            auto const itr = boost::find(Data::Chemical_Symbol, chemsym->c_str());
+            auto const itr(boost::find(Data::Chemical_Symbol, chemsym->c_str()));
             if (itr == Data::Chemical_Symbol.end()) {
                 throw std::invalid_argument("");
             }
@@ -296,7 +317,7 @@ namespace schrac {
 			return false;
 		}
 
-		// ‹O“¹‚ğ“Ç‚İ‚Ş
+		// è»Œé“ã‚’èª­ã¿è¾¼ã‚€
         auto const porbital(readData(ReadInputFile::ORBITAL));
 		if (!porbital) {
 			return false;
@@ -348,11 +369,11 @@ namespace schrac {
 		}
 
 		if (pdata_->n_ - pdata_->l_ < 1) {
-			std::cerr << "—Êq”‚Ìw’è‚ªˆÙí‚Å‚·" << std::endl;
+			std::cerr << "é‡å­æ•°ã®æŒ‡å®šãŒç•°å¸¸ã§ã™" << std::endl;
 			return false;
 		}
 
-		// ƒXƒsƒ“‹O“¹‚ğ“Ç‚İ‚Ş
+		// ã‚¹ãƒ”ãƒ³è»Œé“ã‚’èª­ã¿è¾¼ã‚€
         auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL));
 		if (!pspin_orbital) {
 			return false;
@@ -365,16 +386,16 @@ namespace schrac {
 		}
 
 		if (!pdata_->l_) {
-            // s‹O“¹‚Í“Á•Ê‚ÈƒP[ƒX
+            // sè»Œé“ã¯ç‰¹åˆ¥ãªã‚±ãƒ¼ã‚¹
 			// j = l_ + 1/2
 			pdata_->j_ = 0.5;
 			pdata_->kappa_ = - 1.0;
 		} else if (pdata_->spin_orbital_ == Data::ALPHA) {
-            // j = l_ + 1/2‚É‘Î‚µ‚Ä
+            // j = l_ + 1/2ã«å¯¾ã—ã¦
 			pdata_->j_ = static_cast<double>(pdata_->l_) + 0.5;
 			pdata_->kappa_ = - static_cast<double>(pdata_->l_) - 1.0;
 		} else {
-            // j = l_ - 1/2‚É‘Î‚µ‚Ä
+            // j = l_ - 1/2ã«å¯¾ã—ã¦
 			pdata_->j_ = static_cast<double>(pdata_->l_) - 0.5;
 			pdata_->kappa_ = static_cast<double>(pdata_->l_);
 		}
@@ -385,7 +406,6 @@ namespace schrac {
 	bool ReadInputFile::readEq()
 	{
         auto const peqtype(readData(ReadInputFile::EQ_TYPE, ReadInputFile::EQ_TYPE_DEFAULT));
-
         if (!peqtype) {
             return false;
         }
@@ -398,7 +418,7 @@ namespace schrac {
 			return false;
         }
         else if (itr != ReadInputFile::EQ_TYPE_ARRAY.begin()) {
-            pdata_->eq_type_ = boost::numeric_cast<const Data::Eq_type>(std::distance(ReadInputFile::EQ_TYPE_ARRAY.begin(), itr));
+            pdata_->eq_type_ = boost::numeric_cast<Data::Eq_type>(std::distance(ReadInputFile::EQ_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;
@@ -440,7 +460,7 @@ namespace schrac {
         }
 
         auto const solvertype = *psolvetype;
-		auto const itr = boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype);
+		auto const itr(boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype));
         if (itr == ReadInputFile::SOLVER_TYPE_ARRAY.end()) {
 			errMsg(lineindex_ - 1, "solver.type", solvertype);
 			return false;
@@ -449,5 +469,7 @@ namespace schrac {
 		}
 
 		return true;
-	}    
+	}
+
+    // #endregion privateãƒ¡ãƒ³ãƒé–¢æ•°
 }

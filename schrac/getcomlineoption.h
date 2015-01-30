@@ -1,9 +1,16 @@
-#ifndef _MY_GETOPT_H_
-#define _MY_GETOPT_H_
+﻿/*! \file getcomlineoption.h
+    \brief コマンドラインオプションの解析を行うクラスの宣言
 
-#include <cstdint>
-#include <string>
-#include <utility>
+    Copyright ©  2015 @dc1394 All Rights Reserved.
+*/
+#ifndef _GETCOMLINEOPTION_H_
+#define _GETCOMLINEOPTION_H_
+
+#pragma once
+
+#include <cstdint>  // for std::int32_t
+#include <string>   // for std::string
+#include <utility>  // for std::pair
 
 namespace schrac {
     //! A class.
@@ -79,15 +86,15 @@ namespace schrac {
 
         //! A private copy constructor (deleted).
         /*!
-        コピーコンストラクタ（禁止）
+            コピーコンストラクタ（禁止）
         */
         GetComLineOption(GetComLineOption const &) = delete;
 
         //! A private member function (deleted).
         /*!
-        operator=()の宣言（禁止）
-        \param コピー元のオブジェクト（未使用）
-        \return コピー元のオブジェクト
+            operator=()の宣言（禁止）
+            \param コピー元のオブジェクト（未使用）
+            \return コピー元のオブジェクト
         */
         GetComLineOption & operator=(GetComLineOption const &) = delete;
 
@@ -95,5 +102,4 @@ namespace schrac {
 	};
 }
 
-#endif	// _MY_GETOPT_H_
-
+#endif	// _GETCOMLINEOPTION_H_

@@ -1,4 +1,4 @@
-/*! \file Data.h
+/*! \file data.h
     \brief インプットファイルの各種データの構造体の宣言
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
@@ -6,10 +6,12 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
+#pragma once
+
 #include "ci_string.h"
-#include <array>
-#include <cstdint>
-#include <boost/optional.hpp>
+#include <array>                // for std::array
+#include <cstdint>              // for std::int32_t, std::uint8_t
+#include <boost/optional.hpp>   // for boost::optional
 
 namespace schrac {
     //! A class.

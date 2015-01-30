@@ -1,17 +1,21 @@
+﻿/*! \file getcomlineoption.cpp
+    \brief コマンドラインオプションの解析を行うクラスの実装
+
+    Copyright ©  2015 @dc1394 All Rights Reserved.
+*/
 #include "getcomlineoption.h"
-#include <iostream>
-#include <boost/program_options.hpp>
+#include <iostream>                     // for std::cerr, std::cout
+#include <boost/program_options.hpp>    // for boost::program_options
 
 namespace schrac {
+    // #region staticメンバ変数
+    
     std::string const GetComLineOption::DEFINPNAME = "input.inp";        
         
-    //! A public member function.
-    /*!
-        コマンドラインオプションを解析する関数の実装
-        \param argc コマンドライン引数の数
-        \param argv コマンドライン引数
-        \return 解析に成功したら0、失敗したら-1、ヘルプ表示の場合は1
-    */
+    // #endregion staticメンバ変数
+
+    // #region publicメンバ関数
+
     std::int32_t GetComLineOption::getopt(int argc, char * const argv[])
 	{
 		using namespace boost::program_options;
@@ -21,10 +25,10 @@ namespace schrac {
 
 		// 引数の書式を定義
         opt.add_options()
-            ("help,h", "Show help")
-            ("inputfile,I", value<std::string>()->default_value(GetComLineOption::DEFINPNAME), "Specifying the input file name")
+            ("help,h", "ヘルプを表示")
+            ("inputfile,I", value<std::string>()->default_value(GetComLineOption::DEFINPNAME), "インプットファイル名")
 			("tbb,T", value<bool>()->implicit_value(false),
-			 "Whether or not to use the TBB (default: is not used)");
+			 "TBBを使用して並列計算を行うかどうか（デフォルトはTBBを使用しない）");
 
 		// 引数の書式に従って実際に指定されたコマンドライン引数を解析
 		variables_map vm;
@@ -32,7 +36,7 @@ namespace schrac {
 			store(parse_command_line(argc, argv, opt), vm);
 		} catch (const std::exception & e) {
 			std::cerr << e.what()
-					  << ". command line argument is valid!" << std::endl;
+					  << ". コマンドライン引数が異常です。終了します。" << std::endl;
 
 			return -1;
 		}
@@ -57,14 +61,12 @@ namespace schrac {
 
 		return 0;
 	}
-
-    //! A public member function (constant).
-    /*!
-        \return インプットファイル名とTBBを使用するかどうかのstd::pair
-    */
+    
     std::pair<std::string, bool> GetComLineOption::getpairdata() const
 	{
         return std::make_pair(inpname_, usetbb_);
     }
+
+    // #endregion publicメンバ関数
 }
 
