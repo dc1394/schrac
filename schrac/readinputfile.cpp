@@ -114,8 +114,8 @@ namespace schrac {
     {
         using namespace boost::algorithm;
 
-        std::string buf;
-        std::getline(ifs_, buf);
+        std::array<char, BUFSIZE> buf;
+        ifs_.getline(buf.data(), BUFSIZE);
         ci_string const line(buf.data());
 
         // もし一文字も読めなかったら

@@ -12,6 +12,10 @@
 
 namespace schrac {
 	class Diff {
+        // #region 型エイリアス
+
+        using myarray = std::array < double, DiffData::AVECSIZE > ;
+
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -37,22 +41,20 @@ namespace schrac {
         // #region メンバ関数
         
     public:
-        static const double MINV;
+        static auto constexpr MINV = 1.0E-200;
 
-			bool a_init();
-			void b_init();
+		void a_init();
+		void b_init();
 
-			void init_LM_O();
-			void init_LM_I();
+		void init_LM_O();
+		void init_LM_I();
 
-			const boost::optional<const std::array<double, DiffData::AVECSIZE> >
-				S_gausswp(std::array<std::array<double, DiffData::AVECSIZE>, DiffData::AVECSIZE> & a,
-						  std::array<double, DiffData::AVECSIZE> & b) const;
+        Diff::myarray solve_linear_equ(std::array<double, DiffData::AVECSIZE * DiffData::AVECSIZE> a, myarray b) const;
 
-			virtual bool solve_diff_equ_O();
-			virtual bool solve_diff_equ_I();
+		bool solve_diff_equ_O();
+		bool solve_diff_equ_I();
 
-            void derivs(double x, std::array<double, 2> const & y, std::array<double, 2> & dydx) const;
+        void derivs(std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) const;
 
 	protected:
 		const std::shared_ptr<const Data> pdata_;
@@ -61,16 +63,14 @@ namespace schrac {
 		
 
 	public:
-		static std::function<double(double, double, double,
-			const std::shared_ptr<DiffData> &)> dM_dx;
+		std::function<double(double, double, double, std::shared_ptr<DiffData> const &)> dM_dx;
 		typedef std::pair<const std::array<double, 2>, const std::array<double, 2> > mytuple;
 
 		void Initialize(double E);
 		const std::shared_ptr<DiffData> & getpDiffData() const
 		{ return pdiffdata_; }
 		virtual bool solve_diff_equ();
-		virtual ~Diff() {}
-		const mytuple getMPval() const;
+		mytuple getMPval() const;
 	};
 
     double fnc_V(double r, const std::shared_ptr<DiffData> & pdiffdata);
@@ -82,46 +82,8 @@ namespace schrac {
         const std::shared_ptr<DiffData> & pdiffdata);
     double dM_dx_dirac(double x, double L, double M,
         const std::shared_ptr<DiffData> & pdiffdata);
-
-    void Diff::derivs(double x, std::array<double, 2> const & y, std::array<double, 2> & dydx) const
-    {
-        dydx[0] = dL_dx(y[1]);
-        dydx[1] = Diff::dM_dx(x, y[0], y[1], pdiffdata_);
-    }
-
-	inline double fnc_V(double r, const std::shared_ptr<DiffData> & pdiffdata)
-	{
-		return - pdiffdata->Z_ / r;
-	}
-
-	inline double dV_dr(double r, const std::shared_ptr<DiffData> & pdiffdata)
-	{
-		return pdiffdata->Z_ / (r * r);
-	}
-		
-	inline double dL_dx(double M)
-	{
-		return M;
-	}
-
-	inline const Diff::mytuple Diff::getMPval() const
-	{
-		std::array<double, 2> L, M;
-
-		L[0] = pdiffdata_->LO_[pdiffdata_->MP_O_];
-		L[1] = pdiffdata_->LI_[pdiffdata_->MP_I_];
-		M[0] = pdiffdata_->MO_[pdiffdata_->MP_O_];
-		M[1] = pdiffdata_->MI_[pdiffdata_->MP_I_];
-
-		return std::make_pair(L, M);
-	}
+	   
 	
-	template <typename T>
-	T sqr(T x)
-	{
-		return x * x;
-	}
-
     template <typename T>
     T pow(T x, std::uint32_t n)
     {
@@ -139,6 +101,12 @@ namespace schrac {
             p *= p;
         }
     }
+
+	template <typename T>
+	T sqr(T x)
+	{
+		return x * x;
+	}
 }
 
 #endif	// _DIFF_H_

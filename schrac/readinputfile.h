@@ -115,7 +115,9 @@ namespace schrac {
             \return 読みこんだ文字列
         */
         boost::optional<ci_string> readData(ci_string const & article, ci_string const & def);
-        
+
+        template <typename T>
+
         //! A private member function (template function).
         /*!
             データを読み込む
@@ -123,7 +125,6 @@ namespace schrac {
             \param default_value デフォルト値
             \return 読みこんだ文字列
         */
-        template <typename T>
         boost::optional<T> readData(ci_string const & article, T const & default_value);
         
         //! A private member function.
@@ -155,6 +156,7 @@ namespace schrac {
         */
         bool readType();
 
+        template <typename T>
         //! A private member function.
         /*!
             対象の要素の値をその行から読み込む
@@ -163,12 +165,17 @@ namespace schrac {
             \param value 読み込んだ値
             \return 読み込みが成功したかどうか
         */
-        template <typename T>
         void readValue(ci_string const & article, T const & default_value, T & value);
 
         // #endregion メンバ関数
 
         // #region メンバ変数
+
+        //! A private member variable (constant expression).
+        /*!
+        バッファサイズ
+        */
+        static constexpr std::streamsize BUFSIZE = 1024;
 
         //! A private member variable (constant).
         /*!

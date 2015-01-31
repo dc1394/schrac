@@ -1,6 +1,7 @@
 ﻿#include "EigenValueSearch.h"
 #include <cmath>
 #include <iomanip>
+#include <iostream>
 #include <tuple>
 #include <boost/cast.hpp>
 
@@ -40,7 +41,7 @@ namespace schrac {
                 return false;
             }
 
-            bool b;
+            /*bool b;
             try {
                 b = zbrent();
             }
@@ -61,7 +62,7 @@ namespace schrac {
                 }
 
                 pdiff_->Initialize(E);
-            }
+            }*/
         }
 
         return false;
@@ -76,7 +77,7 @@ namespace schrac {
             return boost::none;
         }
 
-        noden_ = pdiffdata_->node == pdiffdata_->thisnode;
+        noden_ = pdiffdata_->node_ == pdiffdata_->thisnode_;
 
         std::array<double, 2> L, M;
         std::tie(L, M) = pdiff_->getMPval();
@@ -86,7 +87,7 @@ namespace schrac {
     inline void EigenValueSearch::info() const
     {
         std::cout << "i = " << loop_ << ", D = " << Dold << ", node = "
-            << pdiffdata_->thisnode;
+            << pdiffdata_->thisnode_;
 
         if (noden_) {
             std::cout << " (OK)" << std::endl;
@@ -109,7 +110,7 @@ namespace schrac {
         std::cout << "i = " << loop_ << ", D = "
             << fb << ", E = " << b
             << ", node = "
-            << pdiffdata_->thisnode;
+            << pdiffdata_->thisnode_;
 
         if (noden_) {
             std::cout << " (OK)" << std::endl;
@@ -150,7 +151,7 @@ namespace schrac {
 
 		switch (pdata_->solver_type_) {
         case Data::Solver_type::BULIRSCH_STOER:
-            pdiff_ = std::make_shared<Bulirsch_Stoer>(pdata_, E, TINY);
+            pdiff_ = std::make_shared<Diff>(E, pdata_, TINY);
 			break;
 
 			//case Data::RK_ADAPSTEP:
@@ -247,97 +248,97 @@ namespace schrac {
             boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))) - 2);
     }
 
-	bool EigenValueSearch::zbrent()
-	{
-		double a = Emin, b = Emax, c = Emax, d = 0.0, e = 0.0;
-		double fa = Dmin, fb = Dmax;
-		double fc = fb;
+	//bool EigenValueSearch::zbrent()
+	//{
+	//	double a = Emin, b = Emax, c = Emax, d = 0.0, e = 0.0;
+	//	double fa = Dmin, fb = Dmax;
+	//	double fc = fb;
 
-		if (fa * fb > 0.0) {
-			BOOST_ASSERT(!"Root must be bracketed in zbrent");
-		}
+	//	if (fa * fb > 0.0) {
+	//		BOOST_ASSERT(!"Root must be bracketed in zbrent");
+	//	}
 
-		for (; loop_ < EVALSEARCHMAX; loop_++) {
-			info(b, fb);
+	//	for (; loop_ < EVALSEARCHMAX; loop_++) {
+	//		info(b, fb);
 
-			if (std::fabs(fb) > HUGE) {
-				std::cerr << "関数Dに極があります。極を無視して探索を続けます..." << std::endl;
-				return false;
-			}
+	//		if (std::fabs(fb) > HUGE) {
+	//			std::cerr << "関数Dに極があります。極を無視して探索を続けます..." << std::endl;
+	//			return false;
+	//		}
 
-			if (fb * fc > 0.0) {
-				c = a;														// a, b, cの名前を付け替えて区間幅調整
-				fc = fa;
-				e = d = b - a;
-			}
-			if (std::fabs(fc) < std::fabs(fb)) {
-				a = b;
-				b = c;
-				c = a;
-				fa = fb;
-				fb = fc;
-				fc = fa;
-			}
+	//		if (fb * fc > 0.0) {
+	//			c = a;														// a, b, cの名前を付け替えて区間幅調整
+	//			fc = fa;
+	//			e = d = b - a;
+	//		}
+	//		if (std::fabs(fc) < std::fabs(fb)) {
+	//			a = b;
+	//			b = c;
+	//			c = a;
+	//			fa = fb;
+	//			fb = fc;
+	//			fc = fa;
+	//		}
 
-			const double tol1 = 2.0 * EPS * std::fabs(b) + 0.5 * TOL;	// 収束のチェック
-			const double xm = 0.5 * (c - b);
+	//		const double tol1 = 2.0 * EPS * std::fabs(b) + 0.5 * TOL;	// 収束のチェック
+	//		const double xm = 0.5 * (c - b);
 
-			if (std::fabs(xm) <= tol1 || std::fabs(fb) < TINY) {
-				E = b;
-				return true;
-			}
+	//		if (std::fabs(xm) <= tol1 || std::fabs(fb) < TINY) {
+	//			E = b;
+	//			return true;
+	//		}
 
-			if (fabs(e) >= tol1 && fabs(fa) > fabs(fb)) {
-				const double s = fb / fa;								// 逆二乗補間を試みる
-				double q, r, p;
+	//		if (fabs(e) >= tol1 && fabs(fa) > fabs(fb)) {
+	//			const double s = fb / fa;								// 逆二乗補間を試みる
+	//			double q, r, p;
 
-				if (std::fabs(a - c) < TINY) {
-					p = 2.0 * xm * s;
-					q = 1.0 - s;
-				} else {
-					q = fa / fc;
-					r = fb / fc;
-					p = s * (2.0 * xm * q * (q - r) - (b - a) * (r - 1.0));
-					q = (q - 1.0) * (r - 1.0) * (s - 1.0);
-				}
-				if (p > 0.0)
-					q = - q;												// 区間内かどうかチェック
+	//			if (std::fabs(a - c) < TINY) {
+	//				p = 2.0 * xm * s;
+	//				q = 1.0 - s;
+	//			} else {
+	//				q = fa / fc;
+	//				r = fb / fc;
+	//				p = s * (2.0 * xm * q * (q - r) - (b - a) * (r - 1.0));
+	//				q = (q - 1.0) * (r - 1.0) * (s - 1.0);
+	//			}
+	//			if (p > 0.0)
+	//				q = - q;												// 区間内かどうかチェック
 
-				p = std::fabs(p);
-				const double min1 = 3.0 * xm * q - std::fabs(tol1 * q);
-				const double min2 = std::fabs(e * q);
-				const double min = min1 < min2 ? min1 : min2;
+	//			p = std::fabs(p);
+	//			const double min1 = 3.0 * xm * q - std::fabs(tol1 * q);
+	//			const double min2 = std::fabs(e * q);
+	//			const double min = min1 < min2 ? min1 : min2;
 
-				if (2.0 * p < min) {
-					e = d;													// 補間値を採用
-					d = p / q;
-				} else {
-					d = xm;													// 補間失敗、二分法を使う
-					e = d;
-				}
-			} else {														// 区間幅の減少が遅すぎるので二分法を使う
-				d = xm;
-				e = d;
-			}
+	//			if (2.0 * p < min) {
+	//				e = d;													// 補間値を採用
+	//				d = p / q;
+	//			} else {
+	//				d = xm;													// 補間失敗、二分法を使う
+	//				e = d;
+	//			}
+	//		} else {														// 区間幅の減少が遅すぎるので二分法を使う
+	//			d = xm;
+	//			e = d;
+	//		}
 
-			a = b;															// 区間幅の最良値をaに移す
-			fa = fb;
+	//		a = b;															// 区間幅の最良値をaに移す
+	//		fa = fb;
 
-			if (fabs(d) > tol1)												// 新しい根の候補を計算
-				b += d;
-			else
-				b += sign<double>(tol1, xm);
-			
-			pdiff_->Initialize(b);
-			const boost::optional<const double> pfb(fnc_D());
-			if (pfb)
-				fb = *pfb;
-			else
-				throw std::runtime_error("");
-		}
+	//		if (fabs(d) > tol1)												// 新しい根の候補を計算
+	//			b += d;
+	//		else
+	//			b += sign<double>(tol1, xm);
+	//		
+	//		pdiff_->Initialize(b);
+	//		const boost::optional<const double> pfb(fnc_D());
+	//		if (pfb)
+	//			fb = *pfb;
+	//		else
+	//			throw std::runtime_error("");
+	//	}
 
-		throw std::runtime_error("Maximum number of iterations exceeded in zbrent");
-	}
+	//	throw std::runtime_error("Maximum number of iterations exceeded in zbrent");
+	//}
 	
     // #endregion privateメンバ関数 
 

@@ -1,15 +1,8 @@
 #ifndef _EIGENVALUESEARCH_H_
 #define _EIGENVALUESEARCH_H_
 
-#include "Bulirsch_Stoer.h"
 #include "Diff.h"
 #include "ReadInputFile.h"
-#include "RK_AdapStep.h"
-#include "RungeKutta.h"
-
-#ifdef _DEBUG
-	#include "ModEuler.h"
-#endif
 
 namespace schrac {
 	class EigenValueSearch final {
@@ -147,13 +140,13 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            二分法における関数Dの大きい方
+            Brent法における関数Dの大きい方
         */
         double Dmax;
 
         //! A private member variable.
         /*!
-            二分法における関数Dの小さい方
+            Brent法における関数Dの小さい方
         */
         double Dmin;
 
@@ -171,13 +164,13 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            二分法におけるエネルギー固有値の大きい方
+            Brent法におけるエネルギー固有値の大きい方
         */
         double Emax;
 
         //! A private member variable.
         /*!
-            二分法におけるエネルギー固有値の小さい方
+            Brent法におけるエネルギー固有値の小さい方
         */
         double Emin;
 
@@ -189,7 +182,7 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            二分法における関数Dの古い値
+            関数Dの古い値
         */
         double Dold;
 		
@@ -223,8 +216,6 @@ namespace schrac {
         */
 		std::shared_ptr<DiffData> pdiffdata_;
         
-
-
         // #endregion メンバ関数
 		
 		bool zbrent();
@@ -259,7 +250,7 @@ namespace schrac {
 
     //! A function.
     /*!
-        対象の方程式がDirac方程式の場合に、大体のエネルギー固有値を求める
+        対象の方程式がDirac方程式の場合に、エネルギー固有値の下限を概算する
         \param pdata データオブジェクト
         \return 大体のエネルギー固有値
     */
@@ -267,7 +258,7 @@ namespace schrac {
     
     //! A function.
     /*!
-        対象の方程式がSch方程式の場合に、大体のエネルギー固有値を求める
+        対象の方程式がSch方程式の場合に、エネルギー固有値の下限を概算する
         \param pdata データオブジェクト
         \return 大体のエネルギー固有値
     */
@@ -275,12 +266,13 @@ namespace schrac {
 
     //! A function.
     /*!
-        対象の方程式がscalar Dirac方程式の場合に、大体のエネルギー固有値を求める
+        対象の方程式がscalar Dirac方程式の場合に、エネルギー固有値の下限を概算する
         \param pdata データオブジェクト
         \return 大体のエネルギー固有値
     */
     double Eexact_sdirac(std::shared_ptr<Data> const & pdata);
 
+	template <typename T>
     //! A function (template function).
     /*!
         bが正の値の場合にaの絶対値を、bが負の値の場合はaの絶対値に-をかけた値を返す
@@ -288,8 +280,7 @@ namespace schrac {
         \param b 正負を判断するための値
         \return bが正の値の場合はaの絶対値、bが負の値の場合はaの絶対値に-をかけた値
     */
-	template <typename T>
-	inline T sign(T a, T b)
+	T sign(T a, T b)
 	{
 		return (b >= 0.0) ? std::fabs(a) : - std::fabs(a);
 	}

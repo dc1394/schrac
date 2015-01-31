@@ -29,8 +29,8 @@ namespace schrac {
 		DX_ = (pdata_->xmax_ - pdata_->xmin_) / static_cast<double>(grid_num - 1);
 
 		// メモリ確保
-		XV_O.resize(osize);
-		XV_I.resize(isize);
+		XV_O_.resize(osize);
+		XV_I_.resize(isize);
 		RV_O_.resize(osize);
 		RV_I_.resize(isize);
 		VP_O_.resize(osize);
@@ -46,15 +46,15 @@ namespace schrac {
 			{
 				//#pragma omp for nowait
 				for (auto i = 0; i < osize; i++) {
-					const double x = pdata_->xmin_ + static_cast<double>(i) * DX_;
-					XV_O[i] = x;
+					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
+					XV_O_[i] = x;
 					RV_O_[i] = std::exp(x);
 					VP_O_[i] = fnc_V(x);
 				}
 				//#pragma omp for nowait
 				for (auto i = boost::numeric_cast<std::int32_t>(grid_num - 1); i >= len; i--) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
-					XV_I[grid_num - 1 - i] = x;
+					XV_I_[grid_num - 1 - i] = x;
 					RV_I_[grid_num - 1 - i] = std::exp(x);
 					//VP_I[grid_num - 1 - i] = fnc_V(x);
 				}

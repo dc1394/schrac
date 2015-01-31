@@ -1,8 +1,10 @@
-﻿#include "getcomlineoption.h"
+﻿#include "EigenValueSearch.h"
+#include "getcomlineoption.h"
 #include <conio.h>
 #include <cstdlib>
 #include <iostream>
 #include <boost/assert.hpp>
+#include <boost/optional.hpp>
 //#include "WF_Save.h"
 //#include "ChkPoint.h"
 
@@ -52,7 +54,7 @@ int main(int argc, char * argv[])
     boost::optional<schrac::EigenValueSearch> pevs;
 
     try {
-        pevs = boost::in_place(go.getpData());
+        pevs = boost::in_place(mg.getpairdata());
     }
     catch (const std::runtime_error & e) {
         std::cerr << e.what() << std::endl;

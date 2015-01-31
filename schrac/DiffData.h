@@ -130,13 +130,13 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            無限遠に近い点から解いた関数Mの数表が格納された可変長配列
+            無限遠に近い点から関数Mの数表が格納された可変長配列
         */
         dvector MI_;
         
         //!  A public member variable.
         /*!
-            原点に近い点から解いた関数Mの数表が格納された可変長配列
+            原点に近い点から関数Mの数表が格納された可変長配列
         */
         dvector MO_;
 
@@ -154,13 +154,13 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            無限遠に近い点からRのメッシュが格納された可変長配列
+            無限遠に近い点からrのメッシュが格納された可変長配列
         */
         dvector RV_I_;
 
         //!  A public member variable.
         /*!
-            原点に近い点からRのメッシュが格納された可変長配列
+            原点に近い点からrのメッシュが格納された可変長配列
         */
         dvector RV_O_;
 
@@ -188,8 +188,17 @@ namespace schrac {
         */
         dvector VP_O_;
 
-		dvector XV_I;
-		dvector XV_O;
+        //!  A public member variable.
+        /*!
+            無限遠に近い点からxのメッシュが格納された可変長配列
+        */
+		dvector XV_I_;
+
+        //!  A public member variable.
+        /*!
+            原点に近い点からxのメッシュが格納された可変長配列
+        */
+        dvector XV_O_;
 
 		//dvector VP_I;
 		

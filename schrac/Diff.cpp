@@ -1,63 +1,53 @@
 #include "Diff.h"
+#include <algorithm>
+#include <stdexcept>
 #include <boost/numeric/odeint.hpp>
+#include <gsl/gsl_linalg.h>
 
 namespace schrac {
-	const double Diff::MINV = 1.0E-200;
-	
-	std::function<double(double, double, double,
-			const std::shared_ptr<DiffData> &)> Diff::dM_dx;
-
 	// constructor
     Diff::Diff(double E, std::shared_ptr<Data> const & pdata, double TINY)
-	 :	pdata_(pdata), pdiffdata_(std::make_shared<DiffData>(pdata, E, TINY))
+	 :	pdata_(pdata), pdiffdata_(std::make_shared<DiffData>(E, pdata, TINY))
 	{
 		switch (pdata_->eq_type_) {
         case Data::Eq_type::SCH:
-				dM_dx = &dM_dx_sch;
+		    dM_dx = &dM_dx_sch;
 			break;
 
         case Data::Eq_type::SDIRAC:
-				dM_dx = &dM_dx_sdirac;
+			dM_dx = &dM_dx_sdirac;
 			break;
 
         case Data::Eq_type::DIRAC:
-				dM_dx = &dM_dx_dirac;
+			dM_dx = &dM_dx_dirac;
 			break;
 
 			default:
-				BOOST_ASSERT(!"何かがおかしい！！");
+			BOOST_ASSERT(!"何かがおかしい！！");
 			break;
 		}
 
-		if (!a_init())
-			throw std::runtime_error("初期値の作成に失敗しました");
+        a_init();
 		Initialize(E);
 	}
 
-	bool Diff::a_init()
+	void Diff::a_init()
 	{
-		std::array<std::array<double, DiffData::AVECSIZE>, DiffData::AVECSIZE> a;
-		std::array<double, DiffData::AVECSIZE> y;
+        std::array<double, DiffData::AVECSIZE * DiffData::AVECSIZE> a;
+		myarray b;
 
 		for (std::size_t i = 0; i < DiffData::AVECSIZE; i++) {
-			double rtmp = 1.0;
+			auto rtmp = 1.0;
 
 			for (std::size_t j = 0; j < DiffData::AVECSIZE; j++) {
-				a[i][j] = rtmp;
+                a[DiffData::AVECSIZE * i + j] = rtmp;
 				rtmp *= pdiffdata_->RV_O_[i];
 			}
 
-			y[i] = pdiffdata_->VP_O_[i];
+			b[i] = pdiffdata_->VP_O_[i];
 		}
-
-		const boost::optional<const std::array<double, DiffData::AVECSIZE> > pV_A(
-			 S_gausswp(a, y));
-		if (pV_A)
-			pdiffdata_->V_A_ = *pV_A;
-		else
-			return false;
-
-		return true;
+            
+        pdiffdata_->V_A_ = solve_linear_equ(std::move(a), std::move(b));
 	}
 
 	void Diff::b_init()
@@ -65,12 +55,12 @@ namespace schrac {
 		pdiffdata_->V_B_[0] = 1.0;
 		pdiffdata_->V_B_[1] = 0.0;
 		pdiffdata_->V_B_[2] = (pdiffdata_->V_A_[0] - pdiffdata_->E_) /
-							 static_cast<const double>(2 * pdata_->l_ + 3) * pdiffdata_->V_B_[0];
-		pdiffdata_->V_B_[3] = pdiffdata_->V_A_[1] / static_cast<const double>(3 * pdata_->l + 6) *
+							 static_cast<double>(2 * pdata_->l_ + 3) * pdiffdata_->V_B_[0];
+		pdiffdata_->V_B_[3] = pdiffdata_->V_A_[1] / static_cast<double>(3 * pdata_->l_ + 6) *
 							 pdiffdata_->V_B_[0];
 		pdiffdata_->V_B_[4] = (pdiffdata_->V_A_[0] * pdiffdata_->V_B_[2] + pdiffdata_->V_A_[2] * pdiffdata_->V_B_[0] -
 							  pdiffdata_->E_ * pdiffdata_->V_B_[2]) /
-							  static_cast<const double>(4 * pdata_->l_ + 10);
+							  static_cast<double>(4 * pdata_->l_ + 10);
 	}
 
 	void Diff::Initialize(double E)
@@ -98,18 +88,18 @@ namespace schrac {
 
 		for (int i = DiffData::BVECSIZE - 2; i > 0; i--) {
 			pdiffdata_->MO_[0] *= pdiffdata_->RV_O_[0];
-			pdiffdata_->MO_[0] += static_cast<const double>(i) * pdiffdata_->V_B_[i];
+			pdiffdata_->MO_[0] += static_cast<double>(i) * pdiffdata_->V_B_[i];
 		}
 		pdiffdata_->MO_[0] *= pdiffdata_->RV_O_[0];
 	}
 
 	void Diff::init_LM_I()
 	{
-		const double rmax = pdiffdata_->RV_I_[0];
-		const double rmaxm = pdiffdata_->RV_I_[1];
-		const double a = std::sqrt(- 2.0 * pdiffdata_->E_);
-		const double d = std::exp(- a * rmax);
-		const double dm = std::exp(- a * rmaxm);
+		auto const rmax = pdiffdata_->RV_I_[0];
+		auto const rmaxm = pdiffdata_->RV_I_[1];
+		auto const a = std::sqrt(- 2.0 * pdiffdata_->E_);
+		auto const d = std::exp(- a * rmax);
+		auto const dm = std::exp(- a * rmaxm);
 
 		pdiffdata_->LI_[0] = d / schrac::pow(rmax, pdata_->l_ + 1);
 		pdiffdata_->LI_[1] = dm / schrac::pow(rmaxm, pdata_->l_ + 1);
@@ -119,92 +109,55 @@ namespace schrac {
 		}
 
 		pdiffdata_->MI_[0] = - pdiffdata_->LI_[0] *  
-						  (a * rmax + static_cast<const double>(pdata_->l_ + 1));
+						  (a * rmax + static_cast<double>(pdata_->l_ + 1));
 		pdiffdata_->MI_[1] = - pdiffdata_->LI_[1] *  
-						  (a * rmaxm + static_cast<const double>(pdata_->l_ + 1));
+						  (a * rmaxm + static_cast<double>(pdata_->l_ + 1));
 		if (std::fabs(pdiffdata_->MI_[0]) < MINV) {
 			pdiffdata_->MI_[0] = - MINV;
 			pdiffdata_->MI_[1] = - MINV;
 		}
 	}
 
-	const boost::optional<const std::array<double, DiffData::AVECSIZE> >
-			Diff::S_gausswp(std::array<std::array<double, DiffData::AVECSIZE>, DiffData::AVECSIZE> & a,
-								std::array<double, DiffData::AVECSIZE> & b) const
-	{
-		// defnition
-		unsigned int j = 0, pk;
-		unsigned int p[DiffData::AVECSIZE];
-		std::array<double, DiffData::AVECSIZE> x;
+    Diff::myarray Diff::solve_linear_equ(std::array<double, DiffData::AVECSIZE * DiffData::AVECSIZE> a, myarray b) const
+    {
+        // save original handler, install new handler
+        auto old_handler = gsl_set_error_handler(
+            [](const char * reason, const char * file, std::int32_t line, std::int32_t)
+        {
+            auto const str = std::string(reason) + "\nFile: " + file + "\nline: " + std::to_string(line);
+            throw std::runtime_error(str);
+        });
 
-		for (unsigned int k = 0; k < DiffData::AVECSIZE; k++) {
-    		// initial pivotting number
-			p[k] = k;
-		}
+        auto m = gsl_matrix_view_array(a.data(), DiffData::AVECSIZE, DiffData::AVECSIZE);
+        auto const v = gsl_vector_view_array(b.data(), DiffData::AVECSIZE);
 
-		for (unsigned int k = 0; k < DiffData::AVECSIZE - 1; k++) {
-			pk = p[k];
-			double max = 0.0;
-			for (unsigned int i = k; i < DiffData::AVECSIZE; i++) {
-				const double aik = a[p[i]][k];
-				if (std::fabs(aik) > max) {
-            		max = std::fabs(aik);
-					j = i;
-				}
-			}
+        auto const gsl_vector_deleter = [](gsl_vector * p)
+        {
+            gsl_vector_free(p);
+        };
+        std::unique_ptr<gsl_vector, decltype(gsl_vector_deleter)> x(
+            gsl_vector_alloc(DiffData::AVECSIZE),
+            gsl_vector_deleter);
 
-			if (max < pdiffdata_->TINY_) {
-				//std::cerr << "gausswp, Failed! the system is singular." << std::endl;
-				return boost::none;
-			}
+        auto const gsl_perm_deleter = [](gsl_permutation * p)
+        {
+            gsl_permutation_free(p);
+        };
+        std::unique_ptr<gsl_permutation, decltype(gsl_perm_deleter)> p(
+            gsl_permutation_alloc(DiffData::AVECSIZE),
+            gsl_perm_deleter);
 
-			// exchange of pivot
-			if (j != k) {
-				p[k] = p[j];
-				p[j] = pk;
-				pk = p[k]; 
-			}
+        std::int32_t s;
+        gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
+        gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
+        myarray solution{};
+        std::copy(x->data, x->data + DiffData::AVECSIZE, solution.begin());
 
-			// forward elimanation
-			double pivot = 1.0 / a[pk][k];
+        // restore original handler
+        gsl_set_error_handler(old_handler);
 
-			for (unsigned int j = k + 1; j < DiffData::AVECSIZE; j++) {
-				int pj = p[j]; 
-				double multi = a[pj][k] * pivot;
-				if (std::fabs(multi) > pdiffdata_->TINY_) {
-					a[pj][k] = multi;
-
-					for (unsigned int i = k + 1; i < DiffData::AVECSIZE; i++)
-                		a[pj][i] -= multi * a[pk][i];
-
-					b[pj] -= multi * b[pk];
-				} else {
-            		a[pj][k] = 0.0;
-				}
-			}
-		}
-
-		if (std::fabs(a[p[DiffData::AVECSIZE - 1]][DiffData::AVECSIZE - 1]) <
-			pdiffdata_->TINY_) {
-			//std::cerr << "gausswp, Failed! the system is singular." << std::endl;
-			return boost::none;
-		}
-
-		// backward substitution
-		x[DiffData::AVECSIZE - 1] = b[p[DiffData::AVECSIZE - 1]] /
-									a[p[DiffData::AVECSIZE - 1]][DiffData::AVECSIZE - 1];
-		for (int k = DiffData::AVECSIZE - 2; k >= 0; k--) {
-			pk = p[k];
-			double sum = b[pk];
-
-			for (unsigned int i = k + 1; i < DiffData::AVECSIZE; i++)
-				sum -= a[pk][i] * x[i];
-
-				x[k] = sum / a[pk][k];
-		}
-	    
-		return boost::optional<const std::array<double, DiffData::AVECSIZE> >(x);
-	}
+        return std::move(solution);
+    }
 
 	bool Diff::solve_diff_equ()
 	{
@@ -224,7 +177,7 @@ namespace schrac {
 			}
 		} else {*/
 			solve_diff_equ_O();
-			solve_diff_equ_I();
+			//solve_diff_equ_I();
 		//}
 
 		return true;
@@ -235,8 +188,21 @@ namespace schrac {
         using namespace boost::numeric::odeint;
 
         bulirsch_stoer<std::array<double, 2>> stepper(pdata_->eps_, pdata_->eps_);
-        std::array<double, 2> initial_val = { pdiffdata_->LO_[0], pdiffdata_->MO_[0] }
-        integrate_const(stepper, Diff::derivs, initial_val, , , dx_);
+        std::array<double, 2> initial_val = { pdiffdata_->MO_[0], pdiffdata_->LO_[0] };
+        integrate_const(
+            stepper,
+            [this](std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) { return derivs(f, dfdx, x); },
+            initial_val,
+            pdiffdata_->XV_O_[0],
+            pdiffdata_->XV_O_[pdiffdata_->MP_O_],
+            pdiffdata_->DX_);
+
+        return true;
+    }
+
+    bool Diff::solve_diff_equ_I()
+    {
+        return true;
     }
 
 	/****************************************************
@@ -249,9 +215,9 @@ namespace schrac {
 	double dM_dx_sch(double x, double L, double M,
 						  const std::shared_ptr<DiffData> & pdiffdata)
 	{
-		const double r = std::exp(x);
+		double r = std::exp(x);
 
-		return - (2.0 * static_cast<const double>(pdiffdata->pdata_->l_) + 1.0) * M +
+		return - (2.0 * static_cast<double>(pdiffdata->pdata_->l_) + 1.0) * M +
 			      2.0 * sqr(r) * (fnc_V(r, pdiffdata) - pdiffdata->E_) * L;
 	}
 
@@ -267,15 +233,15 @@ namespace schrac {
 	double dM_dx_sdirac(double x, double L, double M,
 							 const std::shared_ptr<DiffData> & pdiffdata)
 	{
-		const double r = std::exp(x);
+		double r = std::exp(x);
 
-		const double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		const double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
-		const double l = static_cast<const double>(pdiffdata->pdata_->l_);
+		double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
+		double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
+		double l = static_cast<double>(pdiffdata->pdata_->l_);
 
 		// scaler treatment
-		const double d1 = - (2.0 * l + 1.0 + d) * M;
-		const double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
+		double d1 = - (2.0 * l + 1.0 + d) * M;
+		double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
 								d * l) * L;
 		return d1 + d2;
 	}
@@ -293,17 +259,54 @@ namespace schrac {
 	double dM_dx_dirac(double x, double L, double M,
 							const std::shared_ptr<DiffData> & pdiffdata)
 	{
-		const double r = std::exp(x);
+		double r = std::exp(x);
 
-		const double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		const double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
+		double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
+		double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
 		const std::shared_ptr<const Data> & pdata(pdiffdata->pdata_);
-		const double l = static_cast<const double>(pdata->l_);
+		double l = static_cast<double>(pdata->l_);
 
 		// dependence on all angular momentum
-		const double d1 = - (2.0 * l + 1.0 + d) * M;
-		const double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
+		double d1 = - (2.0 * l + 1.0 + d) * M;
+		double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
 								d * (l + 1.0 + pdata->kappa_)) * L;
 		return d1 + d2;
 	}
+
+
+    void Diff::derivs(std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) const
+    {
+        // M = dL / dx
+        dfdx[0] = dL_dx(f[1]);
+
+        // L = dM / dx
+        dfdx[1] = Diff::dM_dx(x, f[0], f[1], pdiffdata_);
+    }
+
+    double fnc_V(double r, const std::shared_ptr<DiffData> & pdiffdata)
+    {
+        return -pdiffdata->Z_ / r;
+    }
+
+    double dV_dr(double r, const std::shared_ptr<DiffData> & pdiffdata)
+    {
+        return pdiffdata->Z_ / (r * r);
+    }
+
+    double dL_dx(double M)
+    {
+        return M;
+    }
+
+    Diff::mytuple Diff::getMPval() const
+    {
+        std::array<double, 2> L, M;
+
+        L[0] = pdiffdata_->LO_[pdiffdata_->MP_O_];
+        L[1] = pdiffdata_->LI_[pdiffdata_->MP_I_];
+        M[0] = pdiffdata_->MO_[pdiffdata_->MP_O_];
+        M[1] = pdiffdata_->MI_[pdiffdata_->MP_I_];
+
+        return std::make_pair(L, M);
+    }
 }

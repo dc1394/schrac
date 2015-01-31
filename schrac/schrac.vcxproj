@@ -45,10 +45,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <Cpp0xSupport>true</Cpp0xSupport>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\mylib64\boost_1_57_0\stage\ia32\icl15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gsl.lib;cblas.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,15 +72,17 @@
     <ClCompile Include="data.cpp" />
     <ClCompile Include="diff.cpp" />
     <ClCompile Include="diffdata.cpp" />
+    <ClCompile Include="EigenValueSearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="readinputfile.cpp" />
-    <ClCompile Include="readinputfiletest.cpp" />
+    <ClCompile Include="schracmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="diffdata.h" />
+    <ClInclude Include="EigenValueSearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />

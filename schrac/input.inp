@@ -20,7 +20,7 @@ grid.xmin                  -7.5             # default = -7.0 rmin(a.u.) = exp(gr
 grid.xmax                   6.0             # default = 5.0 rmax(a.u.) = exp(grid.xmax)
 grid.num                    100000          # default = 20000
 eps                         5.0E-16         # default = 1.0E-15
-solver.type         ADAMS_BASHFORTH_MOULTON # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
+solver.type         BULIRSCH_STOER          # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
 search.LowerE               Auto            # default = Auto
 num.of.partition            300             # default = 300
 matching.point.ratio        0.67            # default = 0.67
