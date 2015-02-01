@@ -266,19 +266,6 @@ namespace schrac {
     */
     double Eexact_sdirac(std::shared_ptr<Data> const & pdata);
 
-	template <typename T>
-    //! A function (template function).
-    /*!
-        bが正の値の場合にaの絶対値を、bが負の値の場合はaの絶対値に-をかけた値を返す
-        \param a 対象の値
-        \param b 正負を判断するための値
-        \return bが正の値の場合はaの絶対値、bが負の値の場合はaの絶対値に-をかけた値
-    */
-	T sign(T a, T b)
-	{
-		return (b >= 0.0) ? std::fabs(a) : - std::fabs(a);
-	}
-
     // #endregion 非メンバ関数
 }
 
