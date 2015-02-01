@@ -8,6 +8,7 @@
 #include <iostream>                     // for std::cerr
 #include <stdexcept>                    // for std::runtime_error
 #include <boost/algorithm/string.hpp>   // for boost::algorithm
+#include <boost/assert.hpp>             // for BPOOST_ASSERT
 #include <boost/cast.hpp>               // for boost::numeric_cast
 #include <boost/range/algorithm.hpp>    // for boost::find
 
@@ -38,6 +39,7 @@ namespace schrac {
     // #region コンストラクタ
 
     ReadInputFile::ReadInputFile(std::pair<std::string, bool> const & arg) :
+        PData([this]() { return pdata_; }, nullptr), 
         ifs_(std::get<0>(arg).c_str()),
         lineindex_(1),
         pdata_(std::make_shared<Data>())
@@ -48,12 +50,7 @@ namespace schrac {
     // #endregion コンストラクタ
 
     // #region publicメンバ関数
-
-    std::shared_ptr<Data> && ReadInputFile::getpData()
-    {
-        return std::move(pdata_);
-    }
-
+        
 	void ReadInputFile::readFile()
 	{
 		if (!ifs_.is_open())

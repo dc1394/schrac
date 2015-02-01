@@ -1,124 +1,292 @@
-#include "Diff.h"
+Ôªø#include "Diff.h"
 #include <algorithm>
 #include <stdexcept>
 #include <boost/numeric/odeint.hpp>
 #include <gsl/gsl_linalg.h>
 
 namespace schrac {
-	// constructor
-    Diff::Diff(double E, std::shared_ptr<Data> const & pdata, double TINY)
-	 :	pdata_(pdata), pdiffdata_(std::make_shared<DiffData>(E, pdata, TINY))
-	{
-		switch (pdata_->eq_type_) {
-        case Data::Eq_type::SCH:
-		    dM_dx = &dM_dx_sch;
-			break;
+	// #region „Ç≥„É≥„Çπ„Éà„É©„ÇØ„Çø
 
-        case Data::Eq_type::SDIRAC:
-			dM_dx = &dM_dx_sdirac;
-			break;
-
-        case Data::Eq_type::DIRAC:
-			dM_dx = &dM_dx_dirac;
-			break;
-
-			default:
-			BOOST_ASSERT(!"âΩÇ©Ç™Ç®Ç©ÇµÇ¢ÅIÅI");
-			break;
-		}
-
-        a_init();
-		Initialize(E);
+    Diff::Diff(std::shared_ptr<Data> const & pdata) :
+        pdata_(pdata),
+        pdiffdata_(std::make_shared<DiffData>(pdata)),
+        PDiffData([this]() { return pdiffdata_; }, nullptr)
+	{		
+        am_evaluate();
 	}
 
-	void Diff::a_init()
-	{
-        std::array<double, DiffData::AVECSIZE * DiffData::AVECSIZE> a;
-		myarray b;
+    // #endregion „Ç≥„É≥„Çπ„Éà„É©„ÇØ„Çø
 
-		for (std::size_t i = 0; i < DiffData::AVECSIZE; i++) {
+    // #region public„É°„É≥„ÉêÈñ¢Êï∞
+
+    Diff::mypair Diff::getMPval() const
+    {
+        myarray L, M;
+
+        L[0] = pdiffdata_->lo_[pdiffdata_->mp_o_];
+        L[1] = pdiffdata_->li_[pdiffdata_->mp_i_];
+        M[0] = pdiffdata_->mo_[pdiffdata_->mp_o_];
+        M[1] = pdiffdata_->mi_[pdiffdata_->mp_i_];
+
+        return std::make_pair(L, M);
+    }
+
+    void Diff::initialize(double E)
+    {
+        pdiffdata_->E_ = E;			// „Ç®„Éç„É´„ÇÆ„Éº„Çí‰ª£ÂÖ•
+        pdiffdata_->thisnode_ = 0;	// „Éé„Éº„ÉâÊï∞ÂàùÊúüÂåñ
+        bm_evaluate();				// bm„ÇíÊ±Ç„ÇÅ„Çã
+
+        // ÂàùÊúüÂÄ§„ÅÆ‰ΩúÊàê
+        // ÂéüÁÇπ„Åã„ÇâËß£„ÅèÊñπ„ÅÆÂàùÊúüÂåñ
+        init_lm_o();
+
+        // ÁÑ°ÈôêÈÅ†„Åã„ÇâËß£„ÅèÊñπ„ÅÆÂàùÊúüÂåñ
+        init_lm_i();
+    }
+
+    bool Diff::solve_diff_equ()
+    {
+        //if (pdata_->ompthread_) {
+        /*	#pragma omp parallel sections
+        {
+        #pragma omp section
+        {
+        solve_diff_equ_O();
+        }
+
+        #pragma omp section
+        {
+        solve_diff_equ_I();
+        }
+
+        }
+        } else {*/
+        solve_diff_equ_o();
+        solve_diff_equ_i();
+        //}
+
+        return true;
+    }
+
+    // #endregion public„É°„É≥„ÉêÈñ¢Êï∞
+
+    // #region private„É°„É≥„ÉêÈñ¢Êï∞
+
+    void Diff::am_evaluate()
+	{
+        std::array<double, Diff::AMMAX * Diff::AMMAX> a;
+		myvector b;
+
+		for (std::size_t i = 0; i < Diff::AMMAX; i++) {
 			auto rtmp = 1.0;
 
-			for (std::size_t j = 0; j < DiffData::AVECSIZE; j++) {
-                a[DiffData::AVECSIZE * i + j] = rtmp;
-				rtmp *= pdiffdata_->RV_O_[i];
+			for (std::size_t j = 0; j < Diff::AMMAX; j++) {
+                a[Diff::AMMAX * i + j] = rtmp;
+				rtmp *= pdiffdata_->r_o_[i];
 			}
 
-			b[i] = pdiffdata_->VP_O_[i];
+			b[i] = pdiffdata_->vr_o_[i];
 		}
             
-        pdiffdata_->V_A_ = solve_linear_equ(std::move(a), std::move(b));
+        am = solve_linear_equ(std::move(a), std::move(b));
 	}
 
-	void Diff::b_init()
+    void Diff::bm_evaluate()
 	{
-		pdiffdata_->V_B_[0] = 1.0;
-		pdiffdata_->V_B_[1] = 0.0;
-		pdiffdata_->V_B_[2] = (pdiffdata_->V_A_[0] - pdiffdata_->E_) /
-							 static_cast<double>(2 * pdata_->l_ + 3) * pdiffdata_->V_B_[0];
-		pdiffdata_->V_B_[3] = pdiffdata_->V_A_[1] / static_cast<double>(3 * pdata_->l_ + 6) *
-							 pdiffdata_->V_B_[0];
-		pdiffdata_->V_B_[4] = (pdiffdata_->V_A_[0] * pdiffdata_->V_B_[2] + pdiffdata_->V_A_[2] * pdiffdata_->V_B_[0] -
-							  pdiffdata_->E_ * pdiffdata_->V_B_[2]) /
-							  static_cast<double>(4 * pdata_->l_ + 10);
+		bm[0] = 1.0;
+		bm[1] = 0.0;
+		bm[2] = (am[0] - pdiffdata_->E_) / static_cast<double>(2 * pdata_->l_ + 3) * bm[0];
+		bm[3] = am[1] / static_cast<double>(3 * pdata_->l_ + 6) * bm[0];
+		bm[4] = (am[0] * bm[2] + am[2] * bm[0] - pdiffdata_->E_ * bm[2]) / static_cast<double>(4 * pdata_->l_ + 10);
 	}
 
-	void Diff::Initialize(double E)
+    void Diff::derivs(std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) const
+    {
+        auto const dL_dx = [](double M) { return M; };
+
+        // dL / dx = M
+        dfdx[0] = dL_dx(f[1]);
+                
+        switch (pdata_->eq_type_) {
+        case Data::Eq_type::DIRAC:
+            // dM / dx 
+            dfdx[1] = dM_dx_dirac(f[0], f[1], x);
+            break;
+
+        case Data::Eq_type::SCH:
+            // dM / dx 
+            dfdx[1] = dM_dx_sch(f[0], f[1], x);
+            break;
+
+        case Data::Eq_type::SDIRAC:
+            // dM / dx 
+            dfdx[1] = dM_dx_sdirac(f[0], f[1], x);
+            break;
+
+        default:
+            BOOST_ASSERT(!"‰Ωï„Åã„Åå„Åä„Åã„Åó„ÅÑÔºÅÔºÅ");
+            break;
+        }
+    }
+
+    double Diff::dM_dx_dirac(double L, double M, double x) const
+    {
+        auto const r = std::exp(x);
+
+        auto const mass = 1.0 + Data::al2half * (pdiffdata_->E_ - V(r));
+        auto const d = Data::al2half * r / mass * dV_dr(r);
+        auto const l = static_cast<double>(pdata_->l_);
+
+        // dependence on all angular momentum
+        auto const d1 = -(2.0 * l + 1.0 + d) * M;
+        auto const d2 = (2.0 * sqr(r) * mass * (V(r) - pdiffdata_->E_) -
+            d * (l + 1.0 + pdata_->kappa_)) * L;
+
+        return d1 + d2;
+    }
+
+    double Diff::dM_dx_sch(double L, double M, double x) const
+    {
+        auto const r = std::exp(x);
+
+        return -(2.0 * static_cast<double>(pdata_->l_) + 1.0) * M +
+               2.0 * sqr(r) * (V(r) - pdiffdata_->E_) * L;
+    }
+
+    double Diff::dM_dx_sdirac(double L, double M, double x) const
+    {
+        auto const r = std::exp(x);
+
+        auto const mass = 1.0 + Data::al2half * (pdiffdata_->E_ - V(r));
+        auto const d = Data::al2half * r / mass * dV_dr(r);
+        auto const l = static_cast<double>(pdata_->l_);
+
+        // scaler treatment
+        auto const d1 = -(2.0 * l + 1.0 + d) * M;
+        auto const d2 = (2.0 * sqr(r) * mass * (V(r) - pdiffdata_->E_) - d * l) * L;
+        
+        return d1 + d2;
+    }
+
+    double Diff::dV_dr(double r) const
+    {
+        return pdiffdata_->Z_ / (r * r);
+    }
+
+    void Diff::init_lm_i()
+    {
+        pdiffdata_->li_.clear();
+        pdiffdata_->mi_.clear();
+
+        auto const rmax = pdiffdata_->r_i_[0];
+        auto const rmaxm = pdiffdata_->r_i_[1];
+        auto const a = std::sqrt(-2.0 * pdiffdata_->E_);
+        auto const d = std::exp(-a * rmax);
+        auto const dm = std::exp(-a * rmaxm);
+
+        pdiffdata_->li_.push_back(d / schrac::pow(rmax, pdata_->l_ + 1));
+        pdiffdata_->li_.push_back(dm / schrac::pow(rmaxm, pdata_->l_ + 1));
+        if (pdiffdata_->li_[0] < Diff::MINV) {
+            pdiffdata_->li_[0] = Diff::MINV;
+            pdiffdata_->li_[1] = Diff::MINV;
+        }
+
+        pdiffdata_->mi_.push_back(-pdiffdata_->li_[0] *
+            (a * rmax + static_cast<double>(pdata_->l_ + 1)));
+        pdiffdata_->mi_.push_back(-pdiffdata_->li_[1] *
+            (a * rmaxm + static_cast<double>(pdata_->l_ + 1)));
+        if (std::fabs(pdiffdata_->mi_[0]) < Diff::MINV) {
+            pdiffdata_->mi_[0] = -Diff::MINV;
+            pdiffdata_->mi_[1] = -Diff::MINV;
+        }
+    }
+
+	void Diff::init_lm_o()
 	{
-		pdiffdata_->E_ = E;			// ÉGÉlÉãÉMÅ[Çë„ì¸
-		pdiffdata_->thisnode_ = 0;	// ÉmÅ[Éhêîèâä˙âª
-		b_init();					// ÉxÉNÉgÉãBÇçÏê¨
+        pdiffdata_->lo_.clear();
+        pdiffdata_->mo_.clear();
 
-		// èâä˙ílÇÃçÏê¨
-		// å¥ì_Ç©ÇÁâÇ≠ï˚ÇÃèâä˙âª
-		init_LM_O();
-		// ñ≥å¿âìÇ©ÇÁâÇ≠ï˚ÇÃèâä˙âª
-		init_LM_I();
-	}
+		pdiffdata_->lo_.push_back(bm[Diff::BMMAX - 1]);
+		pdiffdata_->mo_.push_back(4.0 * bm[Diff::BMMAX - 1]);
 
-	void Diff::init_LM_O()
-	{
-		pdiffdata_->LO_[0] = pdiffdata_->V_B_[DiffData::BVECSIZE - 1];
-		pdiffdata_->MO_[0] = 4.0 * pdiffdata_->V_B_[DiffData::BVECSIZE - 1];
-
-		for (int i = DiffData::BVECSIZE - 2; i >= 0; i--) {
-			pdiffdata_->LO_[0] *= pdiffdata_->RV_O_[0];
-			pdiffdata_->LO_[0] += pdiffdata_->V_B_[i];
+		for (int i = Diff::BMMAX - 2; i >= 0; i--) {
+			pdiffdata_->lo_[0] *= pdiffdata_->r_o_[0];
+			pdiffdata_->lo_[0] += bm[i];
 		}
 
-		for (int i = DiffData::BVECSIZE - 2; i > 0; i--) {
-			pdiffdata_->MO_[0] *= pdiffdata_->RV_O_[0];
-			pdiffdata_->MO_[0] += static_cast<double>(i) * pdiffdata_->V_B_[i];
+		for (int i = Diff::BMMAX - 2; i > 0; i--) {
+			pdiffdata_->mo_[0] *= pdiffdata_->r_o_[0];
+			pdiffdata_->mo_[0] += static_cast<double>(i) * bm[i];
 		}
-		pdiffdata_->MO_[0] *= pdiffdata_->RV_O_[0];
+		pdiffdata_->mo_[0] *= pdiffdata_->r_o_[0];
 	}
+    
+    bool Diff::solve_diff_equ_i()
+    {
+        using namespace boost::numeric::odeint;
 
-	void Diff::init_LM_I()
-	{
-		auto const rmax = pdiffdata_->RV_I_[0];
-		auto const rmaxm = pdiffdata_->RV_I_[1];
-		auto const a = std::sqrt(- 2.0 * pdiffdata_->E_);
-		auto const d = std::exp(- a * rmax);
-		auto const dm = std::exp(- a * rmaxm);
+        bulirsch_stoer<myarray> stepper(pdata_->eps_, pdata_->eps_);
+        myarray initial_val = { pdiffdata_->li_[1], pdiffdata_->mi_[1] };
+        pdiffdata_->li_.pop_back();
+        pdiffdata_->mi_.pop_back();
+        std::int32_t index = 1;
+        integrate_const(
+            stepper,
+            [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
+            initial_val,
+            pdiffdata_->x_i_[1],
+            pdiffdata_->x_i_[pdiffdata_->mp_i_],
+            - pdiffdata_->DX_,
+            [this, &index](myarray const & f, double const x)
+        {
+            pdiffdata_->li_.push_back(f[0]);
+            pdiffdata_->mi_.push_back(f[1]);
+            auto const size = pdiffdata_->li_.size();
+            pdiffdata_->node_count(size - 1, pdiffdata_->li_);
+        });
 
-		pdiffdata_->LI_[0] = d / schrac::pow(rmax, pdata_->l_ + 1);
-		pdiffdata_->LI_[1] = dm / schrac::pow(rmaxm, pdata_->l_ + 1);
-		if (pdiffdata_->LI_[0] < MINV) {
-			pdiffdata_->LI_[0] = MINV;
-			pdiffdata_->LI_[1] = MINV;
-		}
+        return true;
+    }
 
-		pdiffdata_->MI_[0] = - pdiffdata_->LI_[0] *  
-						  (a * rmax + static_cast<double>(pdata_->l_ + 1));
-		pdiffdata_->MI_[1] = - pdiffdata_->LI_[1] *  
-						  (a * rmaxm + static_cast<double>(pdata_->l_ + 1));
-		if (std::fabs(pdiffdata_->MI_[0]) < MINV) {
-			pdiffdata_->MI_[0] = - MINV;
-			pdiffdata_->MI_[1] = - MINV;
-		}
-	}
+    bool Diff::solve_diff_equ_o()
+    {
+        using namespace boost::numeric::odeint;
 
-    Diff::myarray Diff::solve_linear_equ(std::array<double, DiffData::AVECSIZE * DiffData::AVECSIZE> a, myarray b) const
+        bulirsch_stoer<myarray> stepper(pdata_->eps_, pdata_->eps_);
+        myarray initial_val = { pdiffdata_->lo_[0], pdiffdata_->mo_[0] };
+        pdiffdata_->lo_.pop_back();
+        pdiffdata_->mo_.pop_back();
+        integrate_const(
+            stepper,
+            [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
+            initial_val,
+            pdiffdata_->x_o_[0],
+            pdiffdata_->x_o_[pdiffdata_->mp_o_],
+            pdiffdata_->DX_,
+            [this](myarray const & f, double const x)
+            {
+                pdiffdata_->lo_.push_back(f[0]);
+                pdiffdata_->mo_.push_back(f[1]);
+                auto const size = pdiffdata_->lo_.size();
+                if (size > 1) {
+                    pdiffdata_->node_count(size - 1, pdiffdata_->lo_);
+                }
+            });
+
+        return true;
+    }
+
+    double Diff::V(double r) const
+    {
+        return -pdiffdata_->Z_ / r;
+    }
+
+    // #endregion private„É°„É≥„ÉêÈñ¢Êï∞
+
+    // #region Èùû„É°„É≥„ÉêÈñ¢Êï∞
+
+    Diff::myvector solve_linear_equ(std::array<double, Diff::AMMAX * Diff::AMMAX> a, Diff::myvector b)
     {
         // save original handler, install new handler
         auto old_handler = gsl_set_error_handler(
@@ -128,15 +296,15 @@ namespace schrac {
             throw std::runtime_error(str);
         });
 
-        auto m = gsl_matrix_view_array(a.data(), DiffData::AVECSIZE, DiffData::AVECSIZE);
-        auto const v = gsl_vector_view_array(b.data(), DiffData::AVECSIZE);
+        auto m = gsl_matrix_view_array(a.data(), Diff::AMMAX, Diff::AMMAX);
+        auto const v = gsl_vector_view_array(b.data(), Diff::AMMAX);
 
         auto const gsl_vector_deleter = [](gsl_vector * p)
         {
             gsl_vector_free(p);
         };
         std::unique_ptr<gsl_vector, decltype(gsl_vector_deleter)> x(
-            gsl_vector_alloc(DiffData::AVECSIZE),
+            gsl_vector_alloc(Diff::AMMAX),
             gsl_vector_deleter);
 
         auto const gsl_perm_deleter = [](gsl_permutation * p)
@@ -144,14 +312,14 @@ namespace schrac {
             gsl_permutation_free(p);
         };
         std::unique_ptr<gsl_permutation, decltype(gsl_perm_deleter)> p(
-            gsl_permutation_alloc(DiffData::AVECSIZE),
+            gsl_permutation_alloc(Diff::AMMAX),
             gsl_perm_deleter);
 
         std::int32_t s;
         gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
         gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
-        myarray solution{};
-        std::copy(x->data, x->data + DiffData::AVECSIZE, solution.begin());
+        Diff::myvector solution{};
+        std::copy(x->data, x->data + Diff::AMMAX, solution.begin());
 
         // restore original handler
         gsl_set_error_handler(old_handler);
@@ -159,154 +327,5 @@ namespace schrac {
         return std::move(solution);
     }
 
-	bool Diff::solve_diff_equ()
-	{
-		//if (pdata_->ompthread_) {
-		/*	#pragma omp parallel sections
-			{
-				#pragma omp section
-				{
-					solve_diff_equ_O();
-				}
-
-				#pragma omp section
-				{
-					solve_diff_equ_I();
-				}
-
-			}
-		} else {*/
-			solve_diff_equ_O();
-			//solve_diff_equ_I();
-		//}
-
-		return true;
-	}
-
-    bool Diff::solve_diff_equ_O()
-    {
-        using namespace boost::numeric::odeint;
-
-        bulirsch_stoer<std::array<double, 2>> stepper(pdata_->eps_, pdata_->eps_);
-        std::array<double, 2> initial_val = { pdiffdata_->MO_[0], pdiffdata_->LO_[0] };
-        integrate_const(
-            stepper,
-            [this](std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) { return derivs(f, dfdx, x); },
-            initial_val,
-            pdiffdata_->XV_O_[0],
-            pdiffdata_->XV_O_[pdiffdata_->MP_O_],
-            pdiffdata_->DX_);
-
-        return true;
-    }
-
-    bool Diff::solve_diff_equ_I()
-    {
-        return true;
-    }
-
-	/****************************************************
-		the usual radial differential equation without 
-        relativistic corrections 
-
-        dM/dx = -(2NL + 1)M + 2r^2(V - ep)L
-        dL/dx = M
-	*****************************************************/
-	double dM_dx_sch(double x, double L, double M,
-						  const std::shared_ptr<DiffData> & pdiffdata)
-	{
-		double r = std::exp(x);
-
-		return - (2.0 * static_cast<double>(pdiffdata->pdata_->l_) + 1.0) * M +
-			      2.0 * sqr(r) * (fnc_V(r, pdiffdata) - pdiffdata->E_) * L;
-	}
-
-	/***********************************************************
-		the scalar relativistic radial differential equation
-        ref: D.D.Koelling and B.N.Harmon,
-             J.Phys.C: Solid State Phys. 10, 3107 (1977).
-
-		d = alpha^2/2*r/MQ*dV/dr
-		dM/dx = -(2*NL + 1 + d)M
-				+(2*r^2*MQ(V - ep) - d*NL)L
-	************************************************************/
-	double dM_dx_sdirac(double x, double L, double M,
-							 const std::shared_ptr<DiffData> & pdiffdata)
-	{
-		double r = std::exp(x);
-
-		double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
-		double l = static_cast<double>(pdiffdata->pdata_->l_);
-
-		// scaler treatment
-		double d1 = - (2.0 * l + 1.0 + d) * M;
-		double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
-								d * l) * L;
-		return d1 + d2;
-	}
-
-	/****************************************************
-		the radial differential equation with a full
-        relativistic treatment
-
-		d = alpha^2/2*r/MQ*dV/dr
-        dM/dx = - (2NL + 1 + d)M 
-                + 2r^2*MQ*(V - ep)*L
-                - d*(NL+1+kappa)*L
-        dL/dx = M
-	*****************************************************/
-	double dM_dx_dirac(double x, double L, double M,
-							const std::shared_ptr<DiffData> & pdiffdata)
-	{
-		double r = std::exp(x);
-
-		double mass = 1.0 + Data::al2half * (pdiffdata->E_ - fnc_V(r, pdiffdata));
-		double d = Data::al2half * r / mass * dV_dr(r, pdiffdata);
-		const std::shared_ptr<const Data> & pdata(pdiffdata->pdata_);
-		double l = static_cast<double>(pdata->l_);
-
-		// dependence on all angular momentum
-		double d1 = - (2.0 * l + 1.0 + d) * M;
-		double d2 = (2.0 * sqr(r) * mass * (fnc_V(r, pdiffdata) - pdiffdata->E_) -
-								d * (l + 1.0 + pdata->kappa_)) * L;
-		return d1 + d2;
-	}
-
-
-    void Diff::derivs(std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) const
-    {
-        // M = dL / dx
-        dfdx[0] = dL_dx(f[1]);
-
-        // L = dM / dx
-        dfdx[1] = Diff::dM_dx(x, f[0], f[1], pdiffdata_);
-    }
-
-    double fnc_V(double r, const std::shared_ptr<DiffData> & pdiffdata)
-    {
-        return -pdiffdata->Z_ / r;
-    }
-
-    double dV_dr(double r, const std::shared_ptr<DiffData> & pdiffdata)
-    {
-        return pdiffdata->Z_ / (r * r);
-    }
-
-    double dL_dx(double M)
-    {
-        return M;
-    }
-
-    Diff::mytuple Diff::getMPval() const
-    {
-        std::array<double, 2> L, M;
-
-        L[0] = pdiffdata_->LO_[pdiffdata_->MP_O_];
-        L[1] = pdiffdata_->LI_[pdiffdata_->MP_I_];
-        M[0] = pdiffdata_->MO_[pdiffdata_->MP_O_];
-        M[1] = pdiffdata_->MI_[pdiffdata_->MP_I_];
-
-        return std::make_pair(L, M);
-    }
+    // #endregion Èùû„É°„É≥„ÉêÈñ¢Êï∞
 }

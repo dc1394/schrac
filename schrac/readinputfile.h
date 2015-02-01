@@ -11,6 +11,7 @@
 
 #include "ci_string.h"
 #include "data.h"
+#include "property.h"
 #include <fstream>                  // for std::ifstream
 #include <memory>                   // for std::shared_ptr
 #include <vector>                   // for std::vector
@@ -25,7 +26,7 @@ namespace schrac {
 	class ReadInputFile final {
         // #region 型エイリアス
 
-        using strvec = std::vector<ci_string>;
+        using strvec = std::vector < ci_string > ;
 
         // #endregion 型エイリアス
 
@@ -52,13 +53,6 @@ namespace schrac {
         // #region メンバ関数
 
     public:
-        //! A public member function.
-        /*!
-            読み込んだデータを返す
-            \return 読み込んだデータ
-        */
-        std::shared_ptr<Data> && getpData();
-        
         //! A public member function.
         /*!
             ファイルを読み込む
@@ -117,7 +111,6 @@ namespace schrac {
         boost::optional<ci_string> readData(ci_string const & article, ci_string const & def);
 
         template <typename T>
-
         //! A private member function (template function).
         /*!
             データを読み込む
@@ -173,7 +166,7 @@ namespace schrac {
 
         //! A private member variable (constant expression).
         /*!
-        バッファサイズ
+            バッファサイズ
         */
         static constexpr std::streamsize BUFSIZE = 1024;
 
@@ -244,9 +237,22 @@ namespace schrac {
 		std::shared_ptr<Data> pdata_;
         	
         // #endregion メンバ変数
+        
+        // #region プロパティ
 
+    public:
+        //! A property.
+        /*!
+            読み込んだデータを返す
+            \return 読み込んだデータ
+        */
+        Property<std::shared_ptr<Data>> const PData;
+
+        // #endregion プロパティ
+        
         // #region 禁止されたコンストラクタ・メンバ関数
 
+    private:
         //! A private constructor (deleted).
         /*!
             デフォルトコンストラクタ（禁止）

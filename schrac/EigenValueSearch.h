@@ -1,291 +1,285 @@
+ï»¿/*! \file eigenvaluesearch.h
+    \brief ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤æ¤œç´¢ã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ã®å®£è¨€
+
+    Copyright Â©  2015 @dc1394 All Rights Reserved.
+*/
+
 #ifndef _EIGENVALUESEARCH_H_
 #define _EIGENVALUESEARCH_H_
 
-#include "Diff.h"
-#include "ReadInputFile.h"
+#pragma once
+
+#include "diff.h"
+#include "readinputfile.h"
 
 namespace schrac {
+    //! A class.
+    /*!
+        ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤æ¤œç´¢ã‚’è¡Œã†ã‚¯ãƒ©ã‚¹
+    */
 	class EigenValueSearch final {
-        // #region ƒRƒ“ƒXƒgƒ‰ƒNƒ^EƒfƒXƒgƒ‰ƒNƒ^
+        // #region ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 
     public:
-
         //! A constructor.
         /*!
-            —Bˆê‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
-            \param arg ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹–¼‚ÆTBB‚ğg—p‚·‚é‚©‚Ç‚¤‚©‚Ìstd::pair
+            å”¯ä¸€ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+            \param arg ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«åã¨TBBã‚’ä½¿ç”¨ã™ã‚‹ã‹ã©ã†ã‹ã®std::pair
         */
         explicit EigenValueSearch(std::pair<std::string, bool> const & arg);
 
         //! A destructor.
         /*!
-            ‰½‚à‚µ‚È‚¢ƒfƒXƒgƒ‰ƒNƒ^
+            ä½•ã‚‚ã—ãªã„ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         */
         ~EigenValueSearch()
         {
         }
 
-        // #endregion ƒRƒ“ƒXƒgƒ‰ƒNƒ^EƒfƒXƒgƒ‰ƒNƒ^
+        // #endregion ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 
-        // #region ƒƒ“ƒoŠÖ”
+        // #region ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+
+        //! A property.
+        /*!
+            ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¾—ã‚‹
+            \return ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        */
+        Property<std::shared_ptr<Data>> const PData;
+
+        //! A property.
+        /*!
+            å¾®åˆ†æ–¹ç¨‹å¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¾—ã‚‹
+            \return å¾®åˆ†æ–¹ç¨‹å¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        */
+        Property<std::shared_ptr<Diff>> const PDiff;
+
+        // #endregion ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+
+        // #region ãƒ¡ãƒ³ãƒé–¢æ•°
 
     public:
         //! A public member function.
         /*!
-            ƒf[ƒ^ƒIƒuƒWƒFƒNƒg‚ğ“¾‚é
-            \return ƒf[ƒ^ƒIƒuƒWƒFƒNƒg
-        */
-        const std::shared_ptr<Data> & getpData() const;
-        
-        //! A public member function.
-        /*!
-            ”÷•ª•û’ö®ƒIƒuƒWƒFƒNƒg‚ğ“¾‚é
-            \return ”÷•ª•û’ö®ƒIƒuƒWƒFƒNƒg
-        */
-        const std::shared_ptr<Diff> & getpDiff() const;
-
-        //! A public member function.
-        /*!
-            ŒÅ—L’l‚ğŒŸõ‚·‚é
-            \return ŒÅ—L’l‚ªŒ©‚Â‚©‚Á‚½‚©‚Ç‚¤‚©
+            å›ºæœ‰å€¤ã‚’æ¤œç´¢ã™ã‚‹
+            \return å›ºæœ‰å€¤ãŒè¦‹ã¤ã‹ã£ãŸã‹ã©ã†ã‹
         */
         bool search();
 
     private:
         //! A private member function.
         /*!
-            ŠÖ”D‚Ì’l‚ğ•Ô‚·
-            \return ŠÖ”D‚Ì’li”÷•ª•û’ö®‚ª³í‚É‰ğ‚¯‚È‚©‚Á‚½‚Æ‚«‚Íboost::nonej
+            Brentæ³•ã§ã€é–¢æ•°Dã®æ ¹ã‚’è¨ˆç®—ã™ã‚‹
+            \return æ ¹ãŒè¦‹ã¤ã‹ã£ãŸã‹ã©ã†ã‹
         */
-        boost::optional<double> fnc_D();
+        bool brent();
 
         //! A private member function (const).
         /*!
-            Œ»İ‚Ìƒ‹[ƒv‚ğƒƒbƒZ[ƒW‚Å•ñ‚·‚é
+            ç¾åœ¨ã®ãƒ«ãƒ¼ãƒ—ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã§å ±å‘Šã™ã‚‹
         */
         void info() const;
 
         //! A private member function (const).
         /*!
-            ŒÅ—L’l‚ªŒ©‚Â‚©‚Á‚½‚±‚Æ‚ğƒƒbƒZ[ƒW‚Å•ñ‚·‚é
+            å›ºæœ‰å€¤ãŒè¦‹ã¤ã‹ã£ãŸã“ã¨ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã§å ±å‘Šã™ã‚‹
         */
         void info(double E) const;
 
         //! A private member function (const).
         /*!
-            ŒÅ—L’l‚ªŒ©‚Â‚©‚Á‚½‚±‚Æ‚ğƒƒbƒZ[ƒW‚Å•ñ‚·‚é
-            \param b ŠÖ”D‚Ìˆø”b
-            \param fb ŠÖ”D‚Ìˆø”fb
+            å›ºæœ‰å€¤ãŒè¦‹ã¤ã‹ã£ãŸã“ã¨ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã§å ±å‘Šã™ã‚‹
+            \param b é–¢æ•°Dã®å¼•æ•°b
+            \param fb é–¢æ•°Dã®å¼•æ•°fb
         */
         void info(double b, double fb) const;
 
         //! A private member function (const).
         /*!
-            ó‘Ô‚Ì‰Šú‰»‚ğs‚¤
+            çŠ¶æ…‹ã®åˆæœŸåŒ–ã‚’è¡Œã†
         */
-        void init();
+        void initialize();
 
         //! A private member function (const).
         /*!
-            ‰ğ‚­”÷•ª•û’ö®‚É‚Â‚¢‚ÄƒƒbƒZ[ƒW‚ğ•\¦‚·‚é
+            è§£ãå¾®åˆ†æ–¹ç¨‹å¼ã«ã¤ã„ã¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹
         */
         void msg() const;
 
         //! A private member function.
         /*!
-            ŒÅ—L’l‚ğ‚¨‚¨‚´‚Á‚Ï‚ÉŒŸõ‚·‚é
-            \return ŒÅ—L’l‚ªŒ©‚Â‚©‚Á‚½‚©‚Ç‚¤‚©
+            å›ºæœ‰å€¤ã‚’ãŠãŠã–ã£ã±ã«æ¤œç´¢ã™ã‚‹
+            \return å›ºæœ‰å€¤ãŒè¦‹ã¤ã‹ã£ãŸã‹ã©ã†ã‹
         */
         bool rough_search();
 
         //! A private member function (const).
         /*!
-            •\¦‚·‚é•‚“®¬”“_‚ÌŒ…‚ğİ’è‚·‚é
+            è¡¨ç¤ºã™ã‚‹æµ®å‹•å°æ•°ç‚¹ã®æ¡ã‚’è¨­å®šã™ã‚‹
         */
         void setoutstream() const;
+        
+        // #endregion ãƒ¡ãƒ³ãƒé–¢æ•°
 
-        // #endregion ƒƒ“ƒoŠÖ”
-
-        // #region ƒƒ“ƒo•Ï”
+        // #region ãƒ¡ãƒ³ãƒå¤‰æ•°
 
         //! A private member variable (constant expression).
         /*!
-            ƒGƒlƒ‹ƒM[ŒÅ—L’l’Tõ‚ÌÅ‘å‚Ìƒ‹[ƒv‰ñ”
+            ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤æ¢ç´¢ã®æœ€å¤§ã®ãƒ«ãƒ¼ãƒ—å›æ•°
         */
 		static constexpr auto EVALSEARCHMAX = 1000;
 
         //! A private member variable (constant expression).
         /*!
-            è‡’liâ‘Î’l‚Ì‘å‚«‚¢•ûj
+            é–¾å€¤ï¼ˆçµ¶å¯¾å€¤ã®å¤§ãã„æ–¹ï¼‰
         */
         static constexpr auto HUGE = 1.0E+7;
-
-        //! A private member variable (constant expression).
-        /*!
-            è‡’liâ‘Î’l‚Ì¬‚³‚¢•ûj
-        */
-		static constexpr auto TINY = 1.0E-30;
         
-        //! A private member variable (constant).
+    public:
+        //! A public static member variable.
         /*!
-            ‹–—eŒë·
+            å›ºæœ‰é–¢æ•°ã®ãƒãƒ¼ãƒ‰ãŒä¸€è‡´ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
         */
-		double eps_;
-
-        //! A private member variable (constant).
+        static bool nodeok;
+           
+    private:
+        //! A private member variable.
         /*!
-            ‹–—eŒë·ieps * 10.0j
+            ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤æ¢ç´¢ã®å¹…
         */
-        double tol_;
+        double DE_;
 
         //! A private member variable.
         /*!
-            Brent–@‚É‚¨‚¯‚éŠÖ”D‚Ì‘å‚«‚¢•û
+            ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤
         */
-        double Dmax;
+        double E_;
 
         //! A private member variable.
         /*!
-            Brent–@‚É‚¨‚¯‚éŠÖ”D‚Ì¬‚³‚¢•û
+            Brentæ³•ã«ãŠã‘ã‚‹ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®å¤§ãã„æ–¹
         */
-        double Dmin;
+        double Emax_;
 
         //! A private member variable.
         /*!
-            ‘O‚Ìƒ‹[ƒv‚Æ¡‚ÌƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì·
+            Brentæ³•ã«ãŠã‘ã‚‹ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®å°ã•ã„æ–¹
         */
-        double DE;
+        double Emin_;
 
         //! A private member variable.
         /*!
-            ƒGƒlƒ‹ƒM[ŒÅ—L’l
+            ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®è¿‘ä¼¼å€¤
         */
-        double E;
+        double Eapprox_;
 
         //! A private member variable.
         /*!
-            Brent–@‚É‚¨‚¯‚éƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì‘å‚«‚¢•û
-        */
-        double Emax;
-
-        //! A private member variable.
-        /*!
-            Brent–@‚É‚¨‚¯‚éƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì¬‚³‚¢•û
-        */
-        double Emin;
-
-        //! A private member variable.
-        /*!
-            ƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì‘å‘Ì‚Ì’l
-        */
-        double Erough_exact_;
-
-        //! A private member variable.
-        /*!
-            ŠÖ”D‚ÌŒÃ‚¢’l
+            é–¢æ•°Dã®å¤ã„å€¤
         */
         double Dold;
 		
         //! A private member variable.
         /*!
-            ƒGƒlƒ‹ƒM[ŒÅ—L’l’Tõ‚Ìƒ‹[ƒv‰ñ”
+            ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤æ¢ç´¢ã®ãƒ«ãƒ¼ãƒ—å›æ•°
         */
         std::int32_t loop_;
-
+        
         //! A private member variable.
         /*!
-            ŒÅ—LŠÖ”‚Ìƒm[ƒh‚ªˆê’v‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-        */
-        bool noden_;
-
-        //! A private member variable.
-        /*!
-            ƒCƒ“ƒvƒbƒgƒtƒ@ƒCƒ‹‚Ìƒf[ƒ^ƒIƒuƒWƒFƒNƒg
+            ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         */
 		std::shared_ptr<Data> pdata_;
 
         //! A private member variable.
         /*!
-            ”÷•ª•û’ö®ƒIƒuƒWƒFƒNƒg
+            å¾®åˆ†æ–¹ç¨‹å¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         */
 		std::shared_ptr<Diff> pdiff_;
 
         //! A private member variable.
         /*!
-            ”÷•ª•û’ö®ƒf[ƒ^‚ÌƒIƒuƒWƒFƒNƒg
+            å¾®åˆ†æ–¹ç¨‹å¼ãƒ‡ãƒ¼ã‚¿ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         */
 		std::shared_ptr<DiffData> pdiffdata_;
         
-        // #endregion ƒƒ“ƒoŠÖ”
-		
-		bool zbrent();
+        // #endregion ãƒ¡ãƒ³ãƒå¤‰æ•°
 
     private:
-        // #region ‹Ö~‚³‚ê‚½ƒRƒ“ƒXƒgƒ‰ƒNƒ^Eƒƒ“ƒoŠÖ”
+        // #region ç¦æ­¢ã•ã‚ŒãŸã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ¡ãƒ³ãƒé–¢æ•°
 
         //! A private constructor (deleted).
         /*!
-        ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^i‹Ö~j
+        ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆç¦æ­¢ï¼‰
         */
         EigenValueSearch() = delete;
 
         //! A private copy constructor (deleted).
         /*!
-        ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^i‹Ö~j
+        ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆç¦æ­¢ï¼‰
         */
         EigenValueSearch(EigenValueSearch const &) = delete;
 
         //! A private member function (deleted).
         /*!
-        operator=()‚ÌéŒ¾i‹Ö~j
-        \param ƒRƒs[Œ³‚ÌƒIƒuƒWƒFƒNƒgi–¢g—pj
-        \return ƒRƒs[Œ³‚ÌƒIƒuƒWƒFƒNƒg
+        operator=()ã®å®£è¨€ï¼ˆç¦æ­¢ï¼‰
+        \param ã‚³ãƒ”ãƒ¼å…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆæœªä½¿ç”¨ï¼‰
+        \return ã‚³ãƒ”ãƒ¼å…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         */
         EigenValueSearch & operator=(EigenValueSearch const &) = delete;
 
-        // #endregion ‹Ö~‚³‚ê‚½ƒRƒ“ƒXƒgƒ‰ƒNƒ^Eƒƒ“ƒoŠÖ”
+        // #endregion ç¦æ­¢ã•ã‚ŒãŸã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ»ãƒ¡ãƒ³ãƒé–¢æ•°
 	};
 
-    // #region ”ñƒƒ“ƒoŠÖ”
+    // #region éãƒ¡ãƒ³ãƒé–¢æ•°
 
     //! A function.
     /*!
-        ‘ÎÛ‚Ì•û’ö®‚ªDirac•û’ö®‚Ìê‡‚ÉAƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì‰ºŒÀ‚ğŠTZ‚·‚é
-        \param pdata ƒf[ƒ^ƒIƒuƒWƒFƒNƒg
-        \return ‘å‘Ì‚ÌƒGƒlƒ‹ƒM[ŒÅ—L’l
+        é–¢æ•°Dã®å€¤ã‚’æ±‚ã‚ã‚‹
+        \param E ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤
+        \param params Diffã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿ã‚’ç„¡ç†çŸ¢ç†Void *ã«ã‚­ãƒ£ã‚¹ãƒˆ
+        \return é–¢æ•°Dã®å€¤
+    */
+    double func_D(double E, void * params);
+
+    //! A function.
+    /*!
+        å¯¾è±¡ã®æ–¹ç¨‹å¼ãŒDiracæ–¹ç¨‹å¼ã®å ´åˆã«ã€ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®ä¸‹é™ã‚’æ¦‚ç®—ã™ã‚‹
+        \param pdata ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        \return å¤§ä½“ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤
     */
     double Eexact_dirac(std::shared_ptr<Data> const & pdata);
     
     //! A function.
     /*!
-        ‘ÎÛ‚Ì•û’ö®‚ªSch•û’ö®‚Ìê‡‚ÉAƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì‰ºŒÀ‚ğŠTZ‚·‚é
-        \param pdata ƒf[ƒ^ƒIƒuƒWƒFƒNƒg
-        \return ‘å‘Ì‚ÌƒGƒlƒ‹ƒM[ŒÅ—L’l
+        å¯¾è±¡ã®æ–¹ç¨‹å¼ãŒSchæ–¹ç¨‹å¼ã®å ´åˆã«ã€ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®ä¸‹é™ã‚’æ¦‚ç®—ã™ã‚‹
+        \param pdata ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        \return å¤§ä½“ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤
     */
     double Eexact_sch(std::shared_ptr<Data> const & pdata);
 
     //! A function.
     /*!
-        ‘ÎÛ‚Ì•û’ö®‚ªscalar Dirac•û’ö®‚Ìê‡‚ÉAƒGƒlƒ‹ƒM[ŒÅ—L’l‚Ì‰ºŒÀ‚ğŠTZ‚·‚é
-        \param pdata ƒf[ƒ^ƒIƒuƒWƒFƒNƒg
-        \return ‘å‘Ì‚ÌƒGƒlƒ‹ƒM[ŒÅ—L’l
+        å¯¾è±¡ã®æ–¹ç¨‹å¼ãŒscalar Diracæ–¹ç¨‹å¼ã®å ´åˆã«ã€ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤ã®ä¸‹é™ã‚’æ¦‚ç®—ã™ã‚‹
+        \param pdata ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        \return å¤§ä½“ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼å›ºæœ‰å€¤
     */
     double Eexact_sdirac(std::shared_ptr<Data> const & pdata);
 
 	template <typename T>
     //! A function (template function).
     /*!
-        b‚ª³‚Ì’l‚Ìê‡‚Éa‚Ìâ‘Î’l‚ğAb‚ª•‰‚Ì’l‚Ìê‡‚Ía‚Ìâ‘Î’l‚É-‚ğ‚©‚¯‚½’l‚ğ•Ô‚·
-        \param a ‘ÎÛ‚Ì’l
-        \param b ³•‰‚ğ”»’f‚·‚é‚½‚ß‚Ì’l
-        \return b‚ª³‚Ì’l‚Ìê‡‚Ía‚Ìâ‘Î’lAb‚ª•‰‚Ì’l‚Ìê‡‚Ía‚Ìâ‘Î’l‚É-‚ğ‚©‚¯‚½’l
+        bãŒæ­£ã®å€¤ã®å ´åˆã«aã®çµ¶å¯¾å€¤ã‚’ã€bãŒè² ã®å€¤ã®å ´åˆã¯aã®çµ¶å¯¾å€¤ã«-ã‚’ã‹ã‘ãŸå€¤ã‚’è¿”ã™
+        \param a å¯¾è±¡ã®å€¤
+        \param b æ­£è² ã‚’åˆ¤æ–­ã™ã‚‹ãŸã‚ã®å€¤
+        \return bãŒæ­£ã®å€¤ã®å ´åˆã¯aã®çµ¶å¯¾å€¤ã€bãŒè² ã®å€¤ã®å ´åˆã¯aã®çµ¶å¯¾å€¤ã«-ã‚’ã‹ã‘ãŸå€¤
     */
 	T sign(T a, T b)
 	{
 		return (b >= 0.0) ? std::fabs(a) : - std::fabs(a);
 	}
 
-    // #endregion ”ñƒƒ“ƒoŠÖ”
+    // #endregion éãƒ¡ãƒ³ãƒé–¢æ•°
 }
 
 #endif // _EIGENVALUESEARCH_H_

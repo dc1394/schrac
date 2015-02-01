@@ -1,4 +1,4 @@
-﻿#include "EigenValueSearch.h"
+﻿#include "eigenvaluesearch.h"
 #include "getcomlineoption.h"
 #include <conio.h>
 #include <cstdlib>
@@ -8,9 +8,9 @@
 //#include "WF_Save.h"
 //#include "ChkPoint.h"
 
-/*namespace schrac {
-	void showomp(const schrac::My_getOpt & go);
-}*/
+namespace schrac {
+    void goexit();
+}
 
 int main(int argc, char * argv[])
 {
@@ -20,13 +20,8 @@ int main(int argc, char * argv[])
     GetComLineOption mg;
     switch (mg.getopt(argc, argv)) {
     case -1:
-        std::cout << "終了するには何かキーを押してください..." << std::endl;
+        goexit();
 
-#if defined(_WIN32) || defined(_WIN64)
-        ::_getch();
-#else
-        std::getchar();
-#endif
         return EXIT_FAILURE;
         break;
 
@@ -34,13 +29,8 @@ int main(int argc, char * argv[])
         break;
 
     case 1:
-        std::cout << "終了するには何かキーを押してください..." << std::endl;
+        goexit();
 
-#if defined(_WIN32) || defined(_WIN64)
-        ::_getch();
-#else
-        std::getchar();
-#endif
         return EXIT_SUCCESS;
         break;
 
@@ -58,18 +48,21 @@ int main(int argc, char * argv[])
     }
     catch (const std::runtime_error & e) {
         std::cerr << e.what() << std::endl;
-
+        goexit();
         return EXIT_FAILURE;
     }
-}
-	/*cp.checkpoint("入力ファイル読み込み処理", __LINE__);
 
-	if (!pevs->search()) {
-		std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
-		return EXIT_FAILURE;
-	}
-	
-	cp.checkpoint("微分方程式の積分と固有値探索処理", __LINE__);
+    //cp.checkpoint("入力ファイル読み込み処理", __LINE__);
+
+    if (!pevs->search()) {
+        std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
+        goexit();
+        return EXIT_FAILURE;
+    }
+
+    goexit();
+}
+	/*cp.checkpoint("微分方程式の積分と固有値探索処理", __LINE__);
 
 	schrac::WF_Normalize wfn(pevs->getpDiff());
 
@@ -115,20 +108,17 @@ int main(int argc, char * argv[])
 #endif
 
 	return EXIT_SUCCESS;
-}
+}*/
 
 namespace schrac {
-	void showomp(const schrac::My_getOpt & go)
-	{
-		std::cout << "OpenMP: ";
+    void goexit()
+    {
+        std::cout << "終了するには何かキーを押してください..." << std::endl;
 
-		const int nthread = go.getOmpThread();
-		if (nthread) {
-			std::cout << "使用" << std::endl;
-			std::cout << "使用スレッド数: " << nthread
-					  << '¥n' << std::endl;
-		} else {
-			std::cout << "未使用¥n" << std::endl;
-		}
-	}
-}*/
+#if defined(_WIN32) || defined(_WIN64)
+        ::_getch();
+#else
+        std::getchar();
+#endif
+    }
+}

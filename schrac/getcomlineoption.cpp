@@ -3,6 +3,7 @@
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
+
 #include "getcomlineoption.h"
 #include <iostream>                     // for std::cerr, std::cout
 #include <boost/program_options.hpp>    // for boost::program_options

@@ -30,11 +30,9 @@ namespace schrac {
         //! A constructor.
         /*!
             唯一のコンストラクタ
-            \param E エネルギー固有値 
             \param pdata データオブジェクト
-            \param TINY 絶対値が小さい方の閾値
         */
-        DiffData(double E, std::shared_ptr<Data> const & pdata, double TINY);
+        DiffData(std::shared_ptr<Data> const & pdata);
 
         //! A destructor.
         /*!
@@ -67,18 +65,6 @@ namespace schrac {
         // #endregion メンバ関数
 
         // #region メンバ変数
-            
-        //!  A private static member variable (constant expression).
-        /*!
-            行列Aのサイズ
-        */
-		static std::size_t constexpr AVECSIZE = 3;
-		
-        //!  A private static member variable (constant expression).
-        /*!
-            行列Bのサイズ
-        */
-        static std::size_t constexpr BVECSIZE = 5;
         
         //!  A public member variable (constant).
         /*!
@@ -91,12 +77,6 @@ namespace schrac {
             データオブジェクト
         */
         std::shared_ptr<Data> const pdata_;
-        
-        //!  A public member variable (constant).
-        /*!
-            絶対値が小さい方の閾値
-        */
-        double const TINY_;
         
         //!  A public member variable (constant).
         /*!
@@ -118,87 +98,75 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            無限遠に近い点から解いた関数Lの数表が格納された可変長配列
+            無限遠に近い点から解いた関数Lの数表
         */
-        dvector LI_;
+        dvector li_;
 
         //!  A public member variable.
         /*!
-            原点に近い点から解いた関数Lの数表が格納された可変長配列
+            原点に近い点から解いた関数Lの数表
         */
-        dvector LO_;
+        dvector lo_;
 
         //!  A public member variable.
         /*!
-            無限遠に近い点から関数Mの数表が格納された可変長配列
+            無限遠に近い点から解いた関数Mの数表
         */
-        dvector MI_;
+        dvector mi_;
         
         //!  A public member variable.
         /*!
-            原点に近い点から関数Mの数表が格納された可変長配列
+            原点に近い点から解いた関数Mの数表
         */
-        dvector MO_;
+        dvector mo_;
 
         //!  A public member variable.
         /*!
             無限遠に近い点から数えたマッチングポイント
         */
-        std::int32_t MP_I_;
+        std::int32_t mp_i_;
         
         //!  A public member variable.
         /*!
             原点から近い方から数えたマッチングポイント
         */
-        std::int32_t MP_O_;
+        std::int32_t mp_o_;
 
         //!  A public member variable.
         /*!
-            無限遠に近い点からrのメッシュが格納された可変長配列
+            無限遠に近い点からのrのメッシュ
         */
-        dvector RV_I_;
+        dvector r_i_;
 
         //!  A public member variable.
         /*!
-            原点に近い点からrのメッシュが格納された可変長配列
+            原点に近い点からのrのメッシュ
         */
-        dvector RV_O_;
+        dvector r_o_;
 
         //!  A public member variable.
         /*!
             今回微分方程式を解くことによって得た節の数
         */
         std::int32_t thisnode_;
-
-        //!  A public member variable.
-        /*!
-            行列A
-        */
-        std::array<double, AVECSIZE> V_A_;
-
-        //!  A public member variable.
-        /*!
-            行列B
-        */
-        std::array<double, BVECSIZE> V_B_;
         
         //!  A public member variable.
         /*!
-            原点に近い点から微分方程式を解くときに使うポテンシャルVの可変長配列（Rのメッシュ）
+            原点に近い点から微分方程式を解くときに使うポテンシャルV(r)
         */
-        dvector VP_O_;
+        dvector vr_o_;
 
         //!  A public member variable.
         /*!
-            無限遠に近い点からxのメッシュが格納された可変長配列
+            無限遠に近い点からのxのメッシュ
         */
-		dvector XV_I_;
+		dvector x_i_;
 
         //!  A public member variable.
         /*!
-            原点に近い点からxのメッシュが格納された可変長配列
+            原点に近い点からのxのメッシュ
         */
-        dvector XV_O_;
+        dvector x_o_;
 
 		//dvector VP_I;
 		
