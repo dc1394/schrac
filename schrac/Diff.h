@@ -82,6 +82,8 @@ namespace schrac {
         */
         void initialize(double E);
 
+        void node_count(std::int32_t i, dvector const & wf);
+
         //! A public member function.
         /*!
             原点に近い点と無限遠に近い点から、それぞれ微分方程式を解く

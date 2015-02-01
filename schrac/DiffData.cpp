@@ -79,13 +79,6 @@ namespace schrac {
     {
         return -Z_ * std::exp(-x);
     }
-
-    void DiffData::node_count(std::int32_t i, dvector const & WF)
-    {
-        if (WF[i] * WF[i - 1] < 0.0) {
-            thisnode_++;
-        }
-    }
-
+    
     // #endregion メンバ関数
 }

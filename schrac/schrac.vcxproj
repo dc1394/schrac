@@ -83,7 +83,6 @@
     <ClCompile Include="data.cpp" />
     <ClCompile Include="diff.cpp" />
     <ClCompile Include="diffdata.cpp" />
-    <ClCompile Include="eigenvaluesearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="readinputfile.cpp" />
     <ClCompile Include="schracmain.cpp" />
@@ -93,7 +92,6 @@
     <ClInclude Include="data.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="diffdata.h" />
-    <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />

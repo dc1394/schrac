@@ -101,7 +101,7 @@ namespace schrac {
 		bm[4] = (am[0] * bm[2] + am[2] * bm[0] - pdiffdata_->E_ * bm[2]) / static_cast<double>(4 * pdata_->l_ + 10);
 	}
 
-    void Diff::derivs(std::array<double, 2> const & f, std::array<double, 2> & dfdx, double x) const
+    void Diff::derivs(myarray const & f, myarray & dfdx, double x) const
     {
         auto const dL_dx = [](double M) { return M; };
 
@@ -222,6 +222,13 @@ namespace schrac {
 		pdiffdata_->mo_[0] *= pdiffdata_->r_o_[0];
 	}
     
+    void Diff::node_count(std::int32_t i, dvector const & wf)
+    {
+        if (WF[i] * WF[i - 1] < 0.0) {
+            thisnode_++;
+        }
+    }
+
     bool Diff::solve_diff_equ_i()
     {
         using namespace boost::numeric::odeint;
