@@ -1,17 +1,19 @@
 ﻿#include "Diff.h"
-#include <algorithm>
-#include <stdexcept>
-#include <boost/numeric/odeint.hpp>
-#include <gsl/gsl_linalg.h>
+#include <algorithm>        // for std::copy
+#include <stdexcept>        // for std::runtime_error
+#include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
+#include <gsl/gsl_linalg.h> // for gsl_linalg
 
 namespace schrac {
+    using namespace boost::numeric::odeint;
+
 	// #region コンストラクタ
 
     Diff::Diff(std::shared_ptr<Data> const & pdata) :
         pdata_(pdata),
         pdiffdata_(std::make_shared<DiffData>(pdata)),
         PDiffData([this]() { return pdiffdata_; }, nullptr)
-	{		
+	{
         am_evaluate();
 	}
 
@@ -62,8 +64,32 @@ namespace schrac {
 
         }
         } else {*/
-        solve_diff_equ_o();
-        solve_diff_equ_i();
+        switch (pdata_->solver_type_) {
+        case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
+            solve_diff_equ_o(adams_bashforth_moulton< 2, myarray >());
+            solve_diff_equ_i(adams_bashforth_moulton< 2, myarray >());
+
+            break;
+
+        case Data::Solver_type::BULIRSCH_STOER:
+            solve_diff_equ_o(bulirsch_stoer < myarray >());
+            solve_diff_equ_i(bulirsch_stoer < myarray >());
+
+            break;
+
+        case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
+            using error_stepper_type = runge_kutta_cash_karp54< myarray >;
+            using controlled_stepper_type = controlled_runge_kutta< error_stepper_type >;
+
+            solve_diff_equ_o(controlled_stepper_type());
+            solve_diff_equ_i(controlled_stepper_type());
+            break;
+
+        default:
+            BOOST_ASSERT(!"何かがおかしい！");
+            break;
+        }
+
         //}
 
         return true;
@@ -222,48 +248,46 @@ namespace schrac {
 		pdiffdata_->mo_[0] *= pdiffdata_->r_o_[0];
 	}
     
-    void Diff::node_count(std::int32_t i, dvector const & wf)
+    void Diff::node_count(dvector const & L)
     {
-        if (WF[i] * WF[i - 1] < 0.0) {
-            thisnode_++;
+        if (L.size() > 1 && (L.back() * *(++L.rbegin()) < 0.0)) {
+            pdiffdata_->thisnode_++;
         }
     }
 
-    bool Diff::solve_diff_equ_i()
+    template <typename Stepper>
+    bool Diff::solve_diff_equ_i(Stepper const & stepper)
     {
-        using namespace boost::numeric::odeint;
-
-        bulirsch_stoer<myarray> stepper(pdata_->eps_, pdata_->eps_);
         myarray initial_val = { pdiffdata_->li_[1], pdiffdata_->mi_[1] };
+
         pdiffdata_->li_.pop_back();
         pdiffdata_->mi_.pop_back();
-        std::int32_t index = 1;
+
         integrate_const(
             stepper,
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
             initial_val,
             pdiffdata_->x_i_[1],
             pdiffdata_->x_i_[pdiffdata_->mp_i_],
-            - pdiffdata_->DX_,
-            [this, &index](myarray const & f, double const x)
+            -pdiffdata_->DX_,
+            [this](myarray const & f, double const x)
         {
             pdiffdata_->li_.push_back(f[0]);
             pdiffdata_->mi_.push_back(f[1]);
-            auto const size = pdiffdata_->li_.size();
-            pdiffdata_->node_count(size - 1, pdiffdata_->li_);
+            node_count(pdiffdata_->li_);
         });
 
         return true;
     }
 
-    bool Diff::solve_diff_equ_o()
+    template <typename Stepper>
+    bool Diff::solve_diff_equ_o(Stepper const & stepper)
     {
-        using namespace boost::numeric::odeint;
-
-        bulirsch_stoer<myarray> stepper(pdata_->eps_, pdata_->eps_);
         myarray initial_val = { pdiffdata_->lo_[0], pdiffdata_->mo_[0] };
+
         pdiffdata_->lo_.pop_back();
         pdiffdata_->mo_.pop_back();
+
         integrate_const(
             stepper,
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
@@ -272,14 +296,11 @@ namespace schrac {
             pdiffdata_->x_o_[pdiffdata_->mp_o_],
             pdiffdata_->DX_,
             [this](myarray const & f, double const x)
-            {
-                pdiffdata_->lo_.push_back(f[0]);
-                pdiffdata_->mo_.push_back(f[1]);
-                auto const size = pdiffdata_->lo_.size();
-                if (size > 1) {
-                    pdiffdata_->node_count(size - 1, pdiffdata_->lo_);
-                }
-            });
+        {
+            pdiffdata_->lo_.push_back(f[0]);
+            pdiffdata_->mo_.push_back(f[1]);
+            node_count(pdiffdata_->lo_);
+        });
 
         return true;
     }
@@ -333,6 +354,6 @@ namespace schrac {
 
         return std::move(solution);
     }
-
+    
     // #endregion 非メンバ関数
 }

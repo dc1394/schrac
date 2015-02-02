@@ -54,14 +54,6 @@ namespace schrac {
         */
         double fnc_V(double x) const;
         
-        //!  A public member function.
-        /*!
-            波動関数の節の数を調べる
-            \param i メッシュのインデックス
-            \param WF 波動関数φ
-        */
-        void node_count(std::int32_t i, dvector const & WF);
-
         // #endregion メンバ関数
 
         // #region メンバ変数

@@ -82,8 +82,6 @@ namespace schrac {
         */
         void initialize(double E);
 
-        void node_count(std::int32_t i, dvector const & wf);
-
         //! A public member function.
         /*!
             原点に近い点と無限遠に近い点から、それぞれ微分方程式を解く
@@ -173,19 +171,30 @@ namespace schrac {
         */
         void init_lm_o();
         
+        //!  A private member function.
+        /*!
+            L(x)のノードの数をカウントする
+            \param L L(x)の格納されたstd::vector
+        */
+        void node_count(dvector const & L);
+
+        template <typename Stepper>
         //! A private member function.
         /*!
             無限遠に近い点から、微分方程式を解く
+            \param stepper 微分方程式のソルバーのアルゴリズム
             \return 微分方程式が正常に解けたかどうか
         */
-        bool solve_diff_equ_i();
+        bool solve_diff_equ_i(Stepper const & stepper);
 
+        template <typename Stepper>
         //! A private member function.
         /*!
             原点に近い点から、微分方程式を解く
+            \param stepper 微分方程式のソルバーのアルゴリズム
             \return 微分方程式が正常に解けたかどうか
         */
-        bool solve_diff_equ_o();
+        bool solve_diff_equ_o(Stepper const & stepper);
         
         //! A private member function (const).
         /*!
@@ -223,6 +232,18 @@ namespace schrac {
         */
         static auto constexpr MINV = 1.0E-200;
 
+        //!  A private member variable.
+        /*!
+            V(r)の級数展開の係数am
+        */
+        std::array<double, Diff::AMMAX> am;
+
+        //!  A public member variable.
+        /*!
+            L(r)の級数展開の係数bm
+        */
+        std::array<double, Diff::BMMAX> bm;
+
         //!  A private member variable (constant).
         /*!
             データオブジェクト
@@ -235,18 +256,6 @@ namespace schrac {
         */
 		std::shared_ptr<DiffData> const pdiffdata_;
 
-        //!  A private member variable.
-        /*!
-            V(r)の級数展開の係数am
-        */
-        std::array<double, Diff::AMMAX> am;
-
-        //!  A public member variable.
-        /*!
-            L(r)の級数展開の係数bm
-        */
-        std::array<double, Diff::BMMAX> bm;
-		
         // #endregion メンバ変数
 
     private:
@@ -274,7 +283,7 @@ namespace schrac {
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
-
+    
     // #region 非メンバ関数
     
     template <typename T>
@@ -322,7 +331,7 @@ namespace schrac {
 	{
 		return x * x;
 	}
-
+    
     // #endregion 非メンバ関数
 }
 
