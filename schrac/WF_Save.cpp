@@ -1,4 +1,4 @@
-#include "WF_Save.h"
+ï»¿#include "WF_Save.h"
 
 namespace schrac {
 #if (_MSC_VER >= 1600)
@@ -34,7 +34,7 @@ namespace schrac {
 		const std::string filename(make_filename(pdata));
 		const unique_ptr<FILE, const FILEDeleter> fp(std::fopen(filename.c_str(), "w"), FILEDeleter());
 		if (fp == NULL) {
-			std::cerr << "ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñB" << std::endl;
+			std::cerr << "ãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“ã€‚" << std::endl;
 			return false;
 		}
 
@@ -47,7 +47,7 @@ namespace schrac {
 			fprintf(fp.get(), "%.15f,%.15f,%.15f\n", RV[i], RF[i], PF[i]);
 		}
 
-		std::cout << '\n' << filename << "‚É”g“®ŠÖ”‚ð‘‚«ž‚Ý‚Ü‚µ‚½B" << std::endl;
+		std::cout << '\n' << filename << "ã«æ³¢å‹•é–¢æ•°ã‚’æ›¸ãè¾¼ã¿ã¾ã—ãŸã€‚" << std::endl;
 
 		return true;
 	}

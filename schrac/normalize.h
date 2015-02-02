@@ -1,4 +1,4 @@
-#include "EigenValueSearch.h"
+﻿#include "EigenValueSearch.h"
 
 namespace schrac {
 	class WF_Normalize

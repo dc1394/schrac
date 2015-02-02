@@ -1,4 +1,4 @@
-#include "WF_Normalize.h"
+﻿#include "WF_Normalize.h"
 
 namespace schrac {
 	// constructor

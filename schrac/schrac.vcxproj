@@ -85,8 +85,10 @@
     <ClCompile Include="diffdata.cpp" />
     <ClCompile Include="eigenvaluesearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
+    <ClCompile Include="normalize.cpp" />
     <ClCompile Include="readinputfile.cpp" />
     <ClCompile Include="schracmain.cpp" />
+    <ClCompile Include="wf_save.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
@@ -95,8 +97,10 @@
     <ClInclude Include="diffdata.h" />
     <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
+    <ClInclude Include="normalize.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
+    <ClInclude Include="wf_save.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="input.inp" />

@@ -60,7 +60,7 @@ namespace schrac {
         
         //!  A public member variable (constant).
         /*!
-            節の数
+            ノードの数
         */
         std::int32_t const node_;
 
@@ -138,7 +138,7 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            今回微分方程式を解くことによって得た節の数
+            今回微分方程式を解くことによって得たノードの数
         */
         std::int32_t thisnode_;
         
