@@ -87,7 +87,7 @@ namespace schrac {
             原点に近い点と無限遠に近い点から、それぞれ微分方程式を解く
             \return それぞれの微分方程式が正常に解けたかどうか
         */
-        bool solve_diff_equ();
+        void solve_diff_equ();
         
     private:
         //! A private member function.
@@ -183,18 +183,16 @@ namespace schrac {
         /*!
             無限遠に近い点から、微分方程式を解く
             \param stepper 微分方程式のソルバーのアルゴリズム
-            \return 微分方程式が正常に解けたかどうか
         */
-        bool solve_diff_equ_i(Stepper const & stepper);
+        void solve_diff_equ_i(Stepper const & stepper);
 
         template <typename Stepper>
         //! A private member function.
         /*!
             原点に近い点から、微分方程式を解く
             \param stepper 微分方程式のソルバーのアルゴリズム
-            \return 微分方程式が正常に解けたかどうか
         */
-        bool solve_diff_equ_o(Stepper const & stepper);
+        void solve_diff_equ_o(Stepper const & stepper);
         
         //! A private member function (const).
         /*!

@@ -1,10 +1,62 @@
-﻿#include "EigenValueSearch.h"
+﻿/*! \file normalize.h
+    \brief 得られた波動関数を正規化するクラスの宣言
+
+    Copyright © 2015 @dc1394 All Rights Reserved.
+*/
+
+#ifndef _NORMALIZE_H_
+#define _NORMALIZE_H_
+
+#pragma once
+
+#include "eigenvaluesearch.h"
+#include <tuple>                // for std::tuple
+#include <unordered_map>
 
 namespace schrac {
-	class WF_Normalize
-		: private boost::noncopyable {
-	public:
-		typedef tuple<const ldvector, const ldvector, const ldvector> d3tup;
+	class Normalize final {
+        // #region 型エイリアス
+
+        using large_small_wf_hash = std::unordered_map<std::string, dvector>;
+
+        using r_rf_pf_tuple = std::tuple<dvector, dvector, dvector>;
+
+        using r_rfls_pfls_tuple = std::tuple<dvector, large_small_wf_hash, large_small_wf_hash>;
+
+        // #endregion 型エイリアス
+
+        // #region コンストラクタ・デストラクタ
+
+    public:
+        //! A constructor.
+        /*!
+            唯一のコンストラクタ
+            \param pdiff 微分方程式のデータオブジェクト
+        */
+        Normalize(std::shared_ptr<Diff> const & pdiff);
+
+        //! A destructor.
+        /*!
+            何もしないデストラクタ
+        */
+        ~Normalize()
+        {
+        }
+
+        // #endregion コンストラクタ・デストラクタ
+
+        // #region プロパティ
+
+        template <typename T>
+
+        // #region メンバ関数
+
+        //! A public member function (const).
+        /*!
+        L[0] = LO(rMP), L[1] = LI(rMP), M[0] = M0(rMP), M[1] = MI(rMP)を代入し、
+        LとMのstd::pairを返す
+        \return LとMのstd::pair
+        */
 
 	private:
 		const shared_ptr<const Data> pdata_;
@@ -29,3 +81,4 @@ namespace schrac {
 	};
 }
 
+#endif // _NORMALIZE_H_

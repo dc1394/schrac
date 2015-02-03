@@ -1,8 +1,8 @@
 ﻿#include "Diff.h"
-#include <algorithm>        // for std::copy
-#include <stdexcept>        // for std::runtime_error
+#include <algorithm>                    // for std::copy
+#include <stdexcept>                    // for std::runtime_error
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
-#include <gsl/gsl_linalg.h> // for gsl_linalg
+#include <gsl/gsl_linalg.h>             // for gsl_linalg
 
 namespace schrac {
     using namespace boost::numeric::odeint;
@@ -47,7 +47,7 @@ namespace schrac {
         init_lm_i();
     }
 
-    bool Diff::solve_diff_equ()
+    void Diff::solve_diff_equ()
     {
         //if (pdata_->ompthread_) {
         /*	#pragma omp parallel sections
@@ -91,8 +91,6 @@ namespace schrac {
         }
 
         //}
-
-        return true;
     }
 
     // #endregion publicメンバ関数
@@ -256,7 +254,7 @@ namespace schrac {
     }
 
     template <typename Stepper>
-    bool Diff::solve_diff_equ_i(Stepper const & stepper)
+    void Diff::solve_diff_equ_i(Stepper const & stepper)
     {
         myarray initial_val = { pdiffdata_->li_[1], pdiffdata_->mi_[1] };
 
@@ -276,12 +274,10 @@ namespace schrac {
             pdiffdata_->mi_.push_back(f[1]);
             node_count(pdiffdata_->li_);
         });
-
-        return true;
     }
 
     template <typename Stepper>
-    bool Diff::solve_diff_equ_o(Stepper const & stepper)
+    void Diff::solve_diff_equ_o(Stepper const & stepper)
     {
         myarray initial_val = { pdiffdata_->lo_[0], pdiffdata_->mo_[0] };
 
@@ -301,8 +297,6 @@ namespace schrac {
             pdiffdata_->mo_.push_back(f[1]);
             node_count(pdiffdata_->lo_);
         });
-
-        return true;
     }
 
     double Diff::V(double r) const

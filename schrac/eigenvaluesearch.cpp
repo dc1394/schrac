@@ -101,7 +101,7 @@ namespace schrac {
 
             case GSL_EZERODIV:
                 std::cerr << "the derivative of the function vanished at the iteration point,"
-                    << "preventing the algorithm from continuing without a division by zero.";
+                    << "preventing the algorithm from continuing without a division by zero.\n";
                     return false;
                 break;
 
