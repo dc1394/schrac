@@ -1,8 +1,14 @@
-﻿#include "WF_Normalize.h"
+﻿/*! \file normalize.cpp
+    \brief 得られた波動関数を正規化するクラスの実装
+
+    Copyright © 2015 @dc1394 All Rights Reserved.
+*/
+
+#include "normalize.h"
 
 namespace schrac {
 	// constructor
-	WF_Normalize::WF_Normalize(const shared_ptr<Diff> & pdiff)
+	Normalize::Normalize(const std::shared_ptr<Diff> & pdiff)
 	 :	pdata_(pdiff->getpDiffData()->pdata_),
 		pdiffdata_(pdiff->getpDiffData()),
 		RV(pdata_->grid_num, 0.0), XV(pdata_->grid_num, 0.0),

@@ -47,7 +47,7 @@ namespace schrac {
 
         // #region プロパティ
 
-        template <typename T>
+        //template <typename T>
 
         // #region メンバ関数
 
@@ -59,8 +59,8 @@ namespace schrac {
         */
 
 	private:
-		const shared_ptr<const Data> pdata_;
-		const shared_ptr<const DiffData> pdiffdata_;
+		const shared_ptr<Data> pdata_;
+		const shared_ptr<DiffData> pdiffdata_;
 
 		ldvector RV;
 		ldvector XV;
@@ -74,8 +74,7 @@ namespace schrac {
 		long double simpson_omp() const;
 
 	public:
-		explicit WF_Normalize(const shared_ptr<Diff> & pdiff);
-		void operator()();
+				void operator()();
 		const WF_Normalize::d3tup getptup() const
 		{ return make_tuple(RV, RF, PF); }
 	};

@@ -50,9 +50,6 @@
     <ClInclude Include="ci_string.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="property.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="readinputfile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

@@ -97,7 +97,6 @@
     <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="normalize.h" />
-    <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
   </ItemGroup>
   <ItemGroup>
