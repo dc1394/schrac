@@ -33,7 +33,7 @@ namespace schrac {
 		rif.readFile();
 		pdata_ = rif.PData;
 		
-		msg();
+        message();
 
 		initialize();
 		setoutstream();
@@ -50,16 +50,7 @@ namespace schrac {
                 return false;
             }
 
-            bool b = false;
-            try {
-                b = brent();
-            }
-            catch (const std::runtime_error & e) {
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-
-            if (b && EigenValueSearch::nodeok) {
+            if (brent() && EigenValueSearch::nodeok) {
                 info(E_);
 
                 return true;
@@ -95,14 +86,36 @@ namespace schrac {
         F.function = &func_D;
         F.params = reinterpret_cast<void *>(pdiff_.get());
 
-        auto x_lo = Emin_, x_hi = Emax_;
-        gsl_root_fsolver_set(s.get(), &F, x_lo, x_hi);
+        gsl_root_fsolver_set(s.get(), &F, Emin_, Emax_);
+
         for (; loop_ < EVALSEARCHMAX; loop_++) {
-            auto status = gsl_root_fsolver_iterate(s.get());
+            auto const ret = gsl_root_fsolver_iterate(s.get());
+
+            switch (ret)
+            {
+            case GSL_EBADFUNC:
+                std::cerr << "the iteration encountered a singular point where"
+                    << "the function or its derivative evaluated to Inf or NaN.\n";
+                    return false;
+                break;
+
+            case GSL_EZERODIV:
+                std::cerr << "the derivative of the function vanished at the iteration point,"
+                    << "preventing the algorithm from continuing without a division by zero.";
+                    return false;
+                break;
+
+            default:
+                break;
+            }
+            
             E_ = gsl_root_fsolver_root(s.get());
-            x_lo = gsl_root_fsolver_x_lower(s.get());
-            x_hi = gsl_root_fsolver_x_upper(s.get());
-            status = gsl_root_test_interval(x_lo, x_hi, 0.0, pdata_->eps_);
+            
+            auto const status = gsl_root_test_interval(
+                gsl_root_fsolver_x_lower(s.get()),
+                gsl_root_fsolver_x_upper(s.get()),
+                0.0,
+                pdata_->eps_);
 
             if (status == GSL_SUCCESS) {
                 break;
@@ -176,7 +189,7 @@ namespace schrac {
         pdiffdata_ = pdiff_->PDiffData;
 	}
 
-    void EigenValueSearch::msg() const
+    void EigenValueSearch::message() const
     {
         std::cout << pdata_->chemical_symbol_
             << "原子の"
@@ -200,9 +213,8 @@ namespace schrac {
 
 		info();
 
-		loop_++;
+		++loop_;
 
-        auto const E0 = E_;
         for (; loop_ < EVALSEARCHMAX; loop_++) {
    			E_ += DE_;
 

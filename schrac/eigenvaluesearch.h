@@ -104,7 +104,7 @@ namespace schrac {
         /*!
             解く微分方程式についてメッセージを表示する
         */
-        void msg() const;
+        void message() const;
 
         //! A private member function.
         /*!
