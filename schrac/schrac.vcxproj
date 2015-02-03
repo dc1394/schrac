@@ -80,6 +80,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ci_string.cpp" />
+    <ClCompile Include="data.cpp" />
+    <ClCompile Include="diff.cpp" />
+    <ClCompile Include="diffdata.cpp" />
     <ClCompile Include="eigenvaluesearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="normalize.cpp" />
@@ -89,6 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
+    <ClInclude Include="data.h" />
+    <ClInclude Include="diff.h" />
+    <ClInclude Include="diffdata.h" />
     <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="normalize.h" />
