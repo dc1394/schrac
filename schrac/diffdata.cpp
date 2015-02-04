@@ -4,7 +4,7 @@
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
 
-#include "DiffData.h"
+#include "diffdata.h"
 #include <boost/cast.hpp>   // for boost::numeric_cast
 
 namespace schrac {
@@ -29,10 +29,10 @@ namespace schrac {
 		// メモリ確保
 		x_o_.resize(osize);
 		x_i_.resize(isize);
-		r_o_.resize(osize);
-		r_i_.resize(isize);
+		r_mesh_o_.resize(osize);
+		r_mesh_i_.resize(isize);
 		vr_o_.resize(osize);
-		//VP_I.resize(isize);
+		vr_i_.resize(isize);
 		lo_.reserve(osize);
 		li_.reserve(isize);
 		mo_.reserve(osize);
@@ -46,15 +46,15 @@ namespace schrac {
 				for (auto i = 0; i < osize; i++) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
 					x_o_[i] = x;
-					r_o_[i] = std::exp(x);
+					r_mesh_o_[i] = std::exp(x);
 					vr_o_[i] = fnc_V(x);
 				}
 				//#pragma omp for nowait
 				for (auto i = boost::numeric_cast<std::int32_t>(grid_num - 1); i >= len; i--) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
 					x_i_[grid_num - 1 - i] = x;
-					r_i_[grid_num - 1 - i] = std::exp(x);
-					//VP_I[grid_num - 1 - i] = fnc_V(x);
+					r_mesh_i_[grid_num - 1 - i] = std::exp(x);
+					vr_i_[grid_num - 1 - i] = fnc_V(x);
 				}
 			}
 		/*} else {

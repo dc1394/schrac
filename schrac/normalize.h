@@ -1,5 +1,5 @@
 ﻿/*! \file normalize.h
-    \brief 得られた波動関数を正規化するクラスの宣言
+    \brief 得られた波動関数を正規化するクラスの宣言と実装
 
     Copyright © 2015 @dc1394 All Rights Reserved.
 */
@@ -10,18 +10,24 @@
 #pragma once
 
 #include "eigenvaluesearch.h"
-#include <tuple>                // for std::tuple
-#include <unordered_map>
+#include <boost/cast.hpp>       // for boost::numeric_cast
+
+//#include <tuple>                // for std::tuple
+//#include <unordered_map>
 
 namespace schrac {
-	class Normalize final {
+    template <typename Derived>
+    /*! 
+        得られた波動関数を正規化するクラス
+    */
+	class Normalize {
         // #region 型エイリアス
 
-        using large_small_wf_hash = std::unordered_map<std::string, dvector>;
+        //using large_small_wf_hash = std::unordered_map<std::string, dvector>;
 
-        using r_rf_pf_tuple = std::tuple<dvector, dvector, dvector>;
+        //using r_rf_pf_tuple = std::tuple<dvector, dvector, dvector>;
 
-        using r_rfls_pfls_tuple = std::tuple<dvector, large_small_wf_hash, large_small_wf_hash>;
+        //using r_rfls_pfls_tuple = std::tuple<dvector, large_small_wf_hash, large_small_wf_hash>;
 
         // #endregion 型エイリアス
 
@@ -31,9 +37,9 @@ namespace schrac {
         //! A constructor.
         /*!
             唯一のコンストラクタ
-            \param pdiff 微分方程式のデータオブジェクト
+            \param pdiffsolver 微分方程式のデータオブジェクト
         */
-        Normalize(std::shared_ptr<Diff> const & pdiff);
+        Normalize(std::shared_ptr<DiffSolver> const & pdiffsolver);
 
         //! A destructor.
         /*!
@@ -45,39 +51,123 @@ namespace schrac {
 
         // #endregion コンストラクタ・デストラクタ
 
-        // #region プロパティ
-
-        //template <typename T>
-
         // #region メンバ関数
 
-        //! A public member function (const).
+    public:
+        //! A public member function.
         /*!
-        L[0] = LO(rMP), L[1] = LI(rMP), M[0] = M0(rMP), M[1] = MI(rMP)を代入し、
-        LとMのstd::pairを返す
-        \return LとMのstd::pair
+            波動関数を求める
+            \param pdiffsolver 微分方程式オブジェクト
         */
+        void base_evaluate();
 
-	private:
-		const shared_ptr<Data> pdata_;
-		const shared_ptr<DiffData> pdiffdata_;
+    protected:
+        //! A protected member function (const).
+        /*!
+            対象の関数をシンプソンの公式で積分する
+            \param f 被積分関数のstd::vector
+            \return 積分した値
+        */
+        double simpson(dvector const & f) const;
 
-		ldvector RV;
-		ldvector XV;
-		ldvector RF;
-		ldvector PF;
+        // #endregion メンバ関数
 
-		long double phi(std::size_t n) const;
-		void WF_coalesce(const shared_ptr<Diff> & pdiff);
-		void WF_coalesce_omp(const shared_ptr<Diff> & pdiff);
-		long double simpson() const;
-		long double simpson_omp() const;
+        // #region メンバ変数
 
-	public:
-				void operator()();
-		const WF_Normalize::d3tup getptup() const
-		{ return make_tuple(RV, RF, PF); }
+        //! A protected member variable.
+        /*!
+            データオブジェクト
+        */
+		std::shared_ptr<Data> const pdata_;
+
+        //! A protected member variable.
+        /*!
+            微分方程式のデータオブジェクト
+        */
+        std::shared_ptr<DiffData> const pdiffdata_;
+
+        //! A protected member variable.
+        /*!
+            微分方程式オブジェクト
+        */
+        std::shared_ptr<DiffSolver> const pdiffsolver_;
+
+        //! A protected member variable.
+        /*!
+            rのメッシュが格納されたstd::vector
+        */
+        dvector r_mesh_;
+        
+        // #endregion メンバ変数 
+
+    private:
+        // #region 禁止されたコンストラクタ・メンバ関数
+
+        //! A private constructor (deleted).
+        /*!
+        デフォルトコンストラクタ（禁止）
+        */
+        Normalize() = delete;
+
+        //! A private copy constructor (deleted).
+        /*!
+        コピーコンストラクタ（禁止）
+        */
+        Normalize(Normalize const &) = delete;
+
+        //! A private member function (deleted).
+        /*!
+            operator=()の宣言（禁止）
+            \param コピー元のオブジェクト（未使用）
+            \return コピー元のオブジェクト
+        */
+        Normalize & operator=(Normalize const &) = delete;
+
+        // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
+
+    // #region コンストラクタの実装
+
+    template <typename Derived>
+    Normalize<Derived>::Normalize(std::shared_ptr<DiffSolver> const & pdiffsolver) :
+        pdata_(pdiffsolver->PDiffData()->pdata_),
+        pdiffdata_(pdiffsolver->PDiffData),
+        pdiffsolver_(pdiffsolver)
+    {
+        r_mesh_.reserve(pdata_->grid_num_);
+
+        auto const & rmesh_o(pdiffdata_->r_mesh_o_);
+
+        r_mesh_.assign(rmesh_o.begin(), rmesh_o.end());
+    }
+
+    // #endregion コンストラクタの実装
+
+    // #region protectedメンバ関数の実装
+
+    template <typename Derived>
+    void Normalize<Derived>::base_evaluate()
+    {
+        static_cast<Derived &>(*this).evaluate();
+    }
+
+    template <typename Derived>
+    double Normalize<Derived>::simpson(dvector const & f) const
+    {
+        suto sum = 0.0;
+        auto const max = boost::numeric_cast<std::int32_t>(pdata_->grid_num_ - 2);
+
+        for (auto i = 0; i < max; i += 2) {
+        	auto const f0 = f[i] * r_mesh_[i];
+        	auto const f1 = f[i + 1] * f[i + 1] * r_mesh_[i + 1];
+        	auto const f2 = f[i + 2] * f[i + 2] * r_mesh_[i + 2];
+        	sum += (f0 + 4.0 * f1 + f2);
+        }
+
+        return sum * pdiffdata_->DX / 3.0;
+    }
+
+    // #region protectedメンバ関数の実装
 }
 
 #endif // _NORMALIZE_H_

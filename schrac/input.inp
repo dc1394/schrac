@@ -18,8 +18,8 @@ eq.type                     sch             # sch|sdirac|dirac default = sch
 
 grid.xmin                  -7.5             # default = -7.0 rmin(a.u.) = exp(grid.xmin)
 grid.xmax                   6.0             # default = 5.0 rmax(a.u.) = exp(grid.xmax)
-grid.num                    100000          # default = 20000
-eps                         1.0E-16         # default = 1.0E-15
+grid.num                    400             # default = 20000
+eps                         1.0E-15         # default = 1.0E-15
 solver.type         Controlled_Runge_Kutta  # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
 search.LowerE               Auto            # default = Auto
 num.of.partition            300             # default = 300

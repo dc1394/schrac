@@ -76,28 +76,33 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>gsl.lib;cblas.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\mylib64\boost_1_57_0\stage\ia32\icl15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMTD %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ci_string.cpp" />
     <ClCompile Include="data.cpp" />
-    <ClCompile Include="diff.cpp" />
+    <ClCompile Include="diffsolver.cpp" />
     <ClCompile Include="diffdata.cpp" />
+    <ClCompile Include="diracnormalize.cpp" />
     <ClCompile Include="eigenvaluesearch.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
-    <ClCompile Include="normalize.cpp" />
     <ClCompile Include="readinputfile.cpp" />
+    <ClCompile Include="schnormalize.cpp" />
     <ClCompile Include="schracmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
-    <ClInclude Include="diff.h" />
+    <ClInclude Include="diffsolver.h" />
     <ClInclude Include="diffdata.h" />
+    <ClInclude Include="diracnormalize.h" />
     <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="normalize.h" />
+    <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
+    <ClInclude Include="schnormalize.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="input.inp" />

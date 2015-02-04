@@ -128,13 +128,13 @@ namespace schrac {
         /*!
             無限遠に近い点からのrのメッシュ
         */
-        dvector r_i_;
+        dvector r_mesh_i_;
 
         //!  A public member variable.
         /*!
             原点に近い点からのrのメッシュ
         */
-        dvector r_o_;
+        dvector r_mesh_o_;
 
         //!  A public member variable.
         /*!
@@ -150,6 +150,12 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
+            無限遠に近い点から微分方程式を解くときに使うポテンシャルV(r)
+        */
+        dvector vr_i_;
+
+        //!  A public member variable.
+        /*!
             無限遠に近い点からのxのメッシュ
         */
 		dvector x_i_;
@@ -159,12 +165,6 @@ namespace schrac {
             原点に近い点からのxのメッシュ
         */
         dvector x_o_;
-
-		//dvector VP_I;
-		
-
-        //int OSIZE;
-        //int ISIZE;
 
         // #endregion メンバ変数
 	};

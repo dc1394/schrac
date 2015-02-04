@@ -26,7 +26,7 @@ namespace schrac {
 
 	EigenValueSearch::EigenValueSearch(std::pair<std::string, bool> const & arg) :
         PData([this]() { return pdata_; }, nullptr),
-        PDiff([this]() { return pdiff_; }, nullptr),
+        PDiffSolver([this]() { return pdiffsolver_; }, nullptr),
         loop_(1)
 	{
 		ReadInputFile rif(arg);			// ファイルを読み込む
@@ -84,7 +84,7 @@ namespace schrac {
         gsl_function F;
 
         F.function = &func_D;
-        F.params = reinterpret_cast<void *>(pdiff_.get());
+        F.params = reinterpret_cast<void *>(pdiffsolver_.get());
 
         gsl_root_fsolver_set(s.get(), &F, Emin_, Emax_);
 
@@ -185,8 +185,8 @@ namespace schrac {
 			E_ -= 3.0 * DE_;
 		}
 
-        pdiff_ = std::make_shared<Diff>(pdata_);
-        pdiffdata_ = pdiff_->PDiffData;
+        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_);
+        pdiffdata_ = pdiffsolver_->PDiffData;
 	}
 
     void EigenValueSearch::message() const
@@ -208,8 +208,8 @@ namespace schrac {
 
 	bool EigenValueSearch::rough_search()
 	{
-        auto pdiff = reinterpret_cast<void *>(pdiff_.get());
-        Dold = func_D(E_, pdiff);
+        auto pdiffsolver = reinterpret_cast<void *>(pdiffsolver_.get());
+        Dold = func_D(E_, pdiffsolver);
 
 		info();
 
@@ -222,7 +222,7 @@ namespace schrac {
                 return false;
             }
 
-			auto const Dnew = func_D(E_, pdiff);
+			auto const Dnew = func_D(E_, pdiffsolver);
 	 
 			if (Dnew * Dold < 0.0) {
 				Emax_ = E_;
@@ -252,14 +252,14 @@ namespace schrac {
 
     double func_D(double E_, void * params)
     {
-        auto pdiff = reinterpret_cast<Diff *>(params);
-        pdiff->initialize(E_);
-        pdiff->solve_diff_equ();
+        auto pdiffsolver = reinterpret_cast<DiffSolver *>(params);
+        pdiffsolver->initialize(E_);
+        pdiffsolver->solve_diff_equ();
 
-        EigenValueSearch::nodeok = pdiff->PDiffData()->node_ == pdiff->PDiffData()->thisnode_;
+        EigenValueSearch::nodeok = pdiffsolver->PDiffData()->node_ == pdiffsolver->PDiffData()->thisnode_;
 
         myarray L, M;
-        std::tie(L, M) = pdiff->getMPval();
+        std::tie(L, M) = pdiffsolver->getMPval();
         return M[0] - (L[0] / L[1]) * M[1];
     }
 

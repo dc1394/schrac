@@ -1,4 +1,4 @@
-﻿/*! \file diff.h
+﻿/*! \file diffsolver.h
     \brief 微分方程式を解くクラスの宣言
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
@@ -23,7 +23,7 @@ namespace schrac {
     /*!
         微分方程式を解くクラス
     */
-	class Diff final {
+	class DiffSolver final {
         // #region メンバ変数
 
     public:
@@ -41,7 +41,7 @@ namespace schrac {
         using mypair = std::pair < myarray, myarray > ;
 
     public:
-        using myvector = std::array < double, Diff::AMMAX > ;
+        using myvector = std::array < double, DiffSolver::AMMAX > ;
 
         // #endregion 型エイリアス
 
@@ -53,13 +53,13 @@ namespace schrac {
             唯一のコンストラクタ
             \param pdata データオブジェクト
         */
-        Diff(std::shared_ptr<Data> const & pdata);
+        DiffSolver(std::shared_ptr<Data> const & pdata);
 
         //! A destructor.
         /*!
         何もしないデストラクタ
         */
-        ~Diff()
+        ~DiffSolver()
         {
         }
 
@@ -234,13 +234,13 @@ namespace schrac {
         /*!
             V(r)の級数展開の係数am
         */
-        std::array<double, Diff::AMMAX> am;
+        std::array<double, DiffSolver::AMMAX> am;
 
         //!  A public member variable.
         /*!
             L(r)の級数展開の係数bm
         */
-        std::array<double, Diff::BMMAX> bm;
+        std::array<double, DiffSolver::BMMAX> bm;
 
         //!  A private member variable (constant).
         /*!
@@ -263,13 +263,13 @@ namespace schrac {
         /*!
             デフォルトコンストラクタ（禁止）
         */
-        Diff() = delete;
+        DiffSolver() = delete;
 
         //! A private copy constructor (deleted).
         /*!
             コピーコンストラクタ（禁止）
         */
-        Diff(Diff const &) = delete;
+        DiffSolver(DiffSolver const &) = delete;
 
         //! A private member function (deleted).
         /*!
@@ -277,7 +277,7 @@ namespace schrac {
             \param コピー元のオブジェクト（未使用）
             \return コピー元のオブジェクト
         */
-        Diff & operator=(Diff const &) = delete;
+        DiffSolver & operator=(DiffSolver const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
@@ -316,7 +316,7 @@ namespace schrac {
         \param b 連立一次方程式Ax = bにおける右辺のベクトルb
         \return 方程式の解ベクトル
     */
-    Diff::myvector solve_linear_equ(std::array<double, Diff::AMMAX * Diff::AMMAX> a, Diff::myvector b);
+    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b);
 
 	template <typename T>
     //! A function.

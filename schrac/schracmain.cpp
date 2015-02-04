@@ -1,5 +1,5 @@
-﻿#include "eigenvaluesearch.h"
-#include "getcomlineoption.h"
+﻿#include "getcomlineoption.h"
+#include "schnormalize.h"
 #include <conio.h>
 #include <cstdlib>
 #include <iostream>
@@ -59,6 +59,9 @@ int main(int argc, char * argv[])
         goexit();
         return EXIT_FAILURE;
     }
+
+    SchNormalize schn(pevs->PDiffSolver);
+    schn.base_evaluate();
 
     goexit();
 }

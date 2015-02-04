@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "diff.h"
+#include "diffsolver.h"
 #include "readinputfile.h"
 
 namespace schrac {
@@ -52,7 +52,7 @@ namespace schrac {
             微分方程式オブジェクトを得る
             \return 微分方程式オブジェクト
         */
-        Property<std::shared_ptr<Diff>> const PDiff;
+        Property<std::shared_ptr<DiffSolver>> const PDiffSolver;
 
         // #endregion プロパティ
 
@@ -195,7 +195,7 @@ namespace schrac {
         /*!
             微分方程式オブジェクト
         */
-		std::shared_ptr<Diff> pdiff_;
+		std::shared_ptr<DiffSolver> pdiffsolver_;
 
         //! A private member variable.
         /*!
@@ -237,7 +237,7 @@ namespace schrac {
     /*!
         関数Dの値を求める
         \param E エネルギー固有値
-        \param params Diffオブジェクトのポインタを無理矢理Void *にキャスト
+        \param params DiffSolverオブジェクトのポインタを無理矢理Void *にキャスト
         \return 関数Dの値
     */
     double func_D(double E, void * params);
