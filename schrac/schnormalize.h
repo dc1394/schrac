@@ -11,13 +11,13 @@
 
 #include "normalize.h"
 #include <tuple>            // for std::tuple
-#include <boost/any.hpp>    // for boost::any        
 
 namespace schrac {
+    //! A class.
     /*!
         Sch方程式を解いて得られた波動関数を正規化するクラス
     */
-    class SchNormalize : public Normalize<SchNormalize> {
+    class SchNormalize final : public Normalize<SchNormalize> {
         // #region 型エイリアス
 
     public:
@@ -60,7 +60,14 @@ namespace schrac {
         /*!
             求めた結果を返す
         */
-        boost::any getresult();
+        Normalize<SchNormalize>::myhash getresult() const;
+
+    private:
+        //! A public member function.
+        /*!
+            波動関数を正規化する
+        */
+        void normalize();
 
         // #endregion メンバ関数
 

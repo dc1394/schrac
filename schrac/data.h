@@ -14,7 +14,7 @@
 #include <boost/optional.hpp>   // for boost::optional
 
 namespace schrac {
-    //! A class.
+    //! A struct.
     /*!
         インプットファイルの各種データの構造体
     */
@@ -43,7 +43,7 @@ namespace schrac {
             ADAMS_BASHFORTH_MOULTON,
             // Bulirsch-Stoer法
             BULIRSCH_STOER,
-            // 誤差がコントロールされたRunge-Kutta法
+            // コントロールされたRunge-Kutta法
             CONTROLLED_RUNGE_KUTTA
         };
 

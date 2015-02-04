@@ -52,7 +52,7 @@ namespace schrac {
             \param x xの値
             \return V(x)の値
         */
-        double fnc_V(double x) const;
+        double V(double x) const;
         
         // #endregion メンバ関数
 
@@ -80,7 +80,7 @@ namespace schrac {
         /*!
             微分方程式を解くときのメッシュの間隔
         */
-        double DX_;
+        double dx_;
 
         //!  A public member variable.
         /*!

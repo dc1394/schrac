@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <string>
-#include <cctype>
+#include <string>   // for std::string
+#include <cctype>   // for std::toupper
 
 namespace schrac {
     //! A class.

@@ -1,4 +1,10 @@
-﻿#include "diffsolver.h"
+﻿/*! \file diffsolver.cpp
+    \brief 微分方程式を解くクラスの実装
+
+    Copyright ©  2015 @dc1394 All Rights Reserved.
+*/
+
+#include "diffsolver.h"
 #include <algorithm>                    // for std::copy
 #include <stdexcept>                    // for std::runtime_error
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
@@ -269,8 +275,8 @@ namespace schrac {
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
             state,
             pdiffdata_->x_i_[1],
-            pdiffdata_->x_i_[pdiffdata_->mp_i_] - pdiffdata_->DX_,
-            - pdiffdata_->DX_,
+            pdiffdata_->x_i_[pdiffdata_->mp_i_] - pdiffdata_->dx_,
+            - pdiffdata_->dx_,
             [this](myarray const & f, double const x)
         {
             pdiffdata_->li_.push_back(f[0]);
@@ -292,8 +298,8 @@ namespace schrac {
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
             state,
             pdiffdata_->x_o_[0],
-            pdiffdata_->x_o_[pdiffdata_->mp_o_] + pdiffdata_->DX_,
-            pdiffdata_->DX_,
+            pdiffdata_->x_o_[pdiffdata_->mp_o_] + pdiffdata_->dx_,
+            pdiffdata_->dx_,
             [this](myarray const & f, double const x)
         {
             pdiffdata_->lo_.push_back(f[0]);

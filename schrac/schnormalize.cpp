@@ -37,6 +37,21 @@ namespace schrac {
         	pf_.push_back(r_mesh_.back() * rf_.back());
         }
 
+        normalize();
+    }
+
+    Normalize<SchNormalize>::myhash SchNormalize::getresult() const
+    {
+        myhash hash;
+        hash.insert(std::make_pair("Mesh (r)", r_mesh_));
+        hash.insert(std::make_pair("Eigen function", rf_));
+        hash.insert(std::make_pair("Eigen function (multiply r)", pf_));
+
+        return std::move(hash);
+    }
+
+    void SchNormalize::normalize()
+    {
         auto const n = 1.0 / std::sqrt(simpson(pf_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {
             rf_[i] *= n;

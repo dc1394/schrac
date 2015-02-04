@@ -24,7 +24,7 @@ namespace schrac {
         auto const osize = boost::numeric_cast<dvector::size_type>(mp_o_ + 1);
         auto const isize = boost::numeric_cast<dvector::size_type>(mp_i_ + 1);
 
-		DX_ = (pdata_->xmax_ - pdata_->xmin_) / static_cast<double>(grid_num - 1);
+		dx_ = (pdata_->xmax_ - pdata_->xmin_) / static_cast<double>(grid_num - 1);
 
 		// メモリ確保
 		x_o_.resize(osize);
@@ -44,17 +44,17 @@ namespace schrac {
 			{
 				//#pragma omp for nowait
 				for (auto i = 0; i < osize; i++) {
-					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
+					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 					x_o_[i] = x;
 					r_mesh_o_[i] = std::exp(x);
-					vr_o_[i] = fnc_V(x);
+					vr_o_[i] = V(x);
 				}
 				//#pragma omp for nowait
 				for (auto i = boost::numeric_cast<std::int32_t>(grid_num - 1); i >= len; i--) {
-					auto const x = pdata_->xmin_ + static_cast<double>(i) * DX_;
+					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 					x_i_[grid_num - 1 - i] = x;
 					r_mesh_i_[grid_num - 1 - i] = std::exp(x);
-					vr_i_[grid_num - 1 - i] = fnc_V(x);
+					vr_i_[grid_num - 1 - i] = V(x);
 				}
 			}
 		/*} else {
@@ -62,20 +62,20 @@ namespace schrac {
 				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 				XV_O[i] = x;
 				RV_O[i] = std::exp(x);
-				VP_O[i] = fnc_V(x);
+				VP_O[i] = V(x);
 			}
 			for (int i = boost::numeric_cast<const int>(grid_num - 1); i >= len; i--) {
 				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
 				XV_I[grid_num - 1 - i] = x;
 				RV_I[grid_num - 1 - i] = std::exp(x);
-				VP_I[grid_num - 1 - i] = fnc_V(x);
+				VP_I[grid_num - 1 - i] = V(x);
 			}
 		}*/
 	}
 
     // #region メンバ関数
 
-    double DiffData::fnc_V(double x) const
+    double DiffData::V(double x) const
     {
         return -Z_ * std::exp(-x);
     }

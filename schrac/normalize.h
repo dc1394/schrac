@@ -10,24 +10,19 @@
 #pragma once
 
 #include "eigenvaluesearch.h"
-#include <boost/cast.hpp>       // for boost::numeric_cast
-
-//#include <tuple>                // for std::tuple
-//#include <unordered_map>
+#include <unordered_map>        // for std::unordered_map
 
 namespace schrac {
     template <typename Derived>
+    //! A class.
     /*! 
         得られた波動関数を正規化するクラス
     */
 	class Normalize {
         // #region 型エイリアス
 
-        //using large_small_wf_hash = std::unordered_map<std::string, dvector>;
-
-        //using r_rf_pf_tuple = std::tuple<dvector, dvector, dvector>;
-
-        //using r_rfls_pfls_tuple = std::tuple<dvector, large_small_wf_hash, large_small_wf_hash>;
+    public:
+        using myhash = std::unordered_map<std::string, dvector>;
 
         // #endregion 型エイリアス
 
@@ -57,9 +52,21 @@ namespace schrac {
         //! A public member function.
         /*!
             波動関数を求める
-            \param pdiffsolver 微分方程式オブジェクト
         */
         void base_evaluate();
+
+        //! A public member function.
+        /*!
+            結果を返す
+        */
+        myhash base_getresult() const;
+
+    private:
+        //! A public member function.
+        /*!
+            波動関数を正規化する
+        */
+        void base_normalize();
 
     protected:
         //! A protected member function (const).
@@ -152,19 +159,31 @@ namespace schrac {
     }
 
     template <typename Derived>
+    Normalize<Derived>::myhash Normalize<Derived>::base_getresult() const
+    {
+        return static_cast<Derived &>(*this).getresult();
+    }
+
+    template <typename Derived>
+    void Normalize<Derived>::base_normalize()
+    {
+        static_cast<Derived &>(*this).normalize();
+    }
+
+    template <typename Derived>
     double Normalize<Derived>::simpson(dvector const & f) const
     {
-        suto sum = 0.0;
+        auto sum = 0.0;
         auto const max = boost::numeric_cast<std::int32_t>(pdata_->grid_num_ - 2);
 
         for (auto i = 0; i < max; i += 2) {
-        	auto const f0 = f[i] * r_mesh_[i];
+        	auto const f0 = f[i] * f[i] * r_mesh_[i];
         	auto const f1 = f[i + 1] * f[i + 1] * r_mesh_[i + 1];
         	auto const f2 = f[i + 2] * f[i + 2] * r_mesh_[i + 2];
         	sum += (f0 + 4.0 * f1 + f2);
         }
 
-        return sum * pdiffdata_->DX / 3.0;
+        return sum * pdiffdata_->dx_ / 3.0;
     }
 
     // #region protectedメンバ関数の実装

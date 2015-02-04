@@ -10,23 +10,13 @@
 #pragma once
 
 #include "normalize.h"
-#include <tuple>            // for std::tuple
-#include <unordered_map>    // for std::unordered_map
-#include <boost/any.hpp>    // for boost::any        
 
 namespace schrac {
+    //! A class.
     /*!
         Dirac方程式を解いて得られた波動関数を正規化するクラス
     */
-    class DiracNormalize : public Normalize<DiracNormalize> {
-        // #region 型エイリアス
-
-        using large_small_wf_hash = std::unordered_map<std::string, dvector>;
-        
-        using r_rfls_pfls_tuple = std::tuple<dvector, large_small_wf_hash, large_small_wf_hash>;
-
-        // #endregion 型エイリアス
-
+    class DiracNormalize final : public Normalize<DiracNormalize> {
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -58,11 +48,19 @@ namespace schrac {
         */
         void evaluate();
 
+    private:
+        //! A public member function.
+        /*!
+            波動関数を正規化する
+        */
+        void normalize();
+
+    public:
         //! A public member function.
         /*!
         求めた結果を返す
         */
-        boost::any getresult();
+        Normalize<DiracNormalize>::myhash getresult() const;
 
         // #endregion メンバ関数
 
@@ -70,15 +68,9 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            固有関数のlarge成分
+            固有関数
         */
-        dvector rf_large_;
-
-        //! A private member variable.
-        /*!
-            固有関数のsmall成分
-        */
-        dvector rf_small_;
+        dvector rf_;
 
         //! A private member variable.
         /*!

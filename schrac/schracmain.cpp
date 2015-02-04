@@ -1,11 +1,21 @@
-﻿#include "getcomlineoption.h"
-#include "schnormalize.h"
-#include <conio.h>
-#include <cstdlib>
-#include <iostream>
-#include <boost/assert.hpp>
-#include <boost/optional.hpp>
-//#include "WF_Save.h"
+﻿/*! \file schracmain.cpp
+    \brief メインファイル
+
+    Copyright ©  2015 @dc1394 All Rights Reserved.
+*/
+
+#include "getcomlineoption.h"
+#include "normalization.h"
+#include "wavefunctionsave.h"
+
+#if defined(_WIN32) || defined(_WIN64)
+    #include <conio.h>                          // for _getch
+#endif
+
+#include <cstdlib>                              // for EXIT_FAILURE, EXIT_SUCCESS
+#include <iostream>                             // for std::cerr
+#include <boost/optional.hpp>                   // for boost::optional
+#include <boost/utility/in_place_factory.hpp>   // for boost::in_place
 //#include "ChkPoint.h"
 
 namespace schrac {
@@ -35,7 +45,7 @@ int main(int argc, char * argv[])
         break;
 
     default:
-        BOOST_ASSERT(false);
+        BOOST_ASSERT(!"何かがおかしい！");
         break;
     }
 
@@ -46,7 +56,7 @@ int main(int argc, char * argv[])
     try {
         pevs = boost::in_place(mg.getpairdata());
     }
-    catch (const std::runtime_error & e) {
+    catch (std::runtime_error const & e) {
         std::cerr << e.what() << std::endl;
         goexit();
         return EXIT_FAILURE;
@@ -60,8 +70,8 @@ int main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
 
-    SchNormalize schn(pevs->PDiffSolver);
-    schn.base_evaluate();
+    WaveFunctionSave wfs(nomalization(pevs->PDiffSolver), pevs->PData);
+    wfs();
 
     goexit();
 }
