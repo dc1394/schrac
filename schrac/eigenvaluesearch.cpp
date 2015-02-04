@@ -140,8 +140,7 @@ namespace schrac {
 
     void EigenValueSearch::info(double E) const
     {
-        std::cout << "ノード数が一致する固有値を発見しました！" << std::endl;
-        std::cout << "E(計算値) = " << E << " (Hartree)" << std::endl;
+        std::cout << "E(eigenvalue) = " << E << " (Hartree)" << std::endl;
     }
 
     void EigenValueSearch::info(double b, double fb) const
