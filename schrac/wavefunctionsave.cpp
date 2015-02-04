@@ -11,8 +11,8 @@
 #include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
-    WaveFunctionSave::WaveFunctionSave(std::unordered_map<std::string, std::vector<double>> const & hash, std::shared_ptr<Data> const & pdata) :
-        hash_(hash),
+    WaveFunctionSave::WaveFunctionSave(std::unordered_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata) :
+        myhash_(myhash),
         pdata_(pdata)
     {
     }
@@ -28,10 +28,10 @@ namespace schrac {
         case Data::Eq_type::DIRAC:
             filename += '_';
             if (pdata_->spin_orbital_ == Data::ALPHA) {
-                filename += "Alpha";
+                filename += "alpha";
             }
             else {
-                filename += "Beta";
+                filename += "beta";
             }
             break;
 
@@ -68,13 +68,14 @@ namespace schrac {
 			return false;
 		}
 
-		auto const & r_mesh_(hash_["Mesh (r)"]);
-		auto const & rf_(hash_["Eigen function"]);
-        auto const & pf_(hash_["Eigen function (multiply r)"]);
-
-        auto const size = boost::numeric_cast<std::int32_t>(r_mesh_.size());
-		for (auto i = 0; i < size; i++) {
-			fprintf(fp.get(), "%.15f,%.15f,%.15f\n", r_mesh_[i], rf_[i], pf_[i]);
+        auto const size = boost::numeric_cast<std::int32_t>(myhash_.begin()->second.size());
+        auto const end(--myhash_.end());
+        for (auto i = 0; i < size; i++) {
+            auto itr(myhash_.begin());
+            for (; itr != end; ++itr) {
+                fprintf(fp.get(), "%.15f,", itr->second[i]);
+            }
+            fprintf(fp.get(), "%.15f\n", itr->second[i]);
 		}
 
 		std::cout << '\n' << filename << "に波動関数を書き込みました。" << std::endl;

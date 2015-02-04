@@ -218,9 +218,9 @@ namespace schrac {
         pdiffdata_->li_.push_back(d / schrac::pow(rmax, pdata_->l_ + 1));
         pdiffdata_->li_.push_back(dm / schrac::pow(rmaxm, pdata_->l_ + 1));
 
-        if (pdiffdata_->li_[0] < DiffSolver::MINV) {
-            pdiffdata_->li_[0] = DiffSolver::MINV;
-            pdiffdata_->li_[1] = DiffSolver::MINV;
+        if (pdiffdata_->li_[0] < DiffSolver::MINVALUE) {
+            pdiffdata_->li_[0] = DiffSolver::MINVALUE;
+            pdiffdata_->li_[1] = DiffSolver::MINVALUE;
         }
 
         pdiffdata_->mi_.push_back(-pdiffdata_->li_[0] *
@@ -229,9 +229,9 @@ namespace schrac {
             (a * rmaxm + static_cast<double>(pdata_->l_ + 1)));
         
         auto const val = pdiffdata_->mi_[0];
-        if (std::fabs(val) < DiffSolver::MINV) {
-            pdiffdata_->mi_[0] = -DiffSolver::MINV;
-            pdiffdata_->mi_[1] = -DiffSolver::MINV;
+        if (std::fabs(val) < DiffSolver::MINVALUE) {
+            pdiffdata_->mi_[0] = -DiffSolver::MINVALUE;
+            pdiffdata_->mi_[1] = -DiffSolver::MINVALUE;
         }
     }
 

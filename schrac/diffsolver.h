@@ -228,7 +228,7 @@ namespace schrac {
         /*!
             ポテンシャルVの最小値
         */
-        static auto constexpr MINV = 1.0E-200;
+        static auto constexpr MINVALUE = 1.0E-200;
 
         //!  A private member variable.
         /*!

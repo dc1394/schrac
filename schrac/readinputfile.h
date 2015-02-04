@@ -56,7 +56,6 @@ namespace schrac {
         //! A public member function.
         /*!
             ファイルを読み込む
-            \return 読み込みが成功したかどうか
         */
         void readFile();
 
@@ -156,7 +155,6 @@ namespace schrac {
             \param article 要素名
             \param default_value デフォルトの値
             \param value 読み込んだ値
-            \return 読み込みが成功したかどうか
         */
         void readValue(ci_string const & article, T const & default_value, T & value);
 

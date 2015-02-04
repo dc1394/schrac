@@ -56,11 +56,17 @@ namespace schrac {
 		if (!ifs_.is_open())
 			throw std::runtime_error("インプットファイルが開けませんでした");
 
-		if (!readAtom())
-            goto L_END;
+        auto const errorendfunc = []() {
+            throw std::runtime_error("インプットファイルが異常です");
+        };
 
-		if (!readEq())
-            goto L_END;
+        if (!readAtom()) {
+            errorendfunc();
+        }
+
+		if (!readEq()) {
+            errorendfunc();
+        }
 
         // グリッドの最小値を読み込む
         readValue("grid.xmin", Data::XMIN_DEFAULT, pdata_->xmin_);
@@ -74,22 +80,19 @@ namespace schrac {
         // 許容誤差を読み込む
         readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
 
-		if (!readType())
-			throw std::runtime_error("インプットファイルが異常です");
+		if (!readType()) {
+            errorendfunc();
+        }
 
-		if (!readLowerE())
-			throw std::runtime_error("インプットファイルが異常です");
+		if (!readLowerE()) {
+            errorendfunc();
+        }
 
         // 固有値検索の間隔を読み込む
         readValue("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT, pdata_->num_of_partition_);
 
         // マッチングポイントを読み込む
         readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
-
-        return;
-
-    L_END:
-        throw std::runtime_error("インプットファイルが異常です");
 	}
     
     // #endregion publicメンバ関数

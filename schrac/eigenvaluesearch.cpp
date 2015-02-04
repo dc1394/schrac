@@ -30,7 +30,7 @@ namespace schrac {
         loop_(1)
 	{
 		ReadInputFile rif(arg);			// ファイルを読み込む
-		rif.readFile();
+        rif.readFile();
 		pdata_ = rif.PData;
 		
         message();

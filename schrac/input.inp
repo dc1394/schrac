@@ -3,7 +3,7 @@
 #
 
 chemical.symbol             H
-orbital                     1s
+orbital                     2p
 spin.orbital                alpha
 
 #
@@ -16,7 +16,7 @@ eq.type                     sch             # sch|sdirac|dirac default = sch
 # Parameters for solving 1D-differential equations
 #
 
-grid.xmin                  -7.5             # default = -7.0 rmin(a.u.) = exp(grid.xmin)
+grid.xmin                  -8.0             # default = -7.0 rmin(a.u.) = exp(grid.xmin)
 grid.xmax                   6.0             # default = 5.0 rmax(a.u.) = exp(grid.xmax)
 grid.num                    20000           # default = 20000
 eps                         1.0E-15         # default = 1.0E-15

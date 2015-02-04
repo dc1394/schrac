@@ -28,7 +28,7 @@ namespace schrac {
             \param pdata データオブジェクト
             \param hash 波動関数が格納されたハッシュ
         */
-        WaveFunctionSave(std::unordered_map<std::string, std::vector<double>> const & hash, std::shared_ptr<Data> const & pdata);
+        WaveFunctionSave(std::unordered_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata);
 
         //! A destructor.
         /*!
@@ -56,7 +56,7 @@ namespace schrac {
         /*!
             波動関数が格納されたhash
         */
-        std::unordered_map<std::string, std::vector<double>> hash_;
+        std::unordered_map<std::string, std::vector<double>> myhash_;
 
         //!  A private member variable.
         /*!
