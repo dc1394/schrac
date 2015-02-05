@@ -5,6 +5,7 @@
 */
 
 #include "schnormalize.h"
+#include "simpson.h"
 
 namespace schrac {
     // #region publicメンバ関数
@@ -38,6 +39,10 @@ namespace schrac {
         }
 
         normalize();
+
+        Simpson simpson(pdiffdata_->dx_);
+
+        double aaa = simpson(pf_, r_mesh_)
     }
 
     Normalize<SchNormalize>::myhash SchNormalize::getresult() const
@@ -52,7 +57,8 @@ namespace schrac {
 
     void SchNormalize::normalize()
     {
-        auto const n = 1.0 / std::sqrt(simpson(pf_));
+        Simpson simpson(pdiffdata_->dx_);
+        auto const n = 1.0 / std::sqrt(simpson(pf_, r_mesh_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {
             rf_[i] *= n;
             pf_[i] *= n;

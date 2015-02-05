@@ -87,9 +87,9 @@ namespace schrac {
 
         // #endregion メンバ変数
 
-    private:
         // #region 禁止されたコンストラクタ・メンバ関数
 
+    private:
         //! A private constructor (deleted).
         /*!
             デフォルトコンストラクタ（禁止）

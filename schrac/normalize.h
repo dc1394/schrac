@@ -14,7 +14,7 @@
 
 namespace schrac {
     template <typename Derived>
-    //! A class.
+    //! A template class.
     /*! 
         得られた波動関数を正規化するクラス
     */
@@ -68,19 +68,11 @@ namespace schrac {
         */
         void base_normalize();
 
-    protected:
-        //! A protected member function (const).
-        /*!
-            対象の関数をシンプソンの公式で積分する
-            \param f 被積分関数のstd::vector
-            \return 積分した値
-        */
-        double simpson(dvector const & f) const;
-
         // #endregion メンバ関数
 
         // #region メンバ変数
 
+    protected:
         //! A protected member variable.
         /*!
             データオブジェクト
@@ -168,22 +160,6 @@ namespace schrac {
     void Normalize<Derived>::base_normalize()
     {
         static_cast<Derived &>(*this).normalize();
-    }
-
-    template <typename Derived>
-    double Normalize<Derived>::simpson(dvector const & f) const
-    {
-        auto sum = 0.0;
-        auto const max = boost::numeric_cast<std::int32_t>(pdata_->grid_num_ - 2);
-
-        for (auto i = 0; i < max; i += 2) {
-        	auto const f0 = f[i] * f[i] * r_mesh_[i];
-        	auto const f1 = f[i + 1] * f[i + 1] * r_mesh_[i + 1];
-        	auto const f2 = f[i + 2] * f[i + 2] * r_mesh_[i + 2];
-        	sum += (f0 + 4.0 * f1 + f2);
-        }
-
-        return sum * pdiffdata_->dx_ / 3.0;
     }
 
     // #region protectedメンバ関数の実装

@@ -15,7 +15,7 @@
 
 namespace schrac {
     template <typename T>
-    //! A class.
+    //! A template class.
     /*!
         C++でプロパティを実現するクラス
     */

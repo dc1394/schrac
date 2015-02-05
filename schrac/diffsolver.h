@@ -10,6 +10,7 @@
 #pragma once
 
 #include "diffdata.h"
+#include "pow.h"
 #include "property.h"
 
 namespace schrac {
@@ -283,31 +284,6 @@ namespace schrac {
 	};
     
     // #region 非メンバ関数
-    
-    template <typename T>
-    //! A function.
-    /*!
-        x ** nを計算する
-        \param x xの値
-        \param n nの値
-        \return x ** nの値 
-    */
-    T pow(T x, std::uint32_t n)
-    {
-        T p = x, y = 1.0;
-
-        while (true) {
-            if (n & 1)
-                y *= p;
-
-            n >>= 1;
-
-            if (!n)
-                return y;
-
-            p *= p;
-        }
-    }
 
     //! A function.
     /*!

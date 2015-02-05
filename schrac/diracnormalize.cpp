@@ -5,6 +5,7 @@
 */
 
 #include "diracnormalize.h"
+#include "simpson.h"
 
 namespace schrac {
     // #region publicメンバ関数
@@ -69,7 +70,8 @@ namespace schrac {
 
     void DiracNormalize::normalize()
     {
-        auto const n = 1.0 / std::sqrt(simpson(pf_large_) + simpson(pf_small_));
+        Simpson simpson(pdiffdata_->dx_);
+        auto const n = 1.0 / std::sqrt(simpson(pf_large_, r_mesh_) + simpson(pf_small_, r_mesh_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {
             rf_[i] *= n;
             pf_large_[i] *= n;

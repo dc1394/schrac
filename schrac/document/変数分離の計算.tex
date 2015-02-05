@@ -1,0 +1,186 @@
+\documentclass{jarticle}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.50.0.2952}
+%TCIDATA{CSTFile=jarticle55.cst}
+%TCIDATA{Created=Tuesday, February 03, 2015 16:59:57}
+%TCIDATA{LastRevised=Thursday, February 05, 2015 21:54:45}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\jshell\Blank - Japanese Article[jarticle]">}
+%BeginMSIPreambleData
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+%EndMSIPreambleData
+\newtheorem{theorem}{\U{5b9a}\U{7406}}
+\newtheorem{acknowledgement}[theorem]{\U{627f}\U{8a8d}}
+\newtheorem{algorithm}[theorem]{\U{30a2}\U{30eb}\U{30b4}\U{30ea}\U{30ba}\U{30e0}}
+\newtheorem{axiom}[theorem]{\U{516c}\U{7406}}
+\newtheorem{case}[theorem]{\U{5834}\U{5408}}
+\newtheorem{claim}[theorem]{\U{4e3b}\U{5f35}}
+\newtheorem{conclusion}[theorem]{\U{7d50}\U{8ad6}}
+\newtheorem{condition}[theorem]{\U{6761}\U{4ef6}}
+\newtheorem{conjecture}[theorem]{\U{63a8}\U{8ad6}}
+\newtheorem{corollary}[theorem]{\U{7cfb}}
+\newtheorem{criterion}[theorem]{\U{57fa}\U{6e96}}
+\newtheorem{definition}[theorem]{\U{5b9a}\U{7fa9}}
+\newtheorem{example}[theorem]{\U{4f8b}}
+\newtheorem{exercise}[theorem]{\U{7df4}\U{7fd2}}
+\newtheorem{lemma}[theorem]{\U{88dc}\U{984c}}
+\newtheorem{notation}[theorem]{\U{8a18}\U{53f7}}
+\newtheorem{problem}[theorem]{\U{554f}\U{984c}}
+\newtheorem{proposition}[theorem]{\U{547d}\U{984c}}
+\newtheorem{remark}[theorem]{\U{8a18}\U{4e8b}}
+\newtheorem{solution}[theorem]{\U{89e3}\U{6cd5}}
+\newtheorem{summary}[theorem]{\U{8981}\U{7d04}}
+\newenvironment{proof}[1][\U{8a3c}\U{660e}]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\begin{document}
+%
+\begin{tabular}
+[c]{ll}%
+$-\dfrac{1}{2}\Delta\psi_{i}\left(  \vec{r}\right)  +V\left(  r\right)
+\psi_{i}\left(  \vec{r}\right)  =E\psi_{i}\left(  \vec{r}\right)  ,$ &
+$V\left(  r\right)  =-\dfrac{1}{r}$%
+\end{tabular}
+
+
+$\Delta=\dfrac{\partial^{2}}{\partial r^{2}}+\dfrac{2}{r}\dfrac{\partial
+}{\partial r}+\dfrac{1}{r^{2}}\left[  \dfrac{1}{\sin\theta}\dfrac{\partial
+}{\partial\theta}\left(  \sin\theta\dfrac{\partial}{\partial\theta}\right)
++\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  $
+
+$\psi_{i}\left(  \vec{r}\right)  =r^{l}L_{nl}\left(  r\right)  Y_{lm}\left(
+\theta,\phi\right)  $
+
+$\Delta\psi_{i}\left(  \vec{r}\right)  =\Delta\left[  r^{l}L_{nl}\left(
+r\right)  Y_{lm}\left(  \theta,\phi\right)  \right]  $
+
+$\Delta\psi_{i}\left(  \vec{r}\right)  =\left\{  \dfrac{\partial^{2}}{\partial
+r^{2}}+\dfrac{2}{r}\dfrac{\partial}{\partial r}+\dfrac{1}{r^{2}}\left[
+\dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(  \sin\theta
+\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}%
+\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  \right\}  r^{l}L_{nl}\left(
+r\right)  Y_{lm}\left(  \theta,\phi\right)  $
+
+$\dfrac{\partial}{\partial r}\left[  r^{l}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  \right]  =lr^{l-1}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  +r^{l}\dfrac{\partial L_{nl}\left(
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  $
+
+$\dfrac{2}{r}\left[  lr^{l-1}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta
+,\phi\right)  +r^{l}\dfrac{\partial L_{nl}\left(  r\right)  }{\partial
+r}Y_{lm}\left(  \theta,\phi\right)  \right]  =2lr^{l-2}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  +2r^{l-1}\dfrac{\partial L_{nl}\left(
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  $
+
+$\dfrac{\partial^{2}}{\partial r^{2}}\left[  r^{l}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  \right]  =l\left(  l-1\right)  r^{l-2}%
+L_{nl}\left(  r\right)  Y_{lm}\left(  \theta,\phi\right)  +2lr^{l-1}%
+\dfrac{\partial L_{nl}\left(  r\right)  }{\partial r}Y_{lm}\left(  \theta
+,\phi\right)  +r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial
+r^{2}}Y_{lm}\left(  \theta,\phi\right)  $
+
+$\left[  \dfrac{\partial^{2}}{\partial r^{2}}+\dfrac{2}{r}\dfrac{\partial
+}{\partial r}\right]  r^{l}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta
+,\phi\right)  =l\left(  l-1\right)  r^{l-2}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  +2lr^{l-1}\dfrac{\partial L_{nl}\left(
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  +$
+
+$r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}%
+Y_{lm}\left(  \theta,\phi\right)  +2lr^{l-2}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  +2r^{l-1}\dfrac{\partial L_{nl}\left(
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  $
+
+$=r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}%
+Y_{lm}\left(  \theta,\phi\right)  +2\left(  l+1\right)  r^{l-1}\dfrac{\partial
+L_{nl}\left(  r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)
++l\left(  l+1\right)  r^{l-2}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta
+,\phi\right)  $
+
+$\dfrac{1}{r^{2}}\left[  \dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta
+}\left(  \sin\theta\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}%
+{\sin^{2}\theta}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  r^{l}%
+L_{nl}\left(  r\right)  Y_{lm}\left(  \theta,\phi\right)  =$
+
+$r^{l-2}L_{nl}\left(  r\right)  \left\{  \left[  \dfrac{1}{\sin\theta}%
+\dfrac{\partial}{\partial\theta}\left(  \sin\theta\dfrac{\partial}%
+{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}%
+}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta,\phi\right)  \right\}  $
+
+$-\dfrac{1}{2}\Delta\psi_{i}\left(  \vec{r}\right)  +V\left(  r\right)
+\psi_{i}\left(  \vec{r}\right)  -E\psi_{i}\left(  \vec{r}\right)  =0$
+
+$\Delta\psi_{i}\left(  \vec{r}\right)  =2\left[  V\left(  r\right)  -E\right]
+\psi_{i}\left(  \vec{r}\right)  $
+
+$r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}%
+Y_{lm}\left(  \theta,\phi\right)  +2\left(  l+1\right)  r^{l-1}\dfrac{\partial
+L_{nl}\left(  r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)
++l\left(  l+1\right)  r^{l-2}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta
+,\phi\right)  +$
+
+$r^{l-2}L_{nl}\left(  r\right)  \left\{  \left[  \dfrac{1}{\sin\theta}%
+\dfrac{\partial}{\partial\theta}\left(  \sin\theta\dfrac{\partial}%
+{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}%
+}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta,\phi\right)  \right\}
+=2\left[  V\left(  r\right)  -E\right]  r^{l}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  $
+
+$\dfrac{1}{L_{nl}\left(  r\right)  }\left[  \dfrac{\partial^{2}L_{nl}\left(
+r\right)  }{\partial r^{2}}+\dfrac{2\left(  l+1\right)  }{r}\dfrac{\partial
+L_{nl}\left(  r\right)  }{\partial r}\right]  +\dfrac{l\left(  l+1\right)
+}{r^{2}}+$
+
+$\dfrac{1}{r^{2}}\dfrac{1}{Y_{lm}\left(  \theta,\phi\right)  }\left\{  \left[
+\dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(  \sin\theta
+\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}%
+\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta
+,\phi\right)  \right\}  =2\left[  V\left(  r\right)  -E\right]  $%
+
+\begin{tabular}
+[c]{l}%
+$\dfrac{1}{L_{nl}\left(  r\right)  }\left[  \dfrac{\partial^{2}L_{nl}\left(
+r\right)  }{\partial r^{2}}+\dfrac{2\left(  l+1\right)  }{r}\dfrac{\partial
+L_{nl}\left(  r\right)  }{\partial r}\right]  =2\left[  V\left(  r\right)
+-E\right]  $\\
+$\dfrac{l\left(  l+1\right)  }{r^{2}}+\dfrac{1}{r^{2}}\dfrac{1}{Y_{lm}\left(
+\theta,\phi\right)  }\left\{  \left[  \dfrac{1}{\sin\theta}\dfrac{\partial
+}{\partial\theta}\left(  \sin\theta\dfrac{\partial}{\partial\theta}\right)
++\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]
+Y_{lm}\left(  \theta,\phi\right)  \right\}  =0$%
+\end{tabular}
+%
+
+\begin{tabular}
+[c]{l}%
+$\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}+\dfrac{2\left(
+l+1\right)  }{r}\dfrac{\partial L_{nl}\left(  r\right)  }{\partial r}=2\left[
+V\left(  r\right)  -E\right]  L_{nl}\left(  r\right)  $\\
+$-\left[  \dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(
+\sin\theta\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta
+}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta
+,\phi\right)  =l\left(  l+1\right)  Y_{lm}\left(  \theta,\phi\right)  $%
+\end{tabular}
+
+
+$-\left[  \dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(
+\sin\theta\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta
+}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  =\hat{l}^{2}$
+
+$\therefore\left\{
+\begin{tabular}
+[c]{l}%
+$\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}+\dfrac{2\left(
+l+1\right)  }{r}\dfrac{\partial L_{nl}\left(  r\right)  }{\partial r}=2\left[
+V\left(  r\right)  -E\right]  L_{nl}\left(  r\right)  $\\
+$\hat{l}^{2}Y_{lm}\left(  \theta,\phi\right)  =l\left(  l+1\right)
+Y_{lm}\left(  \theta,\phi\right)  $%
+\end{tabular}
+\ \right.  $
+
+
+\end{document}

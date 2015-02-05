@@ -1,0 +1,225 @@
+\documentclass{jarticle}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.50.0.2952}
+%TCIDATA{CSTFile=jarticle55.cst}
+%TCIDATA{Created=Thursday, February 05, 2015 14:31:20}
+%TCIDATA{LastRevised=Thursday, February 05, 2015 21:50:43}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\jshell\Blank - Japanese Article[jarticle]">}
+%BeginMSIPreambleData
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+%EndMSIPreambleData
+\newtheorem{theorem}{\U{5b9a}\U{7406}}
+\newtheorem{acknowledgement}[theorem]{\U{627f}\U{8a8d}}
+\newtheorem{algorithm}[theorem]{\U{30a2}\U{30eb}\U{30b4}\U{30ea}\U{30ba}\U{30e0}}
+\newtheorem{axiom}[theorem]{\U{516c}\U{7406}}
+\newtheorem{case}[theorem]{\U{5834}\U{5408}}
+\newtheorem{claim}[theorem]{\U{4e3b}\U{5f35}}
+\newtheorem{conclusion}[theorem]{\U{7d50}\U{8ad6}}
+\newtheorem{condition}[theorem]{\U{6761}\U{4ef6}}
+\newtheorem{conjecture}[theorem]{\U{63a8}\U{8ad6}}
+\newtheorem{corollary}[theorem]{\U{7cfb}}
+\newtheorem{criterion}[theorem]{\U{57fa}\U{6e96}}
+\newtheorem{definition}[theorem]{\U{5b9a}\U{7fa9}}
+\newtheorem{example}[theorem]{\U{4f8b}}
+\newtheorem{exercise}[theorem]{\U{7df4}\U{7fd2}}
+\newtheorem{lemma}[theorem]{\U{88dc}\U{984c}}
+\newtheorem{notation}[theorem]{\U{8a18}\U{53f7}}
+\newtheorem{problem}[theorem]{\U{554f}\U{984c}}
+\newtheorem{proposition}[theorem]{\U{547d}\U{984c}}
+\newtheorem{remark}[theorem]{\U{8a18}\U{4e8b}}
+\newtheorem{solution}[theorem]{\U{89e3}\U{6cd5}}
+\newtheorem{summary}[theorem]{\U{8981}\U{7d04}}
+\newenvironment{proof}[1][\U{8a3c}\U{660e}]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\begin{document}
+$\left\langle T\right\rangle =4\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+R\left(  r\right)  \left[  -\dfrac{1}{2}\Delta R\left(  r\right)  \right]  dr$
+
+$=-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+R\left(  r\right)  \left[  \dfrac{d^{2}R\left(  r\right)  }{dr^{2}}+\dfrac
+{2}{r}\dfrac{dR\left(  r\right)  }{dr}\right]  dr$
+
+$\dfrac{dR\left(  r\right)  }{dr}=\dfrac{d}{dr}\left[  r^{l+1}L\left(
+r\right)  \right]  $
+
+$=\left(  l+1\right)  r^{l}L\left(  r\right)  +r^{l+1}\dfrac{dL\left(
+r\right)  }{dr}$
+
+$\dfrac{d^{2}R\left(  r\right)  }{dr^{2}}=\dfrac{d}{dr}\left[  \left(
+l+1\right)  r^{l}L\left(  r\right)  +r^{l+1}\dfrac{dL\left(  r\right)  }%
+{dr}\right]  $
+
+$=l\left(  l+1\right)  r^{l-1}L\left(  r\right)  +2\left(  l+1\right)
+r^{l}\dfrac{dL\left(  r\right)  }{dr}+r^{l+1}\dfrac{d^{2}L\left(  r\right)
+}{dr^{2}}$
+
+$\dfrac{d^{2}R\left(  r\right)  }{dr^{2}}+\dfrac{2}{r}\dfrac{dR\left(
+r\right)  }{dr}=2l\left(  l+1\right)  r^{l-1}L\left(  r\right)  +2\left(
+l+2\right)  r^{l}\dfrac{dL\left(  r\right)  }{dr}+r^{l+1}\dfrac{d^{2}L\left(
+r\right)  }{dr^{2}}$
+
+$-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{l+1}L\left(  r\right)  \left[  2l\left(  l+1\right)  r^{l-1}L\left(
+r\right)  +2\left(  l+2\right)  r^{l}\dfrac{dL\left(  r\right)  }{dr}%
++r^{l+1}\dfrac{d^{2}L\left(  r\right)  }{dr^{2}}\right]  dr$
+
+$-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{l+1}L\left(  r\right)  2l\left(  l+1\right)  r^{l-1}L\left(  r\right)
+dr=-4\pi l\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr$
+
+$-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{l+1}L\left(  r\right)  \left[  2\left(  l+2\right)  r^{l}\dfrac{dL\left(
+r\right)  }{dr}\right]  dr=-4\pi\left(  l+2\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+1}L\left(  r\right)  M\left(  r\right)  dr$
+
+$-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{l+1}L\left(  r\right)  r^{l+1}\dfrac{d^{2}L\left(  r\right)  }{dr^{2}%
+}dr=-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2\left(  l+1\right)  }L\left(  r\right)  \dfrac{d^{2}L\left(  r\right)
+}{dr^{2}}dr$
+
+$=-2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2\left(  l+1\right)  }L\left(  r\right)  \dfrac{d}{dr}\left[
+\dfrac{dL\left(  r\right)  }{dr}\right]  dr$
+
+$=\left.  -2\pi r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)
+\right\vert _{r\min}^{r\max}+4\pi\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+1}L\left(  r\right)  M\left(  r\right)  dr+2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2\left(  l+1\right)  }\left[  M\left(  r\right)  \right]  ^{2}dr$
+
+$\left\langle T\right\rangle =-4\pi l\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr+\left[  \left.  -2\pi
+r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  \right\vert
+_{r\min}^{r\max}\right]  -4\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+1}L\left(  r\right)  M\left(  r\right)  dr+2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2\left(  l+1\right)  }\left[  M\left(  r\right)  \right]  ^{2}dr$
+
+$r=\exp\left(  x\right)  $
+
+$dr=rdx$
+
+$-4\pi l\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr=-4\pi l\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+\left[  L\left(  x\right)  \right]  ^{2}r^{2l+1}dx$
+
+$-4\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+1}L\left(  r\right)  M\left(  r\right)  dr=-4\pi%
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+R\left(  x\right)  M\left(  x\right)  r^{l+1}dx$
+
+$2\pi%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2\left(  l+1\right)  }\left[  M\left(  r\right)  \right]  ^{2}dr=2\pi%
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+\left[  M\left(  x\right)  \right]  ^{2}r^{2l+3}dx$
+
+$\left\langle T\right\rangle =-4\pi l\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+\left[  L\left(  x\right)  \right]  ^{2}r^{2l+1}dx+\left[  \left.  -2\pi
+r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  \right\vert
+_{r\min}^{r\max}\right]  -4\pi%
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+L\left(  x\right)  M\left(  x\right)  r^{2\left(  l+1\right)  }dx+2\pi%
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
+%EndExpansion
+\left[  M\left(  x\right)  \right]  ^{2}r^{2l+3}dx$
+
+
+\end{document}
