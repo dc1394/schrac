@@ -8,7 +8,7 @@
 %TCIDATA{Version=5.50.0.2952}
 %TCIDATA{CSTFile=jarticle55.cst}
 %TCIDATA{Created=Tuesday, February 03, 2015 16:59:57}
-%TCIDATA{LastRevised=Tuesday, February 03, 2015 19:33:57}
+%TCIDATA{LastRevised=Thursday, February 05, 2015 21:54:45}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
@@ -88,13 +88,12 @@ $\left[  \dfrac{\partial^{2}}{\partial r^{2}}+\dfrac{2}{r}\dfrac{\partial
 }{\partial r}\right]  r^{l}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta
 ,\phi\right)  =l\left(  l-1\right)  r^{l-2}L_{nl}\left(  r\right)
 Y_{lm}\left(  \theta,\phi\right)  +2lr^{l-1}\dfrac{\partial L_{nl}\left(
-r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  +r^{l}\dfrac
-{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}Y_{lm}\left(
-\theta,\phi\right)  +$
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  +$
 
-$2lr^{l-2}L_{nl}\left(  r\right)  Y_{lm}\left(  \theta,\phi\right)
-+2r^{l-1}\dfrac{\partial L_{nl}\left(  r\right)  }{\partial r}Y_{lm}\left(
-\theta,\phi\right)  $
+$r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}%
+Y_{lm}\left(  \theta,\phi\right)  +2lr^{l-2}L_{nl}\left(  r\right)
+Y_{lm}\left(  \theta,\phi\right)  +2r^{l-1}\dfrac{\partial L_{nl}\left(
+r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)  $
 
 $=r^{l}\dfrac{\partial^{2}L_{nl}\left(  r\right)  }{\partial r^{2}}%
 Y_{lm}\left(  \theta,\phi\right)  +2\left(  l+1\right)  r^{l-1}\dfrac{\partial
@@ -105,11 +104,12 @@ L_{nl}\left(  r\right)  }{\partial r}Y_{lm}\left(  \theta,\phi\right)
 $\dfrac{1}{r^{2}}\left[  \dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta
 }\left(  \sin\theta\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}%
 {\sin^{2}\theta}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  r^{l}%
-L_{nl}\left(  r\right)  Y_{lm}\left(  \theta,\phi\right)  =r^{l-2}%
-L_{nl}\left(  r\right)  \left\{  \left[  \dfrac{1}{\sin\theta}\dfrac{\partial
-}{\partial\theta}\left(  \sin\theta\dfrac{\partial}{\partial\theta}\right)
-+\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]
-Y_{lm}\left(  \theta,\phi\right)  \right\}  $
+L_{nl}\left(  r\right)  Y_{lm}\left(  \theta,\phi\right)  =$
+
+$r^{l-2}L_{nl}\left(  r\right)  \left\{  \left[  \dfrac{1}{\sin\theta}%
+\dfrac{\partial}{\partial\theta}\left(  \sin\theta\dfrac{\partial}%
+{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}\dfrac{\partial^{2}%
+}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta,\phi\right)  \right\}  $
 
 $-\dfrac{1}{2}\Delta\psi_{i}\left(  \vec{r}\right)  +V\left(  r\right)
 \psi_{i}\left(  \vec{r}\right)  -E\psi_{i}\left(  \vec{r}\right)  =0$
@@ -133,10 +133,12 @@ Y_{lm}\left(  \theta,\phi\right)  $
 $\dfrac{1}{L_{nl}\left(  r\right)  }\left[  \dfrac{\partial^{2}L_{nl}\left(
 r\right)  }{\partial r^{2}}+\dfrac{2\left(  l+1\right)  }{r}\dfrac{\partial
 L_{nl}\left(  r\right)  }{\partial r}\right]  +\dfrac{l\left(  l+1\right)
-}{r^{2}}+\dfrac{1}{r^{2}}\dfrac{1}{Y_{lm}\left(  \theta,\phi\right)  }\left\{
-\left[  \dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(
-\sin\theta\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta
-}\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta
+}{r^{2}}+$
+
+$\dfrac{1}{r^{2}}\dfrac{1}{Y_{lm}\left(  \theta,\phi\right)  }\left\{  \left[
+\dfrac{1}{\sin\theta}\dfrac{\partial}{\partial\theta}\left(  \sin\theta
+\dfrac{\partial}{\partial\theta}\right)  +\dfrac{1}{\sin^{2}\theta}%
+\dfrac{\partial^{2}}{\partial\phi^{2}}\right]  Y_{lm}\left(  \theta
 ,\phi\right)  \right\}  =2\left[  V\left(  r\right)  -E\right]  $%
 
 \begin{tabular}

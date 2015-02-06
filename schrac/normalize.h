@@ -93,6 +93,18 @@ namespace schrac {
 
         //! A protected member variable.
         /*!
+            関数L
+        */
+        dvector L_;
+
+        //! A protected member variable.
+        /*!
+            関数M
+        */
+        dvector M_;
+
+        //! A protected member variable.
+        /*!
             rのメッシュが格納されたstd::vector
         */
         dvector r_mesh_;
@@ -133,6 +145,8 @@ namespace schrac {
         pdiffdata_(pdiffsolver->PDiffData),
         pdiffsolver_(pdiffsolver)
     {
+        L_.reserve(pdata_->grid_num_);
+        M_.reserve(pdata_->grid_num_);
         r_mesh_.reserve(pdata_->grid_num_);
 
         auto const & rmesh_o(pdiffdata_->r_mesh_o_);

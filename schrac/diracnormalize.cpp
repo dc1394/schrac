@@ -6,6 +6,7 @@
 
 #include "diracnormalize.h"
 #include "simpson.h"
+#include <utility>          // for std::move
 
 namespace schrac {
     // #region publicメンバ関数
@@ -60,10 +61,10 @@ namespace schrac {
     Normalize<DiracNormalize>::myhash DiracNormalize::getresult() const
     {
         myhash hash;
-        hash.insert(std::make_pair("Mesh (r)", r_mesh_));
-        hash.insert(std::make_pair("Eigen function", rf_));
-        hash.insert(std::make_pair("Eigen function large (multiply r)", pf_large_));
-        hash.insert(std::make_pair("Eigen function small (multiply r)", pf_small_));
+        hash.insert(std::make_pair("Mesh (r)", std::move(r_mesh_)));
+        hash.insert(std::make_pair("Eigen function", std::move(rf_)));
+        hash.insert(std::make_pair("Eigen function large (multiply r)", std::move(pf_large_)));
+        hash.insert(std::make_pair("Eigen function small (multiply r)", std::move(pf_small_)));
 
         return std::move(hash);
     }

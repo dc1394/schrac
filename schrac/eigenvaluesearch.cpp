@@ -255,7 +255,8 @@ namespace schrac {
         pdiffsolver->initialize(E_);
         pdiffsolver->solve_diff_equ();
 
-        EigenValueSearch::nodeok = pdiffsolver->PDiffData()->node_ == pdiffsolver->PDiffData()->thisnode_;
+        EigenValueSearch::nodeok = 
+            pdiffsolver->PDiffData()->node_ == pdiffsolver->PDiffData()->thisnode_;
 
         myarray L, M;
         std::tie(L, M) = pdiffsolver->getMPval();

@@ -13,6 +13,13 @@
 namespace schrac {
     using namespace boost::numeric::odeint;
 
+    // #region 型エイリアス
+
+    using error_stepper_type = runge_kutta_dopri5< myarray >;
+    using controlled_stepper_type = controlled_runge_kutta< error_stepper_type >;
+
+    // #endregion 型エイリアス
+
 	// #region コンストラクタ
 
     DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata) :
@@ -84,9 +91,6 @@ namespace schrac {
             break;
 
         case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-            using error_stepper_type = runge_kutta_dopri5< myarray >;
-            using controlled_stepper_type = controlled_runge_kutta< error_stepper_type >;
-
             solve_diff_equ_o(controlled_stepper_type());
             solve_diff_equ_i(controlled_stepper_type());
             break;
@@ -359,4 +363,15 @@ namespace schrac {
     }
     
     // #endregion 非メンバ関数
+
+    // #region templateメンバ関数の実体化
+
+    template void DiffSolver::solve_diff_equ_i<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
+    template void DiffSolver::solve_diff_equ_i<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
+    template void DiffSolver::solve_diff_equ_i<controlled_stepper_type>(controlled_stepper_type const & stepper);
+    template void DiffSolver::solve_diff_equ_o<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
+    template void DiffSolver::solve_diff_equ_o<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
+    template void DiffSolver::solve_diff_equ_o<controlled_stepper_type>(controlled_stepper_type const & stepper);
+
+    // #endregion templateメンバ関数の実体化
 }

@@ -72,6 +72,7 @@ namespace schrac {
         
         // #region メンバ変数
 
+    private:
         //! A private member variable (const).
         /*!
             メッシュの間隔
@@ -82,7 +83,6 @@ namespace schrac {
         
         // #region 禁止されたコンストラクタ・メンバ関数
 
-    private:
         //! A private constructor (deleted).
         /*!
             デフォルトコンストラクタ（禁止）

@@ -6,6 +6,7 @@
 
 #include "schnormalize.h"
 #include "simpson.h"
+#include <utility>          // for std::move
 
 namespace schrac {
     // #region publicメンバ関数
@@ -41,16 +42,14 @@ namespace schrac {
         normalize();
 
         Simpson simpson(pdiffdata_->dx_);
-
-        double aaa = simpson(pf_, r_mesh_)
     }
 
     Normalize<SchNormalize>::myhash SchNormalize::getresult() const
     {
         myhash hash;
-        hash.insert(std::make_pair("Mesh (r)", r_mesh_));
-        hash.insert(std::make_pair("Eigen function", rf_));
-        hash.insert(std::make_pair("Eigen function (multiply r)", pf_));
+        hash.insert(std::make_pair("Mesh (r)", std::move(r_mesh_)));
+        hash.insert(std::make_pair("Eigen function", std::move(rf_)));
+        hash.insert(std::make_pair("Eigen function (multiply r)", std::move(pf_)));
 
         return std::move(hash);
     }

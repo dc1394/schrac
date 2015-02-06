@@ -295,7 +295,7 @@ namespace schrac {
     DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b);
 
 	template <typename T>
-    //! A function.
+    //! A template function.
     /*!
         x ** 2を計算する
         \param x xの値

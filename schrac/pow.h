@@ -25,8 +25,9 @@ namespace schrac {
         T p = x, y = 1.0;
 
         while (true) {
-            if (n & 1)
+            if (n & 1) {
                 y *= p;
+            }
 
             n >>= 1;
 
