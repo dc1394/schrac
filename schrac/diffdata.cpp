@@ -18,8 +18,8 @@ namespace schrac {
 	{
 		auto const grid_num = pdata_->grid_num_;
 
-		mp_o_ = boost::numeric_cast<std::int32_t>(std::round(static_cast<double>(grid_num - 1) * pdata_->mat_po_ratio_));
-		mp_i_ = grid_num - mp_o_ - 1;
+		mp_o_ = boost::numeric_cast<std::int32_t>(std::round(static_cast<double>(grid_num) * pdata_->mat_po_ratio_));
+		mp_i_ = grid_num - mp_o_;
 		
         auto const osize = boost::numeric_cast<dvector::size_type>(mp_o_ + 1);
         auto const isize = boost::numeric_cast<dvector::size_type>(mp_i_ + 1);
@@ -43,18 +43,18 @@ namespace schrac {
 			//#pragma omp parallel
 			{
 				//#pragma omp for nowait
-				for (auto i = 0; i < osize; i++) {
+                for (auto i = 0; i <= mp_o_; i++) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 					x_o_[i] = x;
 					r_mesh_o_[i] = std::exp(x);
 					vr_o_[i] = V(x);
 				}
 				//#pragma omp for nowait
-				for (auto i = boost::numeric_cast<std::int32_t>(grid_num - 1); i >= len; i--) {
+				for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
-					x_i_[grid_num - 1 - i] = x;
-					r_mesh_i_[grid_num - 1 - i] = std::exp(x);
-					vr_i_[grid_num - 1 - i] = V(x);
+					x_i_[grid_num - i] = x;
+					r_mesh_i_[grid_num - i] = std::exp(x);
+					vr_i_[grid_num - i] = V(x);
 				}
 			}
 		/*} else {

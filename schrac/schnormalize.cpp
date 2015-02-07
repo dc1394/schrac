@@ -8,6 +8,8 @@
 #include "simpson.h"
 #include <utility>          // for std::move
 
+#include "kinetic_energy.h"
+
 namespace schrac {
     // #region publicメンバ関数
 
@@ -16,17 +18,22 @@ namespace schrac {
         auto const mp_im1 = pdiffdata_->mp_i_ - 1;
 
         auto const & li(pdiffdata_->li_);
-        auto const & lo(pdiffdata_->lo_);	
+        auto const & lo(pdiffdata_->lo_);
         auto const & r_mesh_i(pdiffdata_->r_mesh_i_);
-        auto const & r_mesh_o(pdiffdata_->r_mesh_o_);
 
         auto const mpval = pdiffsolver_->getMPval();
         auto const ratio = (std::get<0>(mpval))[0] / (std::get<0>(mpval))[1];
 
         auto const mp_o = pdiffdata_->mp_o_;
         
+        L_.reserve(pdata_->grid_num_);
+        L_.assign(lo.begin(), --lo.end());
+
         rf_.reserve(pdata_->grid_num_);
         pf_.reserve(pdata_->grid_num_);
+
+        M_.reserve(pdata_->grid_num_);
+        M_.assign(pdiffdata_->mo_.begin(), --pdiffdata_->mo_.end());
 
         for (auto i = 0; i <= mp_o; i++) {
         	rf_.push_back(schrac::pow(r_mesh_[i], pdata_->l_) * lo[i]);
@@ -34,14 +41,18 @@ namespace schrac {
         }        
 
         for (auto i = mp_im1; i >= 0; i--) {
-        	r_mesh_.push_back(r_mesh_i[i]);
-        	rf_.push_back(schrac::pow(r_mesh_.back(), pdata_->l_) * ratio * li[i]);
+            L_.push_back(ratio * li[i]);
+            r_mesh_.push_back(r_mesh_i[i]);
+            M_.push_back(ratio * pdiffdata_->mi_[i]);
+
+        	rf_.push_back(schrac::pow(r_mesh_.back(), pdata_->l_) * L_.back());
         	pf_.push_back(r_mesh_.back() * rf_.back());
         }
 
         normalize();
 
-        Simpson simpson(pdiffdata_->dx_);
+        Kinetic_Energy ke(pdiffdata_);
+        ke(L_, M_, r_mesh_);
     }
 
     Normalize<SchNormalize>::myhash SchNormalize::getresult() const

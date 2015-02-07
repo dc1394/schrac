@@ -302,7 +302,7 @@ namespace schrac {
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
             state,
             pdiffdata_->x_o_[0],
-            pdiffdata_->x_o_[pdiffdata_->mp_o_] + pdiffdata_->dx_,
+            pdiffdata_->x_o_[pdiffdata_->mp_o_],
             pdiffdata_->dx_,
             [this](myarray const & f, double const x)
         {

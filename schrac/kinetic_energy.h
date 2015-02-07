@@ -7,8 +7,7 @@
 #ifndef _KINETIC_ENERGY_
 #define _KINETIC_ENERGY_
 
-#include "data.h"
-#include "simpson.h"
+#include "diffdata.h"
 #include <memory>
 
 #pragma once
@@ -33,8 +32,8 @@ namespace schrac {
             唯一のコンストラクタ
             \param pdata データオブジェクト
         */
-        Kinetic_Energy(std::shared_ptr<Data> pdata) :
-            pdata_(pdata)
+        Kinetic_Energy(std::shared_ptr<DiffData> pdiffdata) :
+            pdiffdata_(pdiffdata)
         {
         }
 
@@ -51,11 +50,12 @@ namespace schrac {
         //! A public member function (const).
         /*!
             運動エネルギーを計算する
-            \param f 関数f(r)のstd::vector
+            \param L 関数L(x)のstd::vector
+            \param M 関数L(x)のstd::vector
             \param r rのメッシュが格納されたstd::vector
             \return 運動エネルギー
         */
-        void operator()(dvector const & L, dvector const & M, dvector const & r) const;
+        double operator()(dvector const & L, dvector const & M, dvector const & r) const;
 
         // #endregion メンバ関数
 
@@ -66,7 +66,7 @@ namespace schrac {
         /*!
             データオブジェクト
         */
-        std::shared_ptr<Data> const pdata_;
+        std::shared_ptr<DiffData> const pdiffdata_;
 
         // #endregion メンバ変数
 
