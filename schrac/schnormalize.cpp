@@ -26,14 +26,14 @@ namespace schrac {
 
         auto const mp_o = pdiffdata_->mp_o_;
         
-        L_.reserve(pdata_->grid_num_);
-        L_.assign(lo.begin(), --lo.end());
+        L_.reserve(pdata_->grid_num_ + 1);
+        L_.assign(lo.begin(), lo.end());
 
-        rf_.reserve(pdata_->grid_num_);
-        pf_.reserve(pdata_->grid_num_);
+        rf_.reserve(pdata_->grid_num_ + 1);
+        pf_.reserve(pdata_->grid_num_ + 1);
 
-        M_.reserve(pdata_->grid_num_);
-        M_.assign(pdiffdata_->mo_.begin(), --pdiffdata_->mo_.end());
+        M_.reserve(pdata_->grid_num_ + 1);
+        M_.assign(pdiffdata_->mo_.begin(), pdiffdata_->mo_.end());
 
         for (auto i = 0; i <= mp_o; i++) {
         	rf_.push_back(schrac::pow(r_mesh_[i], pdata_->l_) * lo[i]);
@@ -51,7 +51,7 @@ namespace schrac {
 
         normalize();
 
-        Kinetic_Energy ke(pdiffdata_);
+        Kinetic_Energy ke(pdiffdata_, rf_);
         ke(L_, M_, r_mesh_);
     }
 
