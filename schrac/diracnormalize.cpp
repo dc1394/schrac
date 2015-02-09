@@ -31,7 +31,7 @@ namespace schrac {
         pf_small_.reserve(pdata_->grid_num_);
 
         for (auto i = 0; i <= mp_o; i++) {
-            rf_.push_back(schrac::pow(r_mesh_[i], pdata_->l_) * lo[i]);
+            rf_.push_back(std::pow(r_mesh_[i], pdata_->l_) * lo[i]);
 
             auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffdata_->vr_o_[i]);
             auto const dG = std::pow(
@@ -39,12 +39,12 @@ namespace schrac {
                 static_cast<double>(pdata_->l_ * (pdata_->l_ + 1)) * lo[i] + mo[i]);
 
             pf_large_.push_back(r_mesh_[i] * rf_[i]);
-            pf_small_.push_back(h * (dG + pdata_->kappa_ * schrac::pow(r_mesh_[i], pdata_->l_) * lo[i]));
+            pf_small_.push_back(h * (dG + pdata_->kappa_ * std::pow(r_mesh_[i], pdata_->l_) * lo[i]));
         }        
 
         for (auto i = mp_im1; i >= 0; i--) {
         	r_mesh_.push_back(r_mesh_o[i]);
-        	rf_.push_back(schrac::pow(r_mesh_.back(), pdata_->l_) * ratio * li[i]);
+        	rf_.push_back(std::pow(r_mesh_.back(), pdata_->l_) * ratio * li[i]);
 
             auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffdata_->vr_o_[i]);
             auto const dG = std::pow(
@@ -52,7 +52,7 @@ namespace schrac {
                 static_cast<double>(pdata_->l_ * (pdata_->l_ + 1)) * li[i] + mi[i]);
 
             pf_large_.push_back(r_mesh_.back() * rf_[i]);
-            pf_small_.push_back(h * (dG + pdata_->kappa_ * schrac::pow(r_mesh_.back(), pdata_->l_) * li[i]));
+            pf_small_.push_back(h * (dG + pdata_->kappa_ * std::pow(r_mesh_.back(), pdata_->l_) * li[i]));
         }
 
         normalize();

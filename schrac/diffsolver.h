@@ -10,7 +10,6 @@
 #pragma once
 
 #include "diffdata.h"
-#include "pow.h"
 #include "property.h"
 
 namespace schrac {
@@ -242,6 +241,12 @@ namespace schrac {
             L(r)の級数展開の係数bm
         */
         std::array<double, DiffSolver::BMMAX> bm;
+        
+        //! A private member variable.
+        /*!
+            エネルギー固有値
+        */
+        double E_;
 
         //!  A private member variable (constant).
         /*!

@@ -34,7 +34,8 @@ namespace schrac {
             \param pdiffsolver 微分方程式のデータオブジェクト
         */
         SchNormalize(std::shared_ptr<DiffSolver> const & pdiffsolver) :
-            Normalize<SchNormalize>(pdiffsolver)
+            Normalize<SchNormalize>(pdiffsolver),
+            Pf([this] { return pf_; }, nullptr)
         {
         }
 
@@ -47,6 +48,16 @@ namespace schrac {
         }
 
         // #endregion コンストラクタ・デストラクタ
+
+        // #region プロパティ
+
+        //! A property.
+        /*!
+            規格化された波動関数
+        */
+        Property<const dvector &> const Pf;
+
+        // #endregion プロパティ
 
         // #region メンバ関数
 

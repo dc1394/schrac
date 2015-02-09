@@ -8,7 +8,7 @@
 %TCIDATA{Version=5.50.0.2952}
 %TCIDATA{CSTFile=jarticle55.cst}
 %TCIDATA{Created=Thursday, February 05, 2015 14:31:20}
-%TCIDATA{LastRevised=Saturday, February 07, 2015 11:24:08}
+%TCIDATA{LastRevised=Saturday, February 07, 2015 22:25:44}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
@@ -39,7 +39,7 @@
 \newtheorem{summary}[theorem]{\U{8981}\U{7d04}}
 \newenvironment{proof}[1][\U{8a3c}\U{660e}]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
 \begin{document}
-$\left\langle T\right\rangle =4\pi%
+$\left\langle T\right\rangle =%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
@@ -47,13 +47,22 @@ $\left\langle T\right\rangle =4\pi%
 r^{2}R\left(  r\right)  \left[  -\dfrac{1}{2}\Delta R\left(  r\right)
 \right]  dr$
 
-$=-2\pi%
+$=-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
 r^{2}R\left(  r\right)  \left[  \dfrac{d^{2}R\left(  r\right)  }{dr^{2}%
 }+\dfrac{2}{r}\dfrac{dR\left(  r\right)  }{dr}\right]  dr$
+
+$r=\exp\left(  x\right)  $
+
+$\dfrac{dx}{dr}=\exp\left(  -x\right)  $
+
+$\dfrac{dL}{dr}=\dfrac{1}{r}\dfrac{dL}{dx}$
+
+$\dfrac{d^{2}L}{dr^{2}}=-\dfrac{1}{r^{2}}\dfrac{dL}{dx}+\dfrac{1}{r^{2}}%
+\dfrac{d^{2}L}{dx^{2}}$
 
 $\dfrac{dR\left(  r\right)  }{dr}=\dfrac{d}{dr}\left[  r^{l}L\left(  r\right)
 \right]  $
@@ -66,135 +75,151 @@ L\left(  r\right)  +r^{l}\dfrac{dL\left(  r\right)  }{dr}\right]  $
 $=l\left(  l-1\right)  r^{l-2}L\left(  r\right)  +2lr^{l-1}\dfrac{dL\left(
 r\right)  }{dr}+r^{l}\dfrac{d^{2}L\left(  r\right)  }{dr^{2}}$
 
-$\dfrac{2}{r}\dfrac{dR\left(  r\right)  }{dr}=2lr^{l-2}L\left(  r\right)
-+2r^{l-1}\dfrac{dL\left(  r\right)  }{dr}$
+$\dfrac{2}{r}\dfrac{dR\left(  r\right)  }{dr}=2lr^{l-2}L+2r^{l-2}\dfrac
+{dL}{dr}$
 
 $\dfrac{d^{2}R\left(  r\right)  }{dr^{2}}+\dfrac{2}{r}\dfrac{dR\left(
-r\right)  }{dr}=l\left(  l+1\right)  r^{l-2}L\left(  r\right)  +2\left(
-l+1\right)  r^{l}\dfrac{dL\left(  r\right)  }{dr}+r^{l}\dfrac{d^{2}L\left(
-r\right)  }{dr^{2}}$
+r\right)  }{dr}=l\left(  l+1\right)  r^{l-2}L+2\left(  l+1\right)
+r^{l-1}\dfrac{dL\left(  r\right)  }{dr}+r^{l-2}\dfrac{d^{2}L\left(  r\right)
+}{dr^{2}}$
 
-$-2\pi%
+$-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
 r^{l+2}L\left(  r\right)  \left[  l\left(  l+1\right)  r^{l-2}L\left(
-r\right)  +2\left(  l+1\right)  r^{l}\dfrac{dL\left(  r\right)  }{dr}%
+r\right)  +2\left(  l+1\right)  r^{l-1}\dfrac{dL\left(  r\right)  }{dr}%
 +r^{l}\dfrac{d^{2}L\left(  r\right)  }{dr^{2}}\right]  dr$
 
-$-2\pi%
+$-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
 r^{l+2}L\left(  r\right)  l\left(  l+1\right)  r^{l-2}L\left(  r\right)
-dr=-2\pi l\left(  l+1\right)
+dr=-\dfrac{l}{2}\left(  l+1\right)
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
 r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr$
 
-$-2\pi%
+$-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{l+2}L\left(  r\right)  \left[  2\left(  l+1\right)  r^{l}\dfrac{dL\left(
-r\right)  }{dr}\right]  dr=-4\pi\left(  l+1\right)
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
-%BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
-%EndExpansion
-r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  dr$
+r^{l+2}L\left(  r\right)  \left[  2\left(  l+1\right)  r^{l-1}\dfrac{dL\left(
+r\right)  }{dr}\right]  dr$
 
-$-2\pi%
+$=-\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+1}L\left(  r\right)  \dfrac{dx}{dr}M\left(  r\right)  dr$
+
+$=-\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+2}L\left(  r\right)  M\left(  r\right)  dr$
+
+$-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
 r^{l+2}L\left(  r\right)  r^{l}\dfrac{d^{2}L\left(  r\right)  }{dr^{2}%
-}dr=-2\pi%
+}dr=-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2\left(  l+1\right)  }L\left(  r\right)  \dfrac{d^{2}L\left(  r\right)
-}{dr^{2}}dr$
+r^{2l+2}L\left(  r\right)  \dfrac{d^{2}L\left(  r\right)  }{dr^{2}}dr$
 
-$=-2\pi%
+$=-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2\left(  l+1\right)  }L\left(  r\right)  \dfrac{d}{dr}\left[
-\dfrac{dL\left(  r\right)  }{dr}\right]  dr$
+r^{2l+2}L\left(  r\right)  \dfrac{d}{dr}\left[  \dfrac{dL\left(  r\right)
+}{dr}\right]  dr$
 
-$=\left.  -2\pi r^{2l+1}L\left(  r\right)  M\left(  r\right)  \right\vert
-_{r\min}^{r\max}+4\pi\left(  l+1\right)
+$=-\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2l}L\left(  r\right)  M\left(  r\right)  dr+2\pi%
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
-%BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
-%EndExpansion
-r^{2\left(  l+1\right)  }\left[  M\left(  r\right)  \right]  ^{2}dr$
+r^{2l+2}L\left(  r\right)  \dfrac{d}{dr}\left[  rM\left(  r\right)  \right]
+dr$
 
-$\left\langle T\right\rangle =-2\pi l\left(  l+1\right)
+$=-\dfrac{1}{2}\left.  r^{2l+3}L\left(  r\right)  M\left(  r\right)
+\right\vert _{r\min}^{r\max}+\left(  l+1\right)
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr-4\pi\left(  l+1\right)
+r^{2l+2}L\left(  r\right)  M\left(  r\right)  dr+\dfrac{1}{2}%
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  dr-\left.  2\pi
-r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  \right\vert
-_{r\min}^{r\max}+4\pi\left(  l+1\right)
+r^{2l+4}\left[  M\left(  r\right)  \right]  ^{2}dr$
+
+$\left\langle T\right\rangle =-l\left(  l+1\right)
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2l}L\left(  r\right)  M\left(  r\right)  dr+2\pi%
+r^{2l}\left[  L\left(  r\right)  \right]  ^{2}dr+\left(  l+1\right)
 %TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
 %BeginExpansion
 {\displaystyle\int\nolimits_{r\min}^{r\max}}
 %EndExpansion
-r^{2\left(  l+1\right)  }\left[  M\left(  r\right)  \right]  ^{2}dr$
+r^{2\left(  l+1\right)  }L\left(  r\right)  M\left(  r\right)  dr-\dfrac{1}%
+{2}\left.  r^{2l+3}L\left(  r\right)  M\left(  r\right)  \right\vert _{r\min
+}^{r\max}+\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+2}L\left(  r\right)  M\left(  r\right)  dr+\dfrac{1}{2}%
+%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+%BeginExpansion
+{\displaystyle\int\nolimits_{r\min}^{r\max}}
+%EndExpansion
+r^{2l+4}\left[  M\left(  r\right)  \right]  ^{2}dr$
 
 $r=\exp\left(  x\right)  $
 
 $dr=rdx$
 
-$\left\langle T\right\rangle =-2\pi l\left(  l+1\right)
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+$\left\langle T\right\rangle =-\dfrac{l}{2}\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
 %BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
 %EndExpansion
-r^{2l+1}\left[  L\left(  x\right)  \right]  ^{2}dx-4\pi\left(  l+1\right)
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+r^{2l+1}\left[  L\left(  x\right)  \right]  ^{2}dx-\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
 %BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
 %EndExpansion
-r^{2l+3}L\left(  x\right)  M\left(  x\right)  dx-\left.  2\pi r^{2l+1}L\left(
-r\right)  M\left(  r\right)  \right\vert _{r\min}^{r\max}+4\pi\left(
-l+1\right)
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+r^{2l+3}L\left(  x\right)  M\left(  x\right)  dx-\dfrac{1}{2}\left.
+\exp\left[  2\left(  l+3\right)  x\right]  L\left(  x\right)  M\left(
+x\right)  \right\vert _{x\min}^{x\max}+\left(  l+1\right)
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
 %BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
 %EndExpansion
-r^{2\left(  l+1\right)  }L\left(  x\right)  M\left(  x\right)  dr+2\pi%
-%TCIMACRO{\dint \nolimits_{r\min}^{r\max}}%
+r^{2l+3}L\left(  x\right)  M\left(  x\right)  dx+\dfrac{1}{2}%
+%TCIMACRO{\dint \nolimits_{x\min}^{x\max}}%
 %BeginExpansion
-{\displaystyle\int\nolimits_{r\min}^{r\max}}
+{\displaystyle\int\nolimits_{x\min}^{x\max}}
 %EndExpansion
-r^{2l+3}\left[  M\left(  x\right)  \right]  ^{2}dx$
+r^{2l+5}\left[  M\left(  x\right)  \right]  ^{2}dx$
 
 
 \end{document}

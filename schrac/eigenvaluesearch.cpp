@@ -51,14 +51,12 @@ namespace schrac {
             }
 
             if (brent() && EigenValueSearch::nodeok) {
-                info(E_);
-
                 return true;
             }
             else {
-                E_ += DE_;
+                pdiffsolver_->E_ += DE_;
 
-                if (E_ > 0.0) {
+                if (pdiffsolver_->E_ > 0.0) {
                     return false;
                 }
             }
@@ -109,7 +107,7 @@ namespace schrac {
                 break;
             }
             
-            E_ = gsl_root_fsolver_root(s.get());
+            pdiffsolver_->E_ = gsl_root_fsolver_root(s.get());
             
             auto const status = gsl_root_test_interval(
                 gsl_root_fsolver_x_lower(s.get()),
@@ -137,16 +135,11 @@ namespace schrac {
             std::cout << " (NG)" << std::endl;
         }
     }
-
-    void EigenValueSearch::info(double E) const
-    {
-        std::cout << "E(eigenvalue) = " << E << " (Hartree)" << std::endl;
-    }
-
+        
     void EigenValueSearch::info(double b, double fb) const
     {
         std::cout << "i = " << loop_ << ", D = "
-            << fb << ", E_ = " << b
+            << fb << ", pdiffsolver_->E_ = " << b
             << ", node = "
             << pdiffdata_->thisnode_;
 
@@ -175,16 +168,17 @@ namespace schrac {
 			break;
 		}
 
+        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_);
+
 		if (pdata_->search_lowerE_) {
-			E_ = *pdata_->search_lowerE_;
-			DE_ = - E_ / static_cast<double>(pdata_->num_of_partition_);
+            pdiffsolver_->E_ = *pdata_->search_lowerE_;
+			DE_ = - pdiffsolver_->E_ / static_cast<double>(pdata_->num_of_partition_);
 		} else {
-			E_ = Eapprox_;
-			DE_ = - E_ / static_cast<const double>(pdata_->num_of_partition_);
-			E_ -= 3.0 * DE_;
+			pdiffsolver_->E_ = Eapprox_;
+			DE_ = - pdiffsolver_->E_ / static_cast<const double>(pdata_->num_of_partition_);
+			pdiffsolver_->E_ -= 3.0 * DE_;
 		}
 
-        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_);
         pdiffdata_ = pdiffsolver_->PDiffData;
 	}
 
@@ -208,24 +202,24 @@ namespace schrac {
 	bool EigenValueSearch::rough_search()
 	{
         auto pdiffsolver = reinterpret_cast<void *>(pdiffsolver_.get());
-        Dold = func_D(E_, pdiffsolver);
+        Dold = func_D(pdiffsolver_->E_, pdiffsolver);
 
 		info();
 
 		++loop_;
 
         for (; loop_ < EVALSEARCHMAX; loop_++) {
-   			E_ += DE_;
+   			pdiffsolver_->E_ += DE_;
 
-            if (E_ > 0.0) {
+            if (pdiffsolver_->E_ > 0.0) {
                 return false;
             }
 
-			auto const Dnew = func_D(E_, pdiffsolver);
+			auto const Dnew = func_D(pdiffsolver_->E_, pdiffsolver);
 	 
 			if (Dnew * Dold < 0.0) {
-				Emax_ = E_;
-   				Emin_ = E_ - DE_;
+				Emax_ = pdiffsolver_->E_;
+   				Emin_ = pdiffsolver_->E_ - DE_;
 
 				break;
    			} else {
@@ -249,10 +243,10 @@ namespace schrac {
 
     // #region 非メンバ関数
 
-    double func_D(double E_, void * params)
+    double func_D(double E, void * params)
     {
         auto pdiffsolver = reinterpret_cast<DiffSolver *>(params);
-        pdiffsolver->initialize(E_);
+        pdiffsolver->initialize(E);
         pdiffsolver->solve_diff_equ();
 
         EigenValueSearch::nodeok = 

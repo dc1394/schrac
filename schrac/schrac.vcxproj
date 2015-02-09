@@ -85,8 +85,8 @@
     <ClCompile Include="diffdata.cpp" />
     <ClCompile Include="diracnormalize.cpp" />
     <ClCompile Include="eigenvaluesearch.cpp" />
+    <ClCompile Include="energy.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
-    <ClCompile Include="kinetic_energy.cpp" />
     <ClCompile Include="normalization.cpp" />
     <ClCompile Include="readinputfile.cpp" />
     <ClCompile Include="schnormalize.cpp" />
@@ -102,10 +102,9 @@
     <ClInclude Include="diracnormalize.h" />
     <ClInclude Include="eigenvaluesearch.h" />
     <ClInclude Include="getcomlineoption.h" />
-    <ClInclude Include="kinetic_energy.h" />
+    <ClInclude Include="energy.h" />
     <ClInclude Include="normalization.h" />
     <ClInclude Include="normalize.h" />
-    <ClInclude Include="pow.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
     <ClInclude Include="schnormalize.h" />
@@ -114,7 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="document\変数分離の計算.tex" />
-    <None Include="document\運動エネルギー.tex" />
     <None Include="input.inp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

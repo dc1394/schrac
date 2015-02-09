@@ -10,6 +10,7 @@
 #pragma once
 
 #include "eigenvaluesearch.h"
+#include "property.h"
 #include <unordered_map>        // for std::unordered_map
 
 namespace schrac {
@@ -110,7 +111,7 @@ namespace schrac {
         dvector r_mesh_;
         
         // #endregion メンバ変数 
-
+        
     private:
         // #region 禁止されたコンストラクタ・メンバ関数
 

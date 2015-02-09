@@ -217,25 +217,18 @@ namespace schrac {
         auto const rmaxm = pdiffdata_->r_mesh_i_[1];
         auto const a = std::sqrt(-2.0 * pdiffdata_->E_);
         auto const d = std::exp(-a * rmax);
-        auto const dm = std::exp(-a * rmaxm);
         
-        pdiffdata_->li_.push_back(d / schrac::pow(rmax, pdata_->l_ + 1));
-        pdiffdata_->li_.push_back(dm / schrac::pow(rmaxm, pdata_->l_ + 1));
+        pdiffdata_->li_.push_back(d / std::pow(rmax, pdata_->l_ + 1));
 
         if (pdiffdata_->li_[0] < DiffSolver::MINVALUE) {
             pdiffdata_->li_[0] = DiffSolver::MINVALUE;
-            pdiffdata_->li_[1] = DiffSolver::MINVALUE;
         }
 
         pdiffdata_->mi_.push_back(-pdiffdata_->li_[0] *
-            (a * rmax + static_cast<double>(pdata_->l_ + 1)));
-        pdiffdata_->mi_.push_back(-pdiffdata_->li_[1] *
-            (a * rmaxm + static_cast<double>(pdata_->l_ + 1)));
+            (a + static_cast<double>(pdata_->l_ + 1) / rmax));
         
-        auto const val = pdiffdata_->mi_[0];
-        if (std::fabs(val) < DiffSolver::MINVALUE) {
+        if (std::fabs(pdiffdata_->mi_[0]) < DiffSolver::MINVALUE) {
             pdiffdata_->mi_[0] = -DiffSolver::MINVALUE;
-            pdiffdata_->mi_[1] = -DiffSolver::MINVALUE;
         }
     }
 
@@ -247,12 +240,12 @@ namespace schrac {
 		pdiffdata_->lo_.push_back(bm[DiffSolver::BMMAX - 1]);
 		pdiffdata_->mo_.push_back(4.0 * bm[DiffSolver::BMMAX - 1]);
 
-		for (int i = DiffSolver::BMMAX - 2; i >= 0; i--) {
+		for (auto i = DiffSolver::BMMAX - 2; i >= 0; i--) {
 			pdiffdata_->lo_[0] *= pdiffdata_->r_mesh_o_[0];
 			pdiffdata_->lo_[0] += bm[i];
 		}
 
-		for (int i = DiffSolver::BMMAX - 2; i > 0; i--) {
+		for (auto i = DiffSolver::BMMAX - 2; i > 0; i--) {
 			pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_o_[0];
 			pdiffdata_->mo_[0] += static_cast<double>(i) * bm[i];
 		}
@@ -269,7 +262,7 @@ namespace schrac {
     template <typename Stepper>
     void DiffSolver::solve_diff_equ_i(Stepper const & stepper)
     {
-        myarray state = { pdiffdata_->li_[1], pdiffdata_->mi_[1] };
+        myarray state = { pdiffdata_->li_[0], pdiffdata_->mi_[0] };
 
         pdiffdata_->li_.pop_back();
         pdiffdata_->mi_.pop_back();
@@ -278,7 +271,7 @@ namespace schrac {
             stepper,
             [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
             state,
-            pdiffdata_->x_i_[1],
+            pdiffdata_->x_i_[0],
             pdiffdata_->x_i_[pdiffdata_->mp_i_] - pdiffdata_->dx_,
             - pdiffdata_->dx_,
             [this](myarray const & f, double const x)
@@ -325,7 +318,7 @@ namespace schrac {
     {
         // save original handler, install new handler
         auto old_handler = gsl_set_error_handler(
-            [](const char * reason, const char * file, std::int32_t line, std::int32_t)
+            [](char const * reason, char const * file, std::int32_t line, std::int32_t)
         {
             auto const str = std::string(reason) + "\nFile: " + file + "\nline: " + std::to_string(line);
             throw std::runtime_error(str);

@@ -4,6 +4,7 @@
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
 
+#include "energy.h"
 #include "getcomlineoption.h"
 #include "normalization.h"
 #include "wavefunctionsave.h"
@@ -70,7 +71,12 @@ int main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
 
-    WaveFunctionSave wfs(nomalization(pevs->PDiffSolver), pevs->PData);
+    auto const pdsol = nomalization(pevs->PDiffSolver);
+    Energy en(pevs->PDiffSolver()->PDiffData, pdsol.at("Eigen function"), pdsol.at("Mesh (r)"));
+    en.kinetic_energy();
+    en.potential_energy();
+    en.eigenenergy();
+    WaveFunctionSave wfs(pdsol, pevs->PData);
     wfs();
 
     goexit();

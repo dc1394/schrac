@@ -8,8 +8,6 @@
 #include "simpson.h"
 #include <utility>          // for std::move
 
-#include "kinetic_energy.h"
-
 namespace schrac {
     // #region publicメンバ関数
 
@@ -26,17 +24,17 @@ namespace schrac {
 
         auto const mp_o = pdiffdata_->mp_o_;
         
-        L_.reserve(pdata_->grid_num_);
-        L_.assign(lo.begin(), --lo.end());
+        L_.reserve(pdata_->grid_num_ + 1);
+        L_.assign(lo.begin(), lo.end());
 
-        rf_.reserve(pdata_->grid_num_);
-        pf_.reserve(pdata_->grid_num_);
+        rf_.reserve(pdata_->grid_num_ + 1);
+        pf_.reserve(pdata_->grid_num_ + 1);
 
-        M_.reserve(pdata_->grid_num_);
-        M_.assign(pdiffdata_->mo_.begin(), --pdiffdata_->mo_.end());
+        M_.reserve(pdata_->grid_num_ + 1);
+        M_.assign(pdiffdata_->mo_.begin(), pdiffdata_->mo_.end());
 
         for (auto i = 0; i <= mp_o; i++) {
-        	rf_.push_back(schrac::pow(r_mesh_[i], pdata_->l_) * lo[i]);
+        	rf_.push_back(std::pow(r_mesh_[i], pdata_->l_) * lo[i]);
         	pf_.push_back(r_mesh_[i] * rf_[i]);
         }        
 
@@ -45,14 +43,11 @@ namespace schrac {
             r_mesh_.push_back(r_mesh_i[i]);
             M_.push_back(ratio * pdiffdata_->mi_[i]);
 
-        	rf_.push_back(schrac::pow(r_mesh_.back(), pdata_->l_) * L_.back());
+        	rf_.push_back(std::pow(r_mesh_.back(), pdata_->l_) * L_.back());
         	pf_.push_back(r_mesh_.back() * rf_.back());
         }
 
         normalize();
-
-        Kinetic_Energy ke(pdiffdata_);
-        ke(L_, M_, r_mesh_);
     }
 
     Normalize<SchNormalize>::myhash SchNormalize::getresult() const

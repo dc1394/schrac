@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "pow.h"
+#include <cstdint>  // for std::int32_t
 #include <vector>   // for std::vector
 
 namespace schrac {

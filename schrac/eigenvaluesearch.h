@@ -151,12 +151,6 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            エネルギー固有値
-        */
-        double E_;
-
-        //! A private member variable.
-        /*!
             Brent法におけるエネルギー固有値の大きい方
         */
         double Emax_;
