@@ -18,6 +18,7 @@ namespace schrac {
             sum += (f0 + 4.0 * f1 + f2);
         }
 
+
         return sum * dx_ / 3.0;
     }
 }
