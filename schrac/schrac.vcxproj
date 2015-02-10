@@ -87,6 +87,7 @@
     <ClCompile Include="eigenvaluesearch.cpp" />
     <ClCompile Include="energy.cpp" />
     <ClCompile Include="getcomlineoption.cpp" />
+    <ClCompile Include="kinetic_energy.cpp" />
     <ClCompile Include="normalization.cpp" />
     <ClCompile Include="readinputfile.cpp" />
     <ClCompile Include="schnormalize.cpp" />
@@ -101,8 +102,9 @@
     <ClInclude Include="diffdata.h" />
     <ClInclude Include="diracnormalize.h" />
     <ClInclude Include="eigenvaluesearch.h" />
-    <ClInclude Include="getcomlineoption.h" />
     <ClInclude Include="energy.h" />
+    <ClInclude Include="getcomlineoption.h" />
+    <ClInclude Include="kinetic_energy.h" />
     <ClInclude Include="normalization.h" />
     <ClInclude Include="normalize.h" />
     <ClInclude Include="property.h" />
