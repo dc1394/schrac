@@ -17,8 +17,7 @@ namespace schrac {
             auto const f2 = f[i + 2] * g[i + 2] * std::pow(r[i + 2], n);
             sum += (f0 + 4.0 * f1 + f2);
         }
-
-
+        
         return sum * dx_ / 3.0;
     }
 }

@@ -1,4 +1,4 @@
-﻿/*! \file FastArenaObject.h
+﻿/*! \file fastarenaobject.h
     \brief 指定された型の指定された要素数のメモリを確保するクラス
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "ArraiedAllocator.h"
+#include "arraiedallocator.h"
 #include <ccomplex>
 
 namespace checkpoint {

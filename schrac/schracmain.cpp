@@ -75,7 +75,7 @@ int main(int argc, char * argv[])
     Energy en(pevs->PDiffSolver()->PDiffData, pdsol.at("Eigen function"), pdsol.at("Mesh (r)"));
     en.kinetic_energy();
     en.potential_energy();
-    en.eigenenergy();
+    en.eigenvalue();
     WaveFunctionSave wfs(pdsol, pevs->PData);
     wfs();
 

@@ -58,6 +58,12 @@ namespace schrac {
 
         // #region メンバ変数
         
+        //!  A public static member variable (constant expression).
+        /*!
+            V(r)の級数展開の係数amの最大値
+        */
+        static std::size_t constexpr AMMAX = 3;
+
         //!  A public member variable (constant).
         /*!
             ノードの数
@@ -144,15 +150,9 @@ namespace schrac {
         
         //!  A public member variable.
         /*!
-            原点に近い点から微分方程式を解くときに使うポテンシャルV(r)
+            原点に近い点からV(r)の値を三点取ってきた配列
         */
-        dvector vr_o_;
-
-        //!  A public member variable.
-        /*!
-            無限遠に近い点から微分方程式を解くときに使うポテンシャルV(r)
-        */
-        dvector vr_i_;
+        std::array<double, DiffData::AMMAX> vr_o_3p_;
 
         //!  A public member variable.
         /*!

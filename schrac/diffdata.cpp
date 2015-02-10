@@ -31,8 +31,6 @@ namespace schrac {
 		x_i_.resize(isize);
 		r_mesh_o_.resize(osize);
 		r_mesh_i_.resize(isize);
-		vr_o_.resize(osize);
-		vr_i_.resize(isize);
 		lo_.reserve(osize);
 		li_.reserve(isize);
 		mo_.reserve(osize);
@@ -47,14 +45,17 @@ namespace schrac {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 					x_o_[i] = x;
 					r_mesh_o_[i] = std::exp(x);
-					vr_o_[i] = V(x);
 				}
+
+                for (auto i = 0; i < DiffData::AMMAX; i++) {
+                    vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * dx_);
+                }
+
 				//#pragma omp for nowait
 				for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
 					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 					x_i_[grid_num - i] = x;
 					r_mesh_i_[grid_num - i] = std::exp(x);
-					vr_i_[grid_num - i] = V(x);
 				}
 			}
 		/*} else {

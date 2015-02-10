@@ -27,11 +27,7 @@ namespace schrac {
         // #region メンバ変数
 
     public:
-        //!  A public static member variable (constant expression).
-        /*!
-            V(r)の級数展開の係数amの最大値
-        */
-        static std::size_t constexpr AMMAX = 3;
+        
         
         // #endregion メンバ変数
 
@@ -41,7 +37,7 @@ namespace schrac {
         using mypair = std::pair < myarray, myarray > ;
 
     public:
-        using myvector = std::array < double, DiffSolver::AMMAX > ;
+        using myvector = std::array < double, DiffData::AMMAX > ;
 
         // #endregion 型エイリアス
 
@@ -234,7 +230,7 @@ namespace schrac {
         /*!
             V(r)の級数展開の係数am
         */
-        std::array<double, DiffSolver::AMMAX> am;
+        std::array<double, DiffData::AMMAX> am;
 
         //!  A public member variable.
         /*!
@@ -297,7 +293,7 @@ namespace schrac {
         \param b 連立一次方程式Ax = bにおける右辺のベクトルb
         \return 方程式の解ベクトル
     */
-    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b);
+    DiffSolver::myvector solve_linear_equ(std::array<double, DiffData::AMMAX * DiffData::AMMAX> a, DiffSolver::myvector b);
 
 	template <typename T>
     //! A template function.

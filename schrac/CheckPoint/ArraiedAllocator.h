@@ -1,4 +1,4 @@
-﻿/*! \file ArraiedAllocator.h
+﻿/*! \file arraiedallocator.h
     \brief 固定サイズのメモリを確保するアロケータークラス
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
