@@ -28,8 +28,8 @@ namespace schrac {
         pdiffdata_(std::make_shared<DiffData>(pdata)),
         PDiffData([this]() { return pdiffdata_; }, nullptr)
 	{
-        am_evaluate();
         vr_o_3p_init();
+        am_evaluate();
 	}
 
     // #endregion コンストラクタ
@@ -364,7 +364,7 @@ namespace schrac {
         std::int32_t s;
         gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
         gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
-        DiffSolver::myvector solution{ 0, 0, 0 };
+        DiffSolver::myvector solution{ 0.0, 0.0, 0.0 };
         std::copy(x->data, x->data + DiffSolver::AMMAX, solution.begin());
 
         // restore original handler
