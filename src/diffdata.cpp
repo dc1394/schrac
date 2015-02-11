@@ -44,23 +44,11 @@ namespace schrac {
 			r_mesh_o_[i] = std::exp(x);
 		}
 
-        for (auto i = 0; i < static_cast<std::int32_t>(DiffData::AMMAX); i++) {
-             vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * dx_);
-        }
-
 		for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
 			auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 			x_i_[grid_num - i] = x;
 			r_mesh_i_[grid_num - i] = std::exp(x);
 		}
 	}
-
-    // #region メンバ関数
-
-    double DiffData::V(double x) const
-    {
-        return -Z_ * std::exp(-x);
-    }
-    
-    // #endregion メンバ関数
 }
+

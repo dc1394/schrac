@@ -196,7 +196,7 @@ namespace schrac {
             std::cout << "スピン下向きの";
         }
 
-        std::cout << "の波動関数とエネルギー固有値を計算します。\n" << std::endl;
+        std::cout << "の波動関数と固有値を計算します。\n" << std::endl;
     }
 
 	bool EigenValueSearch::rough_search()

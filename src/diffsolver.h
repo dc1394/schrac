@@ -27,7 +27,11 @@ namespace schrac {
         // #region メンバ変数
 
     public:
-        
+        //!  A public static member variable (constant expression).
+        /*!
+            V(r)の級数展開の係数amの最大値
+        */
+        static std::size_t constexpr AMMAX = 3;
         
         // #endregion メンバ変数
 
@@ -37,7 +41,7 @@ namespace schrac {
         using mypair = std::pair < myarray, myarray > ;
 
     public:
-        using myvector = std::array < double, DiffData::AMMAX > ;
+        using myvector = std::array < double, DiffSolver::AMMAX > ;
 
         // #endregion 型エイリアス
 
@@ -85,6 +89,14 @@ namespace schrac {
         */
         void solve_diff_equ();
         
+        //! A public member function (const).
+        /*!
+            ポテンシャルV(r)の値を返す
+            \param r rの値
+            \return ポテンシャルV(r)の値
+        */
+        double V(double r) const;
+
     private:
         //! A private member function.
         /*!
@@ -190,14 +202,12 @@ namespace schrac {
         */
         void solve_diff_equ_o(Stepper const & stepper);
         
-        //! A private member function (const).
+        //! A private member function.
         /*!
-            ポテンシャルV(r)の値を返す
-            \param r rの値
-            \return ポテンシャルV(r)の値
+            vr_o_3p_を初期化する
         */
-        double V(double r) const;
-                
+        void vr_o_3p_init();
+
         // #endregion メンバ関数
 
         // #region プロパティ
@@ -230,7 +240,7 @@ namespace schrac {
         /*!
             V(r)の級数展開の係数am
         */
-        std::array<double, DiffData::AMMAX> am;
+        std::array<double, DiffSolver::AMMAX> am;
 
         //!  A public member variable.
         /*!
@@ -255,6 +265,12 @@ namespace schrac {
             微分方程式のデータオブジェクト
         */
 		std::shared_ptr<DiffData> const pdiffdata_;
+
+        //!  A private member variable.
+        /*!
+            原点に近い点からV(r)の値を三点取ってきた配列
+        */
+        std::array<double, DiffSolver::AMMAX> vr_o_3p_;
 
         // #endregion メンバ変数
 
@@ -293,7 +309,7 @@ namespace schrac {
         \param b 連立一次方程式Ax = bにおける右辺のベクトルb
         \return 方程式の解ベクトル
     */
-    DiffSolver::myvector solve_linear_equ(std::array<double, DiffData::AMMAX * DiffData::AMMAX> a, DiffSolver::myvector b);
+    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b);
 
 	template <typename T>
     //! A template function.

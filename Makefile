@@ -10,7 +10,7 @@ VPATH  = src
 CXX = icc
 CXXFLAGS = -Wextra -O3 -pipe -std=c++11
 LDFLAGS = -L/home/dc1394/oss/boost_1_57_0/stage/icc/lib/ -lboost_program_options \
-		  -lgsl -lgslcblas
+		  -lgsl -lgslcblas -ltbb
 
 all: $(PROG) ; rm -f $(OBJS) $(DEPS)
 

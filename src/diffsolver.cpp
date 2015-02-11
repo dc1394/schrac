@@ -9,7 +9,7 @@
 #include <stdexcept>                    // for std::runtime_error
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
 #include <gsl/gsl_linalg.h>             // for gsl_linalg
-#include <cstdio>
+#include <tbb/parallel_invoke.h>        // for tbb::parallel_invoke
 
 namespace schrac {
     using namespace boost::numeric::odeint;
@@ -29,6 +29,7 @@ namespace schrac {
         PDiffData([this]() { return pdiffdata_; }, nullptr)
 	{
         am_evaluate();
+        vr_o_3p_init();
 	}
 
     // #endregion コンストラクタ
@@ -63,45 +64,58 @@ namespace schrac {
 
     void DiffSolver::solve_diff_equ()
     {
-        //if (pdata_->ompthread_) {
-        /*	#pragma omp parallel sections
-        {
-        #pragma omp section
-        {
-        solve_diff_equ_O();
+        if (pdata_->usetbb_) {
+            switch (pdata_->solver_type_) {
+            case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
+                tbb::parallel_invoke(
+                    [this]{ solve_diff_equ_o(adams_bashforth_moulton< 2, myarray >()); },
+                    [this]{ solve_diff_equ_i(adams_bashforth_moulton< 2, myarray >()); });
+                break;
+
+            case Data::Solver_type::BULIRSCH_STOER:
+                tbb::parallel_invoke(
+                    [this]{ solve_diff_equ_o(bulirsch_stoer < myarray >()); },
+                    [this]{ solve_diff_equ_i(bulirsch_stoer < myarray >()); });
+                break;
+
+            case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
+                tbb::parallel_invoke(
+                    [this]{ solve_diff_equ_o(controlled_stepper_type()); },
+                    [this]{ solve_diff_equ_i(controlled_stepper_type()); });
+                break;
+
+            default:
+                BOOST_ASSERT(!"何かがおかしい！");
+                break;
+            }
         }
+        else {
+            switch (pdata_->solver_type_) {
+            case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
+                solve_diff_equ_o(adams_bashforth_moulton< 2, myarray >());
+                solve_diff_equ_i(adams_bashforth_moulton< 2, myarray >());
+                break;
 
-        #pragma omp section
-        {
-        solve_diff_equ_I();
+            case Data::Solver_type::BULIRSCH_STOER:
+                solve_diff_equ_o(bulirsch_stoer < myarray >());
+                solve_diff_equ_i(bulirsch_stoer < myarray >());
+                break;
+
+            case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
+                solve_diff_equ_o(controlled_stepper_type());
+                solve_diff_equ_i(controlled_stepper_type());
+                break;
+
+            default:
+                BOOST_ASSERT(!"何かがおかしい！");
+                break;
+            }
         }
+    }
 
-        }
-        } else {*/
-        switch (pdata_->solver_type_) {
-        case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
-            solve_diff_equ_o(adams_bashforth_moulton< 2, myarray >());
-            solve_diff_equ_i(adams_bashforth_moulton< 2, myarray >());
-
-            break;
-
-        case Data::Solver_type::BULIRSCH_STOER:
-            solve_diff_equ_o(bulirsch_stoer < myarray >());
-            solve_diff_equ_i(bulirsch_stoer < myarray >());
-
-            break;
-
-        case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-            solve_diff_equ_o(controlled_stepper_type());
-            solve_diff_equ_i(controlled_stepper_type());
-            break;
-
-        default:
-            BOOST_ASSERT(!"何かがおかしい！");
-            break;
-        }
-
-        //}
+    double DiffSolver::V(double r) const
+    {
+        return -pdiffdata_->Z_ / r;
     }
 
     // #endregion publicメンバ関数
@@ -110,18 +124,18 @@ namespace schrac {
 
     void DiffSolver::am_evaluate()
 	{
-        std::array<double, DiffData::AMMAX * DiffData::AMMAX> a;
+        std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a;
 		myvector b;
 
-		for (std::size_t i = 0; i < DiffData::AMMAX; i++) {
+		for (std::size_t i = 0; i < DiffSolver::AMMAX; i++) {
 			auto rtmp = 1.0;
 
-			for (std::size_t j = 0; j < DiffData::AMMAX; j++) {
-                a[DiffData::AMMAX * i + j] = rtmp;
+			for (std::size_t j = 0; j < DiffSolver::AMMAX; j++) {
+                a[DiffSolver::AMMAX * i + j] = rtmp;
 				rtmp *= pdiffdata_->r_mesh_o_[i];
 			}
 
-			b[i] = pdiffdata_->vr_o_3p_[i];
+			b[i] = vr_o_3p_[i];
 		}
             
         am = solve_linear_equ(std::move(a), std::move(b));
@@ -282,8 +296,6 @@ namespace schrac {
             pdiffdata_->mi_.push_back(f[1]);
             node_count(pdiffdata_->li_);
         });
-
-
     }
 
     template <typename Stepper>
@@ -309,16 +321,18 @@ namespace schrac {
         });
     }
 
-    double DiffSolver::V(double r) const
+    void DiffSolver::vr_o_3p_init()
     {
-        return -pdiffdata_->Z_ / r;
+        for (auto i = 0; i < static_cast<std::int32_t>(DiffSolver::AMMAX); i++) {
+            vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_);
+        }    
     }
-
+    
     // #endregion privateメンバ関数
 
     // #region 非メンバ関数
 
-    DiffSolver::myvector solve_linear_equ(std::array<double, DiffData::AMMAX * DiffData::AMMAX> a, DiffSolver::myvector b)
+    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b)
     {
         // save original handler, install new handler
         auto old_handler = gsl_set_error_handler(
@@ -328,15 +342,15 @@ namespace schrac {
             throw std::runtime_error(str);
         });
 
-        auto m = gsl_matrix_view_array(a.data(), DiffData::AMMAX, DiffData::AMMAX);
-        auto const v = gsl_vector_view_array(b.data(), DiffData::AMMAX);
+        auto m = gsl_matrix_view_array(a.data(), DiffSolver::AMMAX, DiffSolver::AMMAX);
+        auto const v = gsl_vector_view_array(b.data(), DiffSolver::AMMAX);
 
         auto const gsl_vector_deleter = [](gsl_vector * p)
         {
             gsl_vector_free(p);
         };
         std::unique_ptr<gsl_vector, decltype(gsl_vector_deleter)> x(
-            gsl_vector_alloc(DiffData::AMMAX),
+            gsl_vector_alloc(DiffSolver::AMMAX),
             gsl_vector_deleter);
 
         auto const gsl_perm_deleter = [](gsl_permutation * p)
@@ -344,14 +358,14 @@ namespace schrac {
             gsl_permutation_free(p);
         };
         std::unique_ptr<gsl_permutation, decltype(gsl_perm_deleter)> p(
-            gsl_permutation_alloc(DiffData::AMMAX),
+            gsl_permutation_alloc(DiffSolver::AMMAX),
             gsl_perm_deleter);
 
         std::int32_t s;
         gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
         gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
         DiffSolver::myvector solution{ 0, 0, 0 };
-        std::copy(x->data, x->data + DiffData::AMMAX, solution.begin());
+        std::copy(x->data, x->data + DiffSolver::AMMAX, solution.begin());
 
         // restore original handler
         gsl_set_error_handler(old_handler);

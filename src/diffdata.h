@@ -44,25 +44,7 @@ namespace schrac {
 
         // #endregion コンストラクタ・デストラクタ
 
-        // #region メンバ関数
-
-        //!  A public member function (const).
-        /*!
-            xのメッシュにおけるV、すなわちV(x)を計算する
-            \param x xの値
-            \return V(x)の値
-        */
-        double V(double x) const;
-        
-        // #endregion メンバ関数
-
         // #region メンバ変数
-        
-        //!  A public static member variable (constant expression).
-        /*!
-            V(r)の級数展開の係数amの最大値
-        */
-        static std::size_t constexpr AMMAX = 3;
 
         //!  A public member variable (constant).
         /*!
@@ -150,12 +132,6 @@ namespace schrac {
         
         //!  A public member variable.
         /*!
-            原点に近い点からV(r)の値を三点取ってきた配列
-        */
-        std::array<double, DiffData::AMMAX> vr_o_3p_;
-
-        //!  A public member variable.
-        /*!
             無限遠に近い点からのxのメッシュ
         */
 		dvector x_i_;
@@ -171,3 +147,4 @@ namespace schrac {
 }
 
 #endif	// _DIFFDATA_H_
+
