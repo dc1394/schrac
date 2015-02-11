@@ -4,7 +4,6 @@
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
 
-#include <conio.h>
 #include "eigenvaluesearch.h"
 #include <cmath>                // for std::fabs, std::log10
 #include <iomanip>              // for std::setprecision
@@ -107,6 +106,7 @@ namespace schrac {
                 break;
             }
             
+            info(func_D(pdiffsolver_->E_, F.params), pdiffsolver_->E_);
             pdiffsolver_->E_ = gsl_root_fsolver_root(s.get());
             
             auto const status = gsl_root_test_interval(
@@ -136,10 +136,10 @@ namespace schrac {
         }
     }
         
-    void EigenValueSearch::info(double b, double fb) const
+    void EigenValueSearch::info(double D, double E) const
     {
         std::cout << "i = " << loop_ << ", D = "
-            << fb << ", pdiffsolver_->E_ = " << b
+            << D << ", E = " << E
             << ", node = "
             << pdiffdata_->thisnode_;
 

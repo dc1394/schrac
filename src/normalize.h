@@ -166,7 +166,7 @@ namespace schrac {
     }
 
     template <typename Derived>
-    Normalize<Derived>::myhash Normalize<Derived>::base_getresult() const
+    typename Normalize<Derived>::myhash Normalize<Derived>::base_getresult() const
     {
         return static_cast<Derived &>(*this).getresult();
     }

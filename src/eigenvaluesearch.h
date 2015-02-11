@@ -89,10 +89,10 @@ namespace schrac {
         //! A private member function (const).
         /*!
             固有値が見つかったことをメッセージで報告する
-            \param b 関数Dの引数b
-            \param fb 関数Dの引数fb
+            \param D 関数Dの値
+            \param E 関数Dの引数E
         */
-        void info(double b, double fb) const;
+        void info(double D, double E) const;
 
         //! A private member function (const).
         /*!
@@ -129,12 +129,6 @@ namespace schrac {
         */
 		static constexpr auto EVALSEARCHMAX = 1000;
 
-        //! A private member variable (constant expression).
-        /*!
-            閾値（絶対値の大きい方）
-        */
-        static constexpr auto HUGE = 1.0E+7;
-        
     public:
         //! A public static member variable.
         /*!

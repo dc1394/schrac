@@ -350,7 +350,7 @@ namespace schrac {
         std::int32_t s;
         gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
         gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
-        DiffSolver::myvector solution{};
+        DiffSolver::myvector solution{ 0, 0, 0 };
         std::copy(x->data, x->data + DiffData::AMMAX, solution.begin());
 
         // restore original handler

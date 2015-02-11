@@ -55,13 +55,13 @@ namespace schrac {
         /*!
             光速（原子単位系）
         */
-		static auto constexpr c = 137.035999;
+        static auto constexpr c = 137.035999;
 
         //!  A public static membver variable (constant expression).
         /*!
             原子単位系での微細構造定数(= 1/c)
         */
-		static auto constexpr al = 1.0 / c;
+        static auto constexpr al = 1.0 / c;
 
         //!  A public static member variable (constant expression).
         /*!
@@ -153,7 +153,7 @@ namespace schrac {
         */
         double j_;
 
-		//!  A public member variable.
+        //!  A public member variable.
         /*!
             量子数κ
         */
@@ -211,7 +211,7 @@ namespace schrac {
         /*!
             TBBを使用するかどうか
         */
-		bool usetbb_ = false;
+        bool usetbb_ = false;
 
         //!  A public member variable.
         /*!

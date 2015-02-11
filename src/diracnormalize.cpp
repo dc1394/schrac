@@ -60,7 +60,7 @@ namespace schrac {
 
     Normalize<DiracNormalize>::myhash DiracNormalize::getresult() const
     {
-        myhash hash;
+        std::unordered_map<std::string, dvector> hash;
         hash.insert(std::make_pair("Mesh (r)", std::move(r_mesh_)));
         hash.insert(std::make_pair("Eigen function", std::move(rf_)));
         hash.insert(std::make_pair("Eigen function large (multiply r)", std::move(pf_large_)));

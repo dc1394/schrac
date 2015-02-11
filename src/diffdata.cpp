@@ -44,7 +44,7 @@ namespace schrac {
 			r_mesh_o_[i] = std::exp(x);
 		}
 
-        for (auto i = 0; i < DiffData::AMMAX; i++) {
+        for (auto i = 0; i < static_cast<std::int32_t>(DiffData::AMMAX); i++) {
              vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * dx_);
         }
 

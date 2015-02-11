@@ -69,13 +69,12 @@ namespace schrac {
 		}
 
         auto const size = boost::numeric_cast<std::int32_t>(myhash_.begin()->second.size());
-        auto const end(--myhash_.end());
+        auto itr(myhash_.begin());
+        auto const end(myhash_.end());
         for (auto i = 0; i < size; i++) {
-            auto itr(myhash_.begin());
-            for (; itr != end; ++itr) {
+            for ( ;itr != end; ++itr) {
                 fprintf(fp.get(), "%.15f,", itr->second[i]);
             }
-            fprintf(fp.get(), "%.15f\n", itr->second[i]);
 		}
 
 		std::cout << '\n' << filename << "に波動関数を書き込みました。" << std::endl;

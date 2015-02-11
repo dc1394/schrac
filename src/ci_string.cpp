@@ -32,12 +32,12 @@ namespace schrac {
     {
         using ci_diff_pair = std::pair<char const *, char const *>;
 
-        auto const p = std::mismatch(p1, p1 + n, p2, [](char left, char right) {
+        auto const p = std::mismatch(s1, s1 + n, s2, [](char left, char right) {
             return std::toupper(left) == std::toupper(right);
         });
 
         // both characters match exactly (case insensitive)
-        if (p.first == p1 + n && p.second == p2 + n) {
+        if (p.first == s1 + n && p.second == s2 + n) {
             return 0;
         }
 
