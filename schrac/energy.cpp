@@ -17,7 +17,7 @@ namespace schrac {
 
     void Energy::kinetic_energy() const
     {
-        std::cout << "E(Kinetic Energy)\t= " << 0.5 * potential_energy_ << std::endl;
+        std::cout << "E(Kinetic Energy)\t= " << -0.5 * potential_energy_ << std::endl;
     }
 
     void Energy::potential_energy() const
