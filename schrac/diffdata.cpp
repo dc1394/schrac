@@ -37,41 +37,22 @@ namespace schrac {
 		mi_.reserve(isize);
 
 		auto const len = boost::numeric_cast<std::int32_t>(grid_num - isize);
-		//if (pdata_->ompthread_) {
-			//#pragma omp parallel
-			{
-				//#pragma omp for nowait
-                for (auto i = 0; i <= mp_o_; i++) {
-					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
-					x_o_[i] = x;
-					r_mesh_o_[i] = std::exp(x);
-				}
 
-                for (auto i = 0; i < DiffData::AMMAX; i++) {
-                    vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * dx_);
-                }
+        for (auto i = 0; i <= mp_o_; i++) {
+			auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
+			x_o_[i] = x;
+			r_mesh_o_[i] = std::exp(x);
+		}
 
-				//#pragma omp for nowait
-				for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
-					auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
-					x_i_[grid_num - i] = x;
-					r_mesh_i_[grid_num - i] = std::exp(x);
-				}
-			}
-		/*} else {
-			for (int i = 0; i < osize; i++) {
-				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
-				XV_O[i] = x;
-				RV_O[i] = std::exp(x);
-				VP_O[i] = V(x);
-			}
-			for (int i = boost::numeric_cast<const int>(grid_num - 1); i >= len; i--) {
-				const double x = pdata_->xmin + static_cast<const double>(i) * DX;
-				XV_I[grid_num - 1 - i] = x;
-				RV_I[grid_num - 1 - i] = std::exp(x);
-				VP_I[grid_num - 1 - i] = V(x);
-			}
-		}*/
+        for (auto i = 0; i < DiffData::AMMAX; i++) {
+             vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * dx_);
+        }
+
+		for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
+			auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
+			x_i_[grid_num - i] = x;
+			r_mesh_i_[grid_num - i] = std::exp(x);
+		}
 	}
 
     // #region メンバ関数
