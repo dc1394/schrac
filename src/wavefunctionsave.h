@@ -11,6 +11,7 @@
 
 #include "data.h"
 #include <memory>
+#include <vector>
 #include <boost/container/flat_map.hpp>
 
 namespace schrac {

@@ -95,6 +95,24 @@ namespace schrac {
 		
         //!  A public static member variable (constant expression).
         /*!
+            SCFの収束判定条件の値のデフォルト値
+        */
+        static auto constexpr SCF_CRITERION_DEFAULT = 5.0;
+
+        //!  A public static member variable (constant expression).
+        /*!
+            SCFの最大ループ回数のデフォルト値
+        */
+        static auto constexpr SCF_MAXITER_DEFAULT = 40;
+
+        //!  A public static member variable (constant expression).
+        /*!
+            電子密度を合成するときの重みのデフォルト値
+        */
+        static auto constexpr SCF_MIXING_WEIGHT_DEFAULT = 0.3;
+
+        //!  A public static member variable (constant expression).
+        /*!
             微分方程式を解くときのメッシュの最小値のデフォルト値
         */
         static auto constexpr XMAX_DEFAULT = 5.0;
@@ -119,7 +137,7 @@ namespace schrac {
 
         //!  A public static member variable (constant).
         /*!
-        元素記号の配列
+            元素記号の配列
         */
         static std::array<std::string, 2> const Chemical_Symbol;
         
@@ -189,6 +207,24 @@ namespace schrac {
         */
         std::string orbital_;
         
+        //!  A public member variable.
+        /*!
+            SCFの収束判定条件の値
+        */
+        double scf_criterion_ = Data::SCF_CRITERION_DEFAULT;
+
+        //!  A public member variable.
+        /*!
+            SCFの最大ループ回数
+        */
+        std::int32_t scf_maxiter_ = Data::SCF_MAXITER_DEFAULT;
+
+        //!  A public member variable.
+        /*!
+            電子密度を合成するときの重み
+        */
+        double scf_mixing_weight_ = Data::SCF_MIXING_WEIGHT_DEFAULT;
+
         //!  A public member variable.
         /*!
             固有値検索を始める値

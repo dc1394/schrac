@@ -93,6 +93,15 @@ namespace schrac {
 
         // マッチングポイントを読み込む
         readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
+
+        // SCFの最大ループ回数を読み込む
+        readValue("scf.maxIter", Data::SCF_MAXITER_DEFAULT, pdata_->scf_maxiter_);
+
+        // SCFの収束判定条件の値を読み込む
+        readValue("scf.Mixing.Weight", Data::SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
+
+        // SCFの収束判定条件の値を読み込む
+        readValue("scf.criterion", Data::SCF_CRITERION_DEFAULT, pdata_->scf_criterion_);
 	}
     
     // #endregion publicメンバ関数

@@ -93,6 +93,7 @@
     <ClCompile Include="schnormalize.cpp" />
     <ClCompile Include="schracmain.cpp" />
     <ClCompile Include="simpson.cpp" />
+    <ClCompile Include="vhartree.cpp" />
     <ClCompile Include="wavefunctionsave.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,12 +109,13 @@
     <ClInclude Include="normalize.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
+    <ClInclude Include="scfloop.h" />
     <ClInclude Include="schnormalize.h" />
     <ClInclude Include="simpson.h" />
+    <ClInclude Include="vhartree.h" />
     <ClInclude Include="wavefunctionsave.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="document\変数分離の計算.tex" />
     <None Include="input.inp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
