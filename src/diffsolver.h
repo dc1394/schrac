@@ -201,12 +201,6 @@ namespace schrac {
             \param stepper 微分方程式のソルバーのアルゴリズム
         */
         void solve_diff_equ_o(Stepper const & stepper);
-        
-        //! A private member function.
-        /*!
-            vr_o_3p_を初期化する
-        */
-        void vr_o_3p_init();
 
         // #endregion メンバ関数
 
@@ -265,12 +259,6 @@ namespace schrac {
             微分方程式のデータオブジェクト
         */
 		std::shared_ptr<DiffData> const pdiffdata_;
-
-        //!  A private member variable.
-        /*!
-            原点に近い点からV(r)の値を三点取ってきた配列
-        */
-        std::array<double, DiffSolver::AMMAX> vr_o_3p_;
 
         // #endregion メンバ変数
 

@@ -11,7 +11,7 @@
 #include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
-    WaveFunctionSave::WaveFunctionSave(std::unordered_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata) :
+    WaveFunctionSave::WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata) :
         myhash_(myhash),
         pdata_(pdata)
     {

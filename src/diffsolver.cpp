@@ -28,7 +28,6 @@ namespace schrac {
         pdiffdata_(std::make_shared<DiffData>(pdata)),
         PDiffData([this]() { return pdiffdata_; }, nullptr)
 	{
-        vr_o_3p_init();
         am_evaluate();
 	}
 
@@ -135,7 +134,7 @@ namespace schrac {
 				rtmp *= pdiffdata_->r_mesh_o_[i];
 			}
 
-			b[i] = vr_o_3p_[i];
+			b[i] = V(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_);    
 		}
             
         am = solve_linear_equ(std::move(a), std::move(b));
@@ -321,13 +320,6 @@ namespace schrac {
         });
     }
 
-    void DiffSolver::vr_o_3p_init()
-    {
-        for (auto i = 0; i < static_cast<std::int32_t>(DiffSolver::AMMAX); i++) {
-            vr_o_3p_[i] = V(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_);
-        }    
-    }
-    
     // #endregion privateメンバ関数
 
     // #region 非メンバ関数

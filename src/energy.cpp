@@ -3,11 +3,24 @@
 #include <iostream>
 
 namespace schrac {
+    // #region コンストラクタ
+
     Energy::Energy(std::shared_ptr<DiffData> const & pdiffdata, dvector const & rf, dvector const & r) :
         pdiffdata_(pdiffdata),
         rf_(rf),
         potential_energy_(- Simpson(pdiffdata->dx_)(rf, rf, r, 2))
     {
+    }
+
+    //#endregion コンストラクタ
+    
+    // #region メンバ関数
+
+    void Energy::express_energy() const
+    {
+        kinetic_energy();
+        potential_energy();
+        eigenvalue();
     }
 
     void Energy::eigenvalue() const
@@ -24,4 +37,6 @@ namespace schrac {
     {
         std::cout << "E(Potential Energy)\t= " << potential_energy_ << std::endl;
     }
+
+    // #endregion メンバ関数
 }

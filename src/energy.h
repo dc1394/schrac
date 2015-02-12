@@ -45,20 +45,27 @@ namespace schrac {
         }
 
         // #region メンバ関数
-
+        
         //! A public member function (const).
+        /*!
+            固有エネルギーを表示する
+        */
+        void express_energy() const;
+
+    private:
+        //! A private member function (const).
         /*!
             固有エネルギーを表示する
         */
         void eigenvalue() const;
 
-        //! A public member function (const).
+        //! A private member function (const).
         /*!
             運動エネルギーを表示する
         */
         void kinetic_energy() const;
 
-        //! A public member function (const).
+        //! A private member function (const).
         /*!
             ポテンシャルエネルギーを表示する
         */
@@ -67,8 +74,7 @@ namespace schrac {
         // #endregion メンバ関数
 
         // #region メンバ変数
-
-    private:
+    
         //! A private member variable (const).
         /*!
             データオブジェクト

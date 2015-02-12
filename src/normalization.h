@@ -19,7 +19,7 @@ namespace schrac {
         \param pdiffsolver 微分方程式のデータオブジェクト
         \return メッシュと波動関数が格納されたハッシュ
     */
-	std::unordered_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver);
+    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver);
 }
 
 #endif	// _NORMALIZATION_H_

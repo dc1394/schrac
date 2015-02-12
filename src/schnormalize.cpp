@@ -52,10 +52,10 @@ namespace schrac {
 
     Normalize<SchNormalize>::myhash SchNormalize::getresult() const
     {
-        myhash hash;
-        hash.insert(std::make_pair("Mesh (r)", std::move(r_mesh_)));
-        hash.insert(std::make_pair("Eigen function", std::move(rf_)));
-        hash.insert(std::make_pair("Eigen function (multiply r)", std::move(pf_)));
+        Normalize<SchNormalize>::myhash hash;
+        hash["Mesh (r)"] = std::move(r_mesh_);
+        hash["Eigen function"] = std::move(rf_);
+        hash["Eigen function (multiply r)"] = std::move(pf_);
 
         return std::move(hash);
     }

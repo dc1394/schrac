@@ -7,7 +7,7 @@
 #include "normalization.h"
 
 namespace schrac {
-    std::unordered_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver)
+    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver)
     {
         switch (pdiffsolver->pdata_->eq_type_) {
         case Data::Eq_type::DIRAC:
@@ -29,7 +29,7 @@ namespace schrac {
 
         default:
             BOOST_ASSERT(!"何かがおかしい！");
-            return std::unordered_map<std::string, dvector>();
+            return boost::container::flat_map<std::string, dvector>();
             break;
         }
     }

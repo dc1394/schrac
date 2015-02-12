@@ -11,7 +11,7 @@
 
 #include "eigenvaluesearch.h"
 #include "property.h"
-#include <unordered_map>        // for std::unordered_map
+#include <boost/container/flat_map.hpp>     // for boost::container::flat_map
 
 namespace schrac {
     template <typename Derived>
@@ -23,7 +23,7 @@ namespace schrac {
         // #region 型エイリアス
 
     public:
-        using myhash = std::unordered_map<std::string, dvector>;
+        using myhash = boost::container::flat_map<std::string, dvector>;
 
         // #endregion 型エイリアス
 
