@@ -80,11 +80,13 @@ namespace schrac {
         // 許容誤差を読み込む
         readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
 
+        // 解く方程式のタイプを読み込む
 		if (!readType()) {
             errorendfunc();
         }
 
-		if (!readLowerE()) {
+        // 固有値探索をはじめる値を読み込む
+        if (!readValueAuto("search.LowerE", pdata_->search_lowerE_)) {
             errorendfunc();
         }
 
@@ -93,6 +95,16 @@ namespace schrac {
 
         // マッチングポイントを読み込む
         readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
+
+        // 密度の初期値ρ0(r)のための係数cを読み込む
+        if (!readValueAuto("rho0.c", pdata_->rho0_c_)) {
+            errorendfunc();
+        }
+
+        // 密度の初期値ρ0(r)のための係数alphaを読み込む
+        if (!readValueAuto("rho0.alpha", pdata_->rho0_alpha_)) {
+            errorendfunc();
+        }
 
         // SCFの最大ループ回数を読み込む
         readValue("scf.maxIter", Data::SCF_MAXITER_DEFAULT, pdata_->scf_maxiter_);
@@ -108,12 +120,12 @@ namespace schrac {
 
     // #region privateメンバ関数
 
-    void ReadInputFile::errMsg(ci_string const & s) const
+    void ReadInputFile::errorMessage(ci_string const & s) const
     {
         std::cerr << "インプットファイルに" << s << "の行が見つかりませんでした" << std::endl;
     }
 
-    void ReadInputFile::errMsg(std::int32_t line, ci_string const & s1, ci_string const & s2) const
+    void ReadInputFile::errorMessage(std::int32_t line, ci_string const & s1, ci_string const & s2) const
     {
         std::cerr << "インプットファイルの[" << s1 << "]の行が正しくありません" << std::endl;
         std::cerr << line << "行目, 未知のトークン:" << s2 << std::endl;
@@ -129,7 +141,7 @@ namespace schrac {
 
         // もし一文字も読めなかったら
         if (!ifs_.gcount()) {
-            errMsg(article);
+            errorMessage(article);
             return std::make_pair(-1, boost::none);
         }
 
@@ -142,7 +154,7 @@ namespace schrac {
             auto const itr(tokens.begin());
 
             if (*itr != article) {
-                errMsg(lineindex_, article, *itr);
+                errorMessage(lineindex_, article, *itr);
                 return std::make_pair(-1, boost::none);
             }
 
@@ -225,7 +237,7 @@ namespace schrac {
                             return std::move(def);
                         }
                         else if ((*(++itr))[0] != '#') {
-                            errMsg(lineindex_ - 1, article, *itr);
+                            errorMessage(lineindex_ - 1, article, *itr);
                             return boost::none;
                         }
 
@@ -282,7 +294,7 @@ namespace schrac {
                             // デフォルト値を返す
                             return boost::optional<ci_string>(ci_string());
                         } else if ((*(++itr))[0] != '#') {
-                            errMsg(lineindex_ - 1, article, *itr);
+                            errorMessage(lineindex_ - 1, article, *itr);
 
                             // エラー
                             return boost::none;
@@ -322,7 +334,7 @@ namespace schrac {
             pdata_->chemical_symbol_ = *itr;
             pdata_->Z_ = static_cast<double>(std::distance(Data::Chemical_Symbol.begin(), itr)) + 1.0;
 		} catch (std::invalid_argument const &) {
-            errMsg(lineindex_ - 1, ReadInputFile::CHEMICAL_SYMBOL, *chemsym);
+            errorMessage(lineindex_ - 1, ReadInputFile::CHEMICAL_SYMBOL, *chemsym);
 			return false;
 		}
 
@@ -334,12 +346,12 @@ namespace schrac {
         
         auto const orbital(*porbital);
         if (orbital.length() != 2) {
-            errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 			return false;
 		}
 
 		if (!std::isdigit(orbital[0])) {
-            errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 			return false;
 		}
 		pdata_->orbital_ = orbital[0];
@@ -372,7 +384,7 @@ namespace schrac {
 			break;
 
 			default:
-                errMsg(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+                errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
 				return false;
 			break;
 		}
@@ -390,7 +402,7 @@ namespace schrac {
         
         pdata_->spin_orbital_ = *pspin_orbital;
         if (pdata_->spin_orbital_ != Data::ALPHA && pdata_->spin_orbital_ != Data::BETA) {
-            errMsg(lineindex_ - 1, ReadInputFile::SPIN_ORBITAL, pdata_->spin_orbital_);
+            errorMessage(lineindex_ - 1, ReadInputFile::SPIN_ORBITAL, pdata_->spin_orbital_);
 			return false;
 		}
 
@@ -423,7 +435,7 @@ namespace schrac {
         auto const itr(boost::find(ReadInputFile::EQ_TYPE_ARRAY, eqtype));
         
         if (itr == ReadInputFile::EQ_TYPE_ARRAY.end()) {
-            errMsg(lineindex_ - 1, ReadInputFile::EQ_TYPE, eqtype);
+            errorMessage(lineindex_ - 1, ReadInputFile::EQ_TYPE, eqtype);
 			return false;
         }
         else if (itr != ReadInputFile::EQ_TYPE_ARRAY.begin()) {
@@ -433,33 +445,6 @@ namespace schrac {
 		return true;
 	}
 
-    bool ReadInputFile::readLowerE()
-    {
-        if (auto const val = readDataAuto("search.LowerE")) {
-            if (!val->empty()) {
-                try {
-                    std::size_t idx;
-                    auto const v = std::stod(val->c_str(), &idx);
-                    if (idx != val->length()) {
-                        throw std::invalid_argument("");
-                    }
-                    pdata_->search_lowerE_ = boost::optional<double>(v);
-                }
-                catch (std::invalid_argument const &) {
-                    errMsg(lineindex_ - 1, "search.LowerE", *val);
-                    return false;
-                }
-            }
-            else {
-                pdata_->search_lowerE_ = boost::none;
-            }
-        }
-        else {
-            return false;
-        }
-
-        return true;
-    }
     
 	bool ReadInputFile::readType()
 	{
@@ -471,10 +456,11 @@ namespace schrac {
         auto const solvertype = *psolvetype;
 		auto const itr(boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype));
         if (itr == ReadInputFile::SOLVER_TYPE_ARRAY.end()) {
-			errMsg(lineindex_ - 1, "solver.type", solvertype);
+			errorMessage(lineindex_ - 1, "solver.type", solvertype);
 			return false;
 		} else {
-            pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(std::distance(ReadInputFile::SOLVER_TYPE_ARRAY.begin(), itr));
+            pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(
+                std::distance(ReadInputFile::SOLVER_TYPE_ARRAY.begin(), itr));
 		}
 
 		return true;

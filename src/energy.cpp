@@ -5,10 +5,10 @@
 namespace schrac {
     // #region コンストラクタ
 
-    Energy::Energy(std::shared_ptr<DiffData> const & pdiffdata, dvector const & rf, dvector const & r) :
+    Energy::Energy(std::shared_ptr<DiffData> const & pdiffdata, dvector const & r, dvector const & rf, double Z) :
         pdiffdata_(pdiffdata),
         rf_(rf),
-        potential_energy_(- Simpson(pdiffdata->dx_)(rf, rf, r, 2))
+        potential_energy_(- Z * Simpson(pdiffdata->dx_)(rf, rf, r, 2))
     {
     }
 

@@ -33,8 +33,9 @@ namespace schrac {
             唯一のコンストラクタ
             \param pdiffdata 微分方程式のデータオブジェクト
             \param pf 規格化された波動関数
+            \param Z 原子核の電荷
         */
-        Energy(std::shared_ptr<DiffData> const & pdiffdata, dvector const & rf, dvector const & r);
+        Energy(std::shared_ptr<DiffData> const & pdiffdata, dvector const & r, dvector const & rf, double Z);
 
         //! A destructor.
         /*!

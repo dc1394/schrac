@@ -10,7 +10,6 @@
 #pragma once
 
 #include "diffsolver.h"
-#include "readinputfile.h"
 
 namespace schrac {
     //! A class.
@@ -26,7 +25,7 @@ namespace schrac {
             唯一のコンストラクタ
             \param arg インプットファイル名とTBBを使用するかどうかのstd::pair
         */
-        explicit EigenValueSearch(std::pair<std::string, bool> const & arg);
+        EigenValueSearch(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh);
 
         //! A destructor.
         /*!
@@ -93,22 +92,16 @@ namespace schrac {
             \param E 関数Dの引数E
         */
         void info(double D, double E) const;
-
-        //! A private member function (const).
+        
+        //! A private member function.
         /*!
             状態の初期化を行う
         */
         void initialize();
-
-        //! A private member function (const).
-        /*!
-            解く微分方程式についてメッセージを表示する
-        */
-        void message() const;
-
+        
         //! A private member function.
         /*!
-            固有値をおおざっぱに検索する
+            固有値を大まかに検索する
             \return 固有値が見つかったかどうか
         */
         bool rough_search();
@@ -177,7 +170,7 @@ namespace schrac {
         /*!
             インプットファイルのデータオブジェクト
         */
-		std::shared_ptr<Data> pdata_;
+		std::shared_ptr<Data> const pdata_;
 
         //! A private member variable.
         /*!
@@ -189,7 +182,19 @@ namespace schrac {
         /*!
             微分方程式データのオブジェクト
         */
-		std::shared_ptr<DiffData> pdiffdata_;
+		std::shared_ptr<DiffData> const pdiffdata_;
+        
+        //!  A private member variable (constant).
+        /*!
+            関数ρ(r)
+        */
+        std::shared_ptr<Rho> const prho_;
+
+        //!  A private member variable.
+        /*!
+            Hartreeポテンシャルオブジェクト
+        */
+        std::shared_ptr<Vhartree> pvh_;
         
         // #endregion メンバ変数
 
@@ -198,21 +203,21 @@ namespace schrac {
 
         //! A private constructor (deleted).
         /*!
-        デフォルトコンストラクタ（禁止）
+            デフォルトコンストラクタ（禁止）
         */
         EigenValueSearch() = delete;
 
         //! A private copy constructor (deleted).
         /*!
-        コピーコンストラクタ（禁止）
+            コピーコンストラクタ（禁止）
         */
         EigenValueSearch(EigenValueSearch const &) = delete;
 
         //! A private member function (deleted).
         /*!
-        operator=()の宣言（禁止）
-        \param コピー元のオブジェクト（未使用）
-        \return コピー元のオブジェクト
+            operator=()の宣言（禁止）
+            \param コピー元のオブジェクト（未使用）
+            \return コピー元のオブジェクト
         */
         EigenValueSearch & operator=(EigenValueSearch const &) = delete;
 

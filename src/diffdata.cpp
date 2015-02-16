@@ -29,7 +29,6 @@ namespace schrac {
 		// メモリ確保
 		x_o_.resize(osize);
 		x_i_.resize(isize);
-		r_mesh_o_.resize(osize);
 		r_mesh_i_.resize(isize);
 		lo_.reserve(osize);
 		li_.reserve(isize);
@@ -41,7 +40,6 @@ namespace schrac {
         for (auto i = 0; i <= mp_o_; i++) {
 			auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
 			x_o_[i] = x;
-			r_mesh_o_[i] = std::exp(x);
 		}
 
 		for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {

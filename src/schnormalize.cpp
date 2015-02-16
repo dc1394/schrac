@@ -34,36 +34,35 @@ namespace schrac {
         M_.assign(pdiffdata_->mo_.begin(), pdiffdata_->mo_.end());
 
         for (auto i = 0; i <= mp_o; i++) {
-        	rf_.push_back(std::pow(r_mesh_[i], pdata_->l_) * lo[i]);
-        	pf_.push_back(r_mesh_[i] * rf_[i]);
+            rf_.push_back(std::pow(pdiffdata_->r_mesh_[i], pdata_->l_) * lo[i]);
+            pf_.push_back(pdiffdata_->r_mesh_[i] * rf_[i]);
         }        
 
         for (auto i = mp_im1; i >= 0; i--) {
             L_.push_back(ratio * li[i]);
-            r_mesh_.push_back(r_mesh_i[i]);
             M_.push_back(ratio * pdiffdata_->mi_[i]);
 
-        	rf_.push_back(std::pow(r_mesh_.back(), pdata_->l_) * L_.back());
-        	pf_.push_back(r_mesh_.back() * rf_.back());
+        	rf_.push_back(std::pow(r_mesh_i[i], pdata_->l_) * L_.back());
+        	pf_.push_back(r_mesh_i[i] * rf_.back());
         }
 
         normalize();
     }
 
-    Normalize<SchNormalize>::myhash SchNormalize::getresult() const
+    Normalize<SchNormalize>::mymap SchNormalize::getresult() const
     {
-        Normalize<SchNormalize>::myhash hash;
-        hash["Mesh (r)"] = std::move(r_mesh_);
-        hash["Eigen function"] = std::move(rf_);
-        hash["Eigen function (multiply r)"] = std::move(pf_);
+        Normalize<SchNormalize>::mymap wf;
+        wf["1 Mesh (r)"] = std::move(pdiffdata_->r_mesh_);
+        wf["2 Eigen function"] = std::move(rf_);
+        wf["3 Eigen function (multiply r)"] = std::move(pf_);
 
-        return std::move(hash);
+        return std::move(wf);
     }
 
     void SchNormalize::normalize()
     {
         Simpson simpson(pdiffdata_->dx_);
-        auto const n = 1.0 / std::sqrt(simpson(pf_, r_mesh_));
+        auto const n = 1.0 / std::sqrt(simpson(pf_, pdiffdata_->r_mesh_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {
             rf_[i] *= n;
             pf_[i] *= n;

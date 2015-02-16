@@ -7,6 +7,7 @@
 #include "energy.h"
 #include "getcomlineoption.h"
 #include "normalization.h"
+#include "scfloop.h"
 #include "wavefunctionsave.h"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -52,30 +53,13 @@ int main(int argc, char * argv[])
 
     //cp.checkpoint("コマンドラインオプション解析処理", __LINE__);
 
-    boost::optional<schrac::EigenValueSearch> pevs;
-
-    try {
-        pevs = boost::in_place(mg.getpairdata());
-    }
-    catch (std::runtime_error const & e) {
-        std::cerr << e.what() << std::endl;
-        goexit();
-        return EXIT_FAILURE;
-    }
-
-    //cp.checkpoint("入力ファイル読み込み処理", __LINE__);
-
-    if (!pevs->search()) {
-        std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
-        goexit();
-        return EXIT_FAILURE;
-    }
-
-    auto const pdsol = nomalization(pevs->PDiffSolver);
-    Energy en(pevs->PDiffSolver()->PDiffData, pdsol.at("Eigen function"), pdsol.at("Mesh (r)"));
-    en.express_energy();
-    WaveFunctionSave wfs(pdsol, pevs->PData);
-    wfs();
+    ScfLoop sl(mg.getpairdata());
+    sl();
+    
+    //Energy en(evs.PDiffSolver()->PDiffData, pdsol.at("1 Mesh (r)"), pdsol.at("2 Eigen function"));
+    //en.express_energy();
+    //WaveFunctionSave wfs(pdsol, evs.PData);
+    //wfs();
 
     goexit();
 }

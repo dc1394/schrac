@@ -66,7 +66,7 @@ namespace schrac {
             \param s エラーのトークン
             \return 読み込みが成功したかどうか
         */
-        void errMsg(ci_string const & s) const;
+        void errorMessage(ci_string const & s) const;
 
         //! A private member function (const).
         /*!
@@ -75,7 +75,7 @@ namespace schrac {
             \param s1 エラーのトークン
             \param s2 エラーのトークン2
         */
-        void errMsg(std::int32_t line, ci_string const & s, ci_string const & s2) const;
+        void errorMessage(std::int32_t line, ci_string const & s, ci_string const & s2) const;
 
         //! A private member function (const).
         /*!
@@ -157,6 +157,16 @@ namespace schrac {
             \param value 読み込んだ値
         */
         void readValue(ci_string const & article, T const & default_value, T & value);
+
+        template <typename T>
+        //! A private member function.
+        /*!
+            対象の要素の値をその行から読み込む
+            \param article 要素名
+            \param value 読み込んだ値
+            \return 読み込みが成功したかどうか
+        */
+        bool readValueAuto(ci_string const & article, boost::optional<T> & value);
 
         // #endregion メンバ関数
 
@@ -310,7 +320,7 @@ namespace schrac {
                             return boost::optional<T>(boost::lexical_cast<T>(itr->c_str()));
                         }
                         catch (boost::bad_lexical_cast const &) {
-                            errMsg(lineindex_ - 1, article, *itr);
+                            errorMessage(lineindex_ - 1, article, *itr);
                             return boost::none;
                         }
                     }
@@ -323,7 +333,7 @@ namespace schrac {
                         return boost::optional<T>(default_value);
                     }
                     else if ((*(++itr))[0] != '#') {
-                        errMsg(lineindex_ - 1, article, *itr);
+                        errorMessage(lineindex_ - 1, article, *itr);
                         return boost::none;
                     }
 
@@ -331,7 +341,7 @@ namespace schrac {
                         return boost::optional<T>(boost::lexical_cast<T>(val.c_str()));
                     }
                     catch (boost::bad_lexical_cast const &) {
-                        errMsg(lineindex_ - 1, article, val);
+                        errorMessage(lineindex_ - 1, article, val);
                         return boost::none;
                     }
                     break;
@@ -359,6 +369,35 @@ namespace schrac {
         else {
             throw std::runtime_error("インプットファイルが異常です");
         }
+    }
+
+    template <typename T>
+    bool ReadInputFile::readValueAuto(ci_string const & article, boost::optional<T> & value)
+    {
+        if (auto const val = readDataAuto(article)) {
+            if (!val->empty()) {
+                try {
+                    std::size_t idx;
+                    auto const v = std::stod(val->c_str(), &idx);
+                    if (idx != val->length()) {
+                        throw std::invalid_argument("");
+                    }
+                    pdata_->search_lowerE_ = boost::optional<double>(v);
+                }
+                catch (std::invalid_argument const &) {
+                    errorMessage(lineindex_ - 1, article, *val);
+                    return false;
+                }
+            }
+            else {
+                value = boost::none;
+            }
+        }
+        else {
+            return false;
+        }
+
+        return true;
     }
 }
 

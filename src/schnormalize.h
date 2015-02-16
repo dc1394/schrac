@@ -71,7 +71,7 @@ namespace schrac {
         /*!
             求めた結果を返す
         */
-        Normalize<SchNormalize>::myhash getresult() const;
+        Normalize<SchNormalize>::mymap getresult() const;
 
     private:
         //! A public member function.

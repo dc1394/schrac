@@ -11,8 +11,8 @@
 #include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
-    WaveFunctionSave::WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata) :
-        myhash_(myhash),
+    WaveFunctionSave::WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & wf, std::shared_ptr<Data> const & pdata) :
+        wf_(wf),
         pdata_(pdata)
     {
     }
@@ -68,10 +68,10 @@ namespace schrac {
 			return false;
 		}
 
-        auto const size = boost::numeric_cast<std::int32_t>(myhash_.begin()->second.size());
+        auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
         for (auto i = 0; i < size; i++) {
-            auto const end(myhash_.end());
-            for (auto itr(myhash_.begin()); itr != end; ++itr) {
+            auto const end(wf_.end());
+            for (auto itr(wf_.begin()); itr != end; ++itr) {
                 std::fprintf(fp.get(), "%.15f,", itr->second[i]);
             }
             std::fputs("\n", fp.get());

@@ -9,26 +9,14 @@
 
 #pragma once
 
-#include "data.h"
+#include "deleter.h"
+#include "diffdata.h"
+#include "property.h"
 #include <functional>
 #include <memory>
 #include <vector>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_spline.h>
 
 namespace schrac {
-    //! A function.
-    /*!
-        gsl_interp_accelへのポインタを解放するクラス
-    */
-    auto const gsl_interp_accel_deleter = [](gsl_interp_accel * acc) {
-        gsl_interp_accel_free(acc);
-    };
-
-    auto const gsl_spline_deleter = [](gsl_spline * spline) {
-        gsl_spline_free(spline);
-    };
-
     //! A class.
     /*!
         Hartreeポテンシャルを求めるクラス
@@ -40,10 +28,9 @@ namespace schrac {
         //! A constructor.
         /*!
             唯一のコンストラクタ
-            \param rho 電子密度
-            \param r_mesh rのメッシュ
+            \param r_mesh_ rのメッシュ
         */
-        Vhartree(std::shared_ptr<Data> const & pdata, std::vector<double> const & rho, std::vector<double> const & r_mesh);
+        Vhartree(std::vector<double> const & r_mesh);
 
         //! A destructor.
         /*!
@@ -54,48 +41,96 @@ namespace schrac {
         }
 
         // #region メンバ関数
+        
+        void addrho();
 
-    private:
-        bool addrho();
-
-        //!  A private member function (const).
+        //!  A public member function (const).
         /*!
-            Hartreeポテンシャルの関数オブジェクト
+            Hartreeポテンシャルを返す
+            \return Hartreeポテンシャル
         */
         double operator()(double x) const;
 
-        template <typename Stepper>
-        //!  A private member function.
+        //!  A public member function.
         /*!
-            Hartreeポテンシャルのメッシュを生成する
+            Hartreeポテンシャルを初期化する
         */
-        void make_vhartree_mesh();
+        void vhart_init();
 
         // #endregion メンバ関数
 
+        // #region プロパティ
+
+    public:
+        //! A property.
+        /*!
+            Hartreeポテンシャルが格納された可変長配列へのプロパティ
+        */
+        Property<std::vector<double>> const PVhart;
+
+        // #endregion プロパティ       
+
         // #region メンバ変数
 
+    private:
         //! A private member variable.
         /*!
             gsl_interp_accelへのスマートポインタ
         */
-        std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc;
+        std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc_;
+
+        //! A private member variable.
+        /*!
+            rのメッシュが格納された可変長配列
+        */
+        std::vector<double> r_mesh_;
 
         //! A private member variable.
         /*!
             gsl_interp_typeへのスマートポインタ
         */
-        std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline;
+        std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline_;
 
-        //!  A private member variable.
+        //! A private member variable.
+        /*!
+            Hartreeポテンシャルが格納された可変長配列
+        */
+        std::vector<double> vhart_;
+
+    public:
+        //!  A public member variable.
         /*!
             Hartreeポテンシャルの関数オブジェクト
         */
         std::function<double (double)> vhartree_;
-        
-        // #endregion メンバ変数
-    };
 
+        // #endregion メンバ変数
+
+        // #region 禁止されたコンストラクタ・メンバ関数
+
+    private:
+        //! A private constructor (deleted).
+        /*!
+            デフォルトコンストラクタ（禁止）
+        */
+        Vhartree() = delete;
+
+        //! A private copy constructor (deleted).
+        /*!
+            コピーコンストラクタ（禁止）
+        */
+        Vhartree(Vhartree const &) = delete;
+
+        //! A private member function (deleted).
+        /*!
+            operator=()の宣言（禁止）
+            \param コピー元のオブジェクト（未使用）
+            \return コピー元のオブジェクト
+        */
+        Vhartree & operator=(Vhartree const &) = delete;
+
+        // #endregion 禁止されたコンストラクタ・メンバ関数
+    };
 }
 
 #endif  // _VHARTREE_H_

@@ -1,7 +1,7 @@
 ﻿/*! \file diffdata.h
     \brief 微分方程式のデータを集めた構造体の宣言
 
-    Copyright ©  2015 @dc1394 All Rights Reserved.
+    Copyright © 2015 @dc1394 All Rights Reserved.
 */
 
 #ifndef _DIFFDATA_H_
@@ -114,15 +114,21 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            無限遠に近い点からのrのメッシュ
+            密度ρ(r)
         */
-        dvector r_mesh_i_;
+        dvector rho_;
 
         //!  A public member variable.
         /*!
-            原点に近い点からのrのメッシュ
+            rのメッシュ
         */
-        dvector r_mesh_o_;
+        dvector r_mesh_;
+
+        //!  A public member variable.
+        /*!
+            無限遠に近い点からのrのメッシュ
+        */
+        dvector r_mesh_i_;
 
         //!  A public member variable.
         /*!

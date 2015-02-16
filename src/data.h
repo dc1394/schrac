@@ -209,6 +209,18 @@ namespace schrac {
         
         //!  A public member variable.
         /*!
+            密度の初期値ρ0(r)のための係数c（ρ0(r) = c * exp(- alpha * r)
+        */
+        boost::optional<double> rho0_c_;
+        
+        //!  A public member variable.
+        /*!
+            密度の初期値ρ0(r)のための係数alpha（ρ0(r) = c * exp(- alpha * r)
+        */
+        boost::optional<double> rho0_alpha_;
+
+        //!  A public member variable.
+        /*!
             SCFの収束判定条件の値
         */
         double scf_criterion_ = Data::SCF_CRITERION_DEFAULT;
@@ -227,7 +239,7 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            固有値検索を始める値
+            固有値探索を始める値
         */
         boost::optional<double> search_lowerE_;
 

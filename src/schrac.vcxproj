@@ -90,6 +90,8 @@
     <ClCompile Include="getcomlineoption.cpp" />
     <ClCompile Include="normalization.cpp" />
     <ClCompile Include="readinputfile.cpp" />
+    <ClCompile Include="rho.cpp" />
+    <ClCompile Include="scfloop.cpp" />
     <ClCompile Include="schnormalize.cpp" />
     <ClCompile Include="schracmain.cpp" />
     <ClCompile Include="simpson.cpp" />
@@ -97,8 +99,10 @@
     <ClCompile Include="wavefunctionsave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\C++\Thomas_Fermi\Thomas_Fermi\solvelinearequ.h" />
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
+    <ClInclude Include="deleter.h" />
     <ClInclude Include="diffsolver.h" />
     <ClInclude Include="diffdata.h" />
     <ClInclude Include="diracnormalize.h" />
@@ -109,6 +113,7 @@
     <ClInclude Include="normalize.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="readinputfile.h" />
+    <ClInclude Include="rho.h" />
     <ClInclude Include="scfloop.h" />
     <ClInclude Include="schnormalize.h" />
     <ClInclude Include="simpson.h" />

@@ -7,8 +7,8 @@
 #include "diffsolver.h"
 #include <algorithm>                    // for std::copy
 #include <stdexcept>                    // for std::runtime_error
+#include <boost/cast.hpp>               // for boost::numeric_cast
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
-#include <gsl/gsl_linalg.h>             // for gsl_linalg
 #include <tbb/parallel_invoke.h>        // for tbb::parallel_invoke
 
 namespace schrac {
@@ -23,10 +23,12 @@ namespace schrac {
 
 	// #region コンストラクタ
 
-    DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata) :
+    DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh) :
+        PDiffData([this]() { return pdiffdata_; }, nullptr),
         pdata_(pdata),
-        pdiffdata_(std::make_shared<DiffData>(pdata)),
-        PDiffData([this]() { return pdiffdata_; }, nullptr)
+        pdiffdata_(pdiffdata),
+        prho_(prho),
+        pvh_(pvh)
 	{
         am_evaluate();
 	}
@@ -112,6 +114,27 @@ namespace schrac {
         }
     }
 
+    void DiffSolver::solve_poisson()
+    {
+        switch (pdata_->solver_type_) {
+        case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
+            solve_poisson_run(adams_bashforth_moulton< 2, myarray >()); 
+            break;
+
+        case Data::Solver_type::BULIRSCH_STOER:
+            solve_poisson_run(bulirsch_stoer < myarray >());
+            break;
+
+        case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
+            solve_poisson_run(controlled_stepper_type());
+            break;
+
+        default:
+            BOOST_ASSERT(!"何かがおかしい！");
+            break;
+        }
+    }
+
     double DiffSolver::V(double r) const
     {
         return -pdiffdata_->Z_ / r;
@@ -131,7 +154,7 @@ namespace schrac {
 
 			for (std::size_t j = 0; j < DiffSolver::AMMAX; j++) {
                 a[DiffSolver::AMMAX * i + j] = rtmp;
-				rtmp *= pdiffdata_->r_mesh_o_[i];
+				rtmp *= pdiffdata_->r_mesh_[i];
 			}
 
 			b[i] = V(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_);    
@@ -228,7 +251,6 @@ namespace schrac {
         pdiffdata_->mi_.clear();
 
         auto const rmax = pdiffdata_->r_mesh_i_[0];
-        auto const rmaxm = pdiffdata_->r_mesh_i_[1];
         auto const a = std::sqrt(-2.0 * pdiffdata_->E_);
         auto const d = std::exp(-a * rmax);
         
@@ -256,21 +278,54 @@ namespace schrac {
 
         auto const cnt = static_cast<std::int32_t>(DiffSolver::BMMAX - 2);
 		for (auto i = cnt; i >= 0; i--) {
-			pdiffdata_->lo_[0] *= pdiffdata_->r_mesh_o_[0];
+			pdiffdata_->lo_[0] *= pdiffdata_->r_mesh_[0];
 			pdiffdata_->lo_[0] += bm[i];
 		}
 
 		for (auto i = cnt; i > 0; i--) {
-			pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_o_[0];
+			pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_[0];
 			pdiffdata_->mo_[0] += static_cast<double>(i) * bm[i];
 		}
-		pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_o_[0];
+		pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_[0];
 	}
     
     void DiffSolver::node_count(dvector const & L)
     {
         if (L.size() > 1 && (L.back() * *(++L.rbegin()) < 0.0)) {
             pdiffdata_->thisnode_++;
+        }
+    }
+
+    template <typename Stepper>
+    void DiffSolver::solve_poisson_run(Stepper const & stepper)
+    {
+        myarray state = { 0.0, 1.0 };
+                
+        integrate_adaptive(
+            stepper,
+            [this](myarray const & f, myarray & dfdx, double r) {
+                dfdx[0] = f[1];
+                dfdx[1] = -r * (*prho_)(r);
+            },
+            state,
+            0.0,
+            pdiffdata_->r_mesh_[0],
+            pdiffdata_->r_mesh_[0]);
+
+        auto const loop = boost::numeric_cast<std::int32_t>(pdiffdata_->r_mesh_.size() - 1);
+        for (auto i = 0; i < loop; i++) {
+            integrate_adaptive(
+                stepper,
+                [this](myarray const & f, myarray & dfdx, double r) {
+                dfdx[0] = f[1];
+                dfdx[1] = -r * (*prho_)(r);
+            },
+            state,
+            pdiffdata_->r_mesh_[i],
+            pdiffdata_->r_mesh_[i + 1],
+            pdiffdata_->r_mesh_[i + 1] - pdiffdata_->r_mesh_[i]);
+
+            pvh_->PVhart().push_back(state[0]);
         }
     }
 
@@ -369,6 +424,9 @@ namespace schrac {
 
     // #region templateメンバ関数の実体化
 
+    template void DiffSolver::solve_poisson_run<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
+    template void DiffSolver::solve_poisson_run<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
+    template void DiffSolver::solve_poisson_run<controlled_stepper_type>(controlled_stepper_type const & stepper);
     template void DiffSolver::solve_diff_equ_i<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
     template void DiffSolver::solve_diff_equ_i<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
     template void DiffSolver::solve_diff_equ_i<controlled_stepper_type>(controlled_stepper_type const & stepper);

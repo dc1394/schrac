@@ -60,7 +60,7 @@ namespace schrac {
         /*!
         求めた結果を返す
         */
-        Normalize<DiracNormalize>::myhash getresult() const;
+        Normalize<DiracNormalize>::mymap getresult() const;
 
         // #endregion メンバ関数
 

@@ -23,7 +23,7 @@ namespace schrac {
         // #region 型エイリアス
 
     public:
-        using myhash = boost::container::flat_map<std::string, dvector>;
+        using mymap = boost::container::flat_map<std::string, dvector>;
 
         // #endregion 型エイリアス
 
@@ -60,7 +60,7 @@ namespace schrac {
         /*!
             結果を返す
         */
-        myhash base_getresult() const;
+        mymap base_getresult() const;
 
     private:
         //! A public member function.
@@ -103,12 +103,6 @@ namespace schrac {
             関数M
         */
         dvector M_;
-
-        //! A protected member variable.
-        /*!
-            rのメッシュが格納されたstd::vector
-        */
-        dvector r_mesh_;
         
         // #endregion メンバ変数 
         
@@ -148,11 +142,6 @@ namespace schrac {
     {
         L_.reserve(pdata_->grid_num_);
         M_.reserve(pdata_->grid_num_);
-        r_mesh_.reserve(pdata_->grid_num_);
-
-        auto const & rmesh_o(pdiffdata_->r_mesh_o_);
-
-        r_mesh_.assign(rmesh_o.begin(), rmesh_o.end());
     }
 
     // #endregion コンストラクタの実装
@@ -166,7 +155,7 @@ namespace schrac {
     }
 
     template <typename Derived>
-    typename Normalize<Derived>::myhash Normalize<Derived>::base_getresult() const
+    typename Normalize<Derived>::mymap Normalize<Derived>::base_getresult() const
     {
         return static_cast<Derived &>(*this).getresult();
     }

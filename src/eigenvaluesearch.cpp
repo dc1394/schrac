@@ -23,17 +23,13 @@ namespace schrac {
 
     // #region コンストラクタ
 
-	EigenValueSearch::EigenValueSearch(std::pair<std::string, bool> const & arg) :
+    EigenValueSearch::EigenValueSearch(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh) :
         PData([this]() { return pdata_; }, nullptr),
         PDiffSolver([this]() { return pdiffsolver_; }, nullptr),
-        loop_(1)
-	{
-		ReadInputFile rif(arg);			// ファイルを読み込む
-        rif.readFile();
-		pdata_ = rif.PData;
-		
-        message();
-
+        loop_(1),
+        pdata_(pdata),
+        pdiffdata_(pdiffdata)
+	{	
 		initialize();
 		setoutstream();
 	}
@@ -168,7 +164,7 @@ namespace schrac {
 			break;
 		}
 
-        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_);
+        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
 
 		if (pdata_->search_lowerE_) {
             pdiffsolver_->E_ = *pdata_->search_lowerE_;
@@ -178,26 +174,7 @@ namespace schrac {
 			DE_ = - pdiffsolver_->E_ / static_cast<const double>(pdata_->num_of_partition_);
 			pdiffsolver_->E_ -= 3.0 * DE_;
 		}
-
-        pdiffdata_ = pdiffsolver_->PDiffData;
 	}
-
-    void EigenValueSearch::message() const
-    {
-        std::cout << pdata_->chemical_symbol_
-            << "原子の"
-            << pdata_->orbital_
-            << "軌道";
-
-        if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::ALPHA) {
-            std::cout << "スピン上向きの";
-        }
-        else if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::BETA) {
-            std::cout << "スピン下向きの";
-        }
-
-        std::cout << "の波動関数と固有値を計算します。\n" << std::endl;
-    }
 
 	bool EigenValueSearch::rough_search()
 	{
@@ -236,7 +213,7 @@ namespace schrac {
     {
         std::cout.setf(std::ios::fixed, std::ios::floatfield);
         std::cout << std::setprecision(
-            boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))) - 2);
+            boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))) - 1.0);
     }
 	
     // #endregion privateメンバ関数 

@@ -4,13 +4,15 @@
     Copyright ©  2015 @dc1394 All Rights Reserved.
 */
 
-#ifndef _DIFF_H_
-#define _DIFF_H_
+#ifndef _DIFFSOLVER_H_
+#define _DIFFSOLVER_H_
 
 #pragma once
 
 #include "diffdata.h"
 #include "property.h"
+#include "rho.h"
+#include "vhartree.h"
 
 namespace schrac {
     // #region 型エイリアス
@@ -24,24 +26,10 @@ namespace schrac {
         微分方程式を解くクラス
     */
 	class DiffSolver final {
-        // #region メンバ変数
-
-    public:
-        //!  A public static member variable (constant expression).
-        /*!
-            V(r)の級数展開の係数amの最大値
-        */
-        static std::size_t constexpr AMMAX = 3;
-        
-        // #endregion メンバ変数
-
         // #region 型エイリアス
 
     private:
         using mypair = std::pair < myarray, myarray > ;
-
-    public:
-        using myvector = std::array < double, DiffSolver::AMMAX > ;
 
         // #endregion 型エイリアス
 
@@ -53,7 +41,7 @@ namespace schrac {
             唯一のコンストラクタ
             \param pdata データオブジェクト
         */
-        DiffSolver(std::shared_ptr<Data> const & pdata);
+        DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh);
 
         //! A destructor.
         /*!
@@ -65,7 +53,7 @@ namespace schrac {
 
         // #endregion コンストラクタ・デストラクタ
 
-        // #region メンバ関数
+        // #region publicメンバ関数
         
         //! A public member function (const).
         /*!
@@ -89,6 +77,12 @@ namespace schrac {
         */
         void solve_diff_equ();
         
+        //! A public member function.
+        /*!
+            （境界値の考慮されていない）Poisson方程式を解く
+        */
+        void solve_poisson();
+
         //! A public member function (const).
         /*!
             ポテンシャルV(r)の値を返す
@@ -96,6 +90,10 @@ namespace schrac {
             \return ポテンシャルV(r)の値
         */
         double V(double r) const;
+
+        // #endregion publicメンバ関数 
+
+        // #region privateメンバ関数
 
     private:
         //! A private member function.
@@ -178,7 +176,7 @@ namespace schrac {
             lo_とmo_を初期化する
         */
         void init_lm_o();
-        
+
         //!  A private member function.
         /*!
             L(x)のノードの数をカウントする
@@ -202,15 +200,21 @@ namespace schrac {
         */
         void solve_diff_equ_o(Stepper const & stepper);
 
-        // #endregion メンバ関数
+        template <typename Stepper>
+        //!  A private member function.
+        /*!
+            （境界値の考慮されていない）Poisson方程式を解く
+        */
+        void solve_poisson_run(Stepper const & stepper);
+
+        // #endregion privateメンバ関数
 
         // #region プロパティ
 
     public:
         //! A property.
         /*!
-            微分方程式のデータオブジェクトを返す
-            \return 微分方程式のデータオブジェクト
+            微分方程式のデータオブジェクトへのプロパティ
         */
         Property<std::shared_ptr<DiffData>> const PDiffData;
 
@@ -218,6 +222,7 @@ namespace schrac {
 
         // #region メンバ変数
 
+    private:
         //!  A private static member variable (constant expression).
         /*!
             L(r)の級数展開の係数bmの最大値
@@ -236,12 +241,13 @@ namespace schrac {
         */
         std::array<double, DiffSolver::AMMAX> am;
 
-        //!  A public member variable.
+        //!  A private member variable.
         /*!
             L(r)の級数展開の係数bm
         */
         std::array<double, DiffSolver::BMMAX> bm;
         
+    public:
         //! A private member variable.
         /*!
             エネルギー固有値
@@ -260,9 +266,20 @@ namespace schrac {
         */
 		std::shared_ptr<DiffData> const pdiffdata_;
 
+        //!  A private member variable (constant).
+        /*!
+            関数ρ(r)
+        */
+        std::shared_ptr<Rho> const prho_;
+
+        //!  A private member variable.
+        /*!
+            Hartreeポテンシャルオブジェクト
+        */
+        std::shared_ptr<Vhartree> pvh_;
+
         // #endregion メンバ変数
 
-    private:
         // #region 禁止されたコンストラクタ・メンバ関数
 
         //! A private constructor (deleted).
@@ -289,16 +306,7 @@ namespace schrac {
 	};
     
     // #region 非メンバ関数
-
-    //! A function.
-    /*!
-        連立一次方程式を解く
-        \param a 連立一次方程式Ax = bにおける左辺の行列A
-        \param b 連立一次方程式Ax = bにおける右辺のベクトルb
-        \return 方程式の解ベクトル
-    */
-    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b);
-
+    
 	template <typename T>
     //! A template function.
     /*!
@@ -314,4 +322,4 @@ namespace schrac {
     // #endregion 非メンバ関数
 }
 
-#endif	// _DIFF_H_
+#endif	// _DIFFSOLVER_H_

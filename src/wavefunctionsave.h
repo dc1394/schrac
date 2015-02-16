@@ -27,9 +27,9 @@ namespace schrac {
         /*!
             唯一のコンストラクタ
             \param pdata データオブジェクト
-            \param hash 波動関数が格納されたハッシュ
+            \param wf 波動関数が格納されたハッシュ
         */
-        WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & myhash, std::shared_ptr<Data> const & pdata);
+        WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & wf, std::shared_ptr<Data> const & pdata);
 
         //! A destructor.
         /*!
@@ -55,9 +55,9 @@ namespace schrac {
         
         //!  A private member variable.
         /*!
-            波動関数が格納されたhash
+            波動関数が格納されたwf
         */
-        boost::container::flat_map<std::string, std::vector<double>> myhash_;
+        boost::container::flat_map<std::string, std::vector<double>> wf_;
 
         //!  A private member variable.
         /*!
