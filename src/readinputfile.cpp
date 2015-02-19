@@ -33,7 +33,8 @@ namespace schrac {
     };
     const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
     const ci_string ReadInputFile::SPIN_ORBITAL = "spin.orbital";
-    
+    const ci_string ReadInputFile::SPIN_ORBITAL_DEFAULT = "alpha";
+
     // #endregion staticメンバ変数
 
     // #region コンストラクタ
@@ -395,7 +396,7 @@ namespace schrac {
 		}
 
 		// スピン軌道を読み込む
-        auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL));
+        auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL, ReadInputFile::SPIN_ORBITAL_DEFAULT));
 		if (!pspin_orbital) {
 			return false;
 		}

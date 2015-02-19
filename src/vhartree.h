@@ -12,9 +12,8 @@
 #include "deleter.h"
 #include "diffdata.h"
 #include "property.h"
-#include <functional>
-#include <memory>
-#include <vector>
+#include <memory>       // for std::unique_ptr
+#include <tbb/mutex.h>
 
 namespace schrac {
     //! A class.
@@ -42,14 +41,19 @@ namespace schrac {
 
         // #region メンバ関数
         
-        void addrho();
-
         //!  A public member function (const).
         /*!
             Hartreeポテンシャルを返す
             \return Hartreeポテンシャル
         */
-        double operator()(double x) const;
+        double operator()(double r);
+
+        //!  A public member function.
+        /*!
+            Hartreeポテンシャルが境界条件を満たすようにセットする
+            \param Z 原子核の電荷
+        */
+        void set_vhartree_boundary_condition(double Z);
 
         //!  A public member function.
         /*!
@@ -66,7 +70,7 @@ namespace schrac {
         /*!
             Hartreeポテンシャルが格納された可変長配列へのプロパティ
         */
-        Property<std::vector<double>> const PVhart;
+        Property<std::vector<double>> PVhart;
 
         // #endregion プロパティ       
 
@@ -78,7 +82,7 @@ namespace schrac {
             gsl_interp_accelへのスマートポインタ
         */
         std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc_;
-
+        
         //! A private member variable.
         /*!
             rのメッシュが格納された可変長配列
@@ -96,13 +100,6 @@ namespace schrac {
             Hartreeポテンシャルが格納された可変長配列
         */
         std::vector<double> vhart_;
-
-    public:
-        //!  A public member variable.
-        /*!
-            Hartreeポテンシャルの関数オブジェクト
-        */
-        std::function<double (double)> vhartree_;
 
         // #endregion メンバ変数
 

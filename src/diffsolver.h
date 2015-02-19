@@ -12,6 +12,7 @@
 #include "diffdata.h"
 #include "property.h"
 #include "rho.h"
+#include "solvelinearequ.h"
 #include "vhartree.h"
 
 namespace schrac {
@@ -36,16 +37,28 @@ namespace schrac {
         // #region コンストラクタ・デストラクタ
 
     public:
+
         //! A constructor.
         /*!
-            唯一のコンストラクタ
+            コンストラクタ
             \param pdata データオブジェクト
+            \param pdiffdata 微分方程式のデータオブジェクト
+        */
+        DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata);
+
+        //! A constructor.
+        /*!
+            コンストラクタ
+            \param pdata データオブジェクト
+            \param pdiffdata 微分方程式のデータオブジェクト
+            \param rho 密度ρのオブジェクト
+            \param pvh Hartreeポテンシャルオブジェクト
         */
         DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh);
 
         //! A destructor.
         /*!
-        何もしないデストラクタ
+            何もしないデストラクタ
         */
         ~DiffSolver()
         {
@@ -164,12 +177,6 @@ namespace schrac {
             \return ポテンシャルの微分V'(r)の値
         */
         double dV_dr(double r) const;
-        
-        //! A private member function.
-        /*!
-            li_とmi_を初期化する
-        */
-        void init_lm_i();
 
         //! A private member function.
         /*!
@@ -183,6 +190,27 @@ namespace schrac {
             \param L L(x)の格納されたstd::vector
         */
         void node_count(dvector const & L);
+
+        //! A private member function.
+        /*!
+            li_とmi_の初期値を求める
+            \return li_とmi_の初期値
+        */
+        myarray req_lm_i_init_val();
+
+        //! A private member function.
+        /*!
+            lo_とmo_の初期値を求める
+            \return lo_とmo_の初期値
+        */
+        myarray req_lm_o_init_val();
+
+        //!  A private member function.
+        /*!
+            poisson方程式の初期値を求める
+            \return poisson方程式の初期値
+        */
+        myarray req_poisson_init_val();
 
         template <typename Stepper>
         //! A private member function.
@@ -239,7 +267,7 @@ namespace schrac {
         /*!
             V(r)の級数展開の係数am
         */
-        std::array<double, DiffSolver::AMMAX> am;
+        std::array<double, AMMAX> am;
 
         //!  A private member variable.
         /*!

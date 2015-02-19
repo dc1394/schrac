@@ -23,9 +23,14 @@ namespace schrac {
         initialize();
         make_rho();
         
-        prho_ = std::make_shared<Rho>(pdiffdata_->r_mesh_, pdiffdata_->rho_);
-        pvh_ = std::make_shared<Vhartree>(pdiffdata_->r_mesh_);
-        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_);
+        }
+        else {
+            prho_ = std::make_shared<Rho>(pdiffdata_->r_mesh_, pdiffdata_->rho_);
+            pvh_ = std::make_shared<Vhartree>(pdiffdata_->r_mesh_);
+            pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
+        }
     }
 
     // #endregion コンストラクタ
@@ -51,7 +56,10 @@ namespace schrac {
 
     void ScfLoop::operator()()
     {
-        make_vhartree();
+        if (pdata_->chemical_symbol_ != Data::Chemical_Symbol[0]) {
+            make_vhartree();
+        }
+
         EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
 
         //cp.checkpoint("入力ファイル読み込み処理", __LINE__);
@@ -81,16 +89,16 @@ namespace schrac {
 
     void ScfLoop::make_rho()
     {
-        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0])
-        {
-            pdiffdata_->rho_.resize(pdata_->grid_num_ + 1, 0.0);
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            pdiffdata_->rho_.resize(pdata_->grid_num_ + 1);
+
             return;
         } else if (pdata_->rho0_c_ == boost::none || pdata_->rho0_alpha_ == boost::none) {
             // デフォルト値を代入
-            auto const w = 50.0;
+            auto const w = 2.0;
             pdata_->rho0_c_ = boost::optional<double>(std::pow(w, 4) / 16.0);
             pdata_->rho0_alpha_ = boost::optional<double>(0.5 * w);
-            *pdata_->rho0_c_ *= pdata_->Z_ / w;
+            *pdata_->rho0_c_ *= (pdata_->Z_ / w);
         }
 
         pdiffdata_->rho_.reserve(pdata_->grid_num_ + 1);
@@ -102,9 +110,9 @@ namespace schrac {
     void ScfLoop::make_vhartree()
     {
         pdiffsolver_->solve_poisson();
-        int i = 1;
+        pvh_->set_vhartree_boundary_condition(pdata_->Z_);
+        pvh_->vhart_init();
     }
 
     // #endregion privateメンバ関数
-
 }

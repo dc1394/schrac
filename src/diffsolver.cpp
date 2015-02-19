@@ -7,6 +7,7 @@
 #include "diffsolver.h"
 #include <algorithm>                    // for std::copy
 #include <stdexcept>                    // for std::runtime_error
+#include <utility>                      // for std::move
 #include <boost/cast.hpp>               // for boost::numeric_cast
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
 #include <tbb/parallel_invoke.h>        // for tbb::parallel_invoke
@@ -22,6 +23,10 @@ namespace schrac {
     // #endregion 型エイリアス
 
 	// #region コンストラクタ
+    DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata) :
+        DiffSolver(pdata, pdiffdata, nullptr, nullptr)
+    {
+    }
 
     DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh) :
         PDiffData([this]() { return pdiffdata_; }, nullptr),
@@ -30,7 +35,6 @@ namespace schrac {
         prho_(prho),
         pvh_(pvh)
 	{
-        am_evaluate();
 	}
 
     // #endregion コンストラクタ
@@ -53,19 +57,18 @@ namespace schrac {
     {
         pdiffdata_->E_ = E;			// エネルギーを代入
         pdiffdata_->thisnode_ = 0;	// ノード数初期化
+        am_evaluate();              // amを求める
         bm_evaluate();				// bmを求める
 
-        // 初期値の作成
-        // 原点から解く方の初期化
-        init_lm_o();
-
-        // 無限遠から解く方の初期化
-        init_lm_i();
+        pdiffdata_->li_.clear();
+        pdiffdata_->mi_.clear();
+        pdiffdata_->lo_.clear();
+        pdiffdata_->mo_.clear();
     }
 
     void DiffSolver::solve_diff_equ()
     {
-        if (pdata_->usetbb_) {
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0] && pdata_->usetbb_) {
             switch (pdata_->solver_type_) {
             case Data::Solver_type::ADAMS_BASHFORTH_MOULTON:
                 tbb::parallel_invoke(
@@ -137,7 +140,13 @@ namespace schrac {
 
     double DiffSolver::V(double r) const
     {
-        return -pdiffdata_->Z_ / r;
+        auto const coulomb = -pdiffdata_->Z_ / r;
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            return coulomb;
+        }
+        else {
+            return coulomb + (*pvh_)(r);
+        }
     }
 
     // #endregion publicメンバ関数
@@ -146,18 +155,18 @@ namespace schrac {
 
     void DiffSolver::am_evaluate()
 	{
-        std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a;
+        std::array<double, AMMAX * AMMAX> a;
 		myvector b;
 
-		for (std::size_t i = 0; i < DiffSolver::AMMAX; i++) {
+		for (std::size_t i = 0; i < AMMAX; i++) {
 			auto rtmp = 1.0;
 
-			for (std::size_t j = 0; j < DiffSolver::AMMAX; j++) {
-                a[DiffSolver::AMMAX * i + j] = rtmp;
+			for (std::size_t j = 0; j < AMMAX; j++) {
+                a[AMMAX * i + j] = rtmp;
 				rtmp *= pdiffdata_->r_mesh_[i];
 			}
 
-			b[i] = V(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_);    
+			b[i] = V(std::exp(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_));    
 		}
             
         am = solve_linear_equ(std::move(a), std::move(b));
@@ -244,50 +253,6 @@ namespace schrac {
     {
         return pdiffdata_->Z_ / (r * r);
     }
-
-    void DiffSolver::init_lm_i()
-    {
-        pdiffdata_->li_.clear();
-        pdiffdata_->mi_.clear();
-
-        auto const rmax = pdiffdata_->r_mesh_i_[0];
-        auto const a = std::sqrt(-2.0 * pdiffdata_->E_);
-        auto const d = std::exp(-a * rmax);
-        
-        pdiffdata_->li_.push_back(d / std::pow(rmax, pdata_->l_ + 1));
-
-        if (pdiffdata_->li_[0] < DiffSolver::MINVALUE) {
-            pdiffdata_->li_[0] = DiffSolver::MINVALUE;
-        }
-
-        pdiffdata_->mi_.push_back(-pdiffdata_->li_[0] *
-            (a + static_cast<double>(pdata_->l_ + 1) / rmax));
-        
-        if (std::fabs(pdiffdata_->mi_[0]) < DiffSolver::MINVALUE) {
-            pdiffdata_->mi_[0] = -DiffSolver::MINVALUE;
-        }
-    }
-
-	void DiffSolver::init_lm_o()
-	{
-        pdiffdata_->lo_.clear();
-        pdiffdata_->mo_.clear();
-
-		pdiffdata_->lo_.push_back(bm[DiffSolver::BMMAX - 1]);
-		pdiffdata_->mo_.push_back(4.0 * bm[DiffSolver::BMMAX - 1]);
-
-        auto const cnt = static_cast<std::int32_t>(DiffSolver::BMMAX - 2);
-		for (auto i = cnt; i >= 0; i--) {
-			pdiffdata_->lo_[0] *= pdiffdata_->r_mesh_[0];
-			pdiffdata_->lo_[0] += bm[i];
-		}
-
-		for (auto i = cnt; i > 0; i--) {
-			pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_[0];
-			pdiffdata_->mo_[0] += static_cast<double>(i) * bm[i];
-		}
-		pdiffdata_->mo_[0] *= pdiffdata_->r_mesh_[0];
-	}
     
     void DiffSolver::node_count(dvector const & L)
     {
@@ -296,23 +261,100 @@ namespace schrac {
         }
     }
 
+    myarray DiffSolver::req_lm_i_init_val()
+    {
+        auto const rmax = pdiffdata_->r_mesh_i_[0];
+        auto const a = std::sqrt(-2.0 * pdiffdata_->E_);
+        auto const d = std::exp(-a * rmax);
+
+        myarray state;
+        state[0] = d / std::pow(rmax, pdata_->l_ + 1);
+
+        if (state[0] < DiffSolver::MINVALUE) {
+            state[0] = DiffSolver::MINVALUE;
+        }
+
+        state[1] = -state[0] * (a + static_cast<double>(pdata_->l_ + 1) / rmax);
+
+        if (std::fabs(state[1]) < DiffSolver::MINVALUE) {
+            state[1] = -DiffSolver::MINVALUE;
+        }
+
+        return std::move(state);
+    }
+
+    myarray DiffSolver::req_lm_o_init_val()
+    {
+        myarray state;
+        state[0] = bm[DiffSolver::BMMAX - 1];
+        state[1] = 4.0 * bm[DiffSolver::BMMAX - 1];
+
+        auto const cnt = static_cast<std::int32_t>(DiffSolver::BMMAX - 2);
+        for (auto i = cnt; i >= 0; i--) {
+            state[0] *= pdiffdata_->r_mesh_[0];
+            state[0] += bm[i];
+        }
+
+        for (auto i = cnt; i > 0; i--) {
+            state[1] *= pdiffdata_->r_mesh_[0];
+            state[1] += static_cast<double>(i) * bm[i];
+        }
+        state[1] *= pdiffdata_->r_mesh_[0];
+
+        return std::move(state);
+    }
+    
+    myarray DiffSolver::req_poisson_init_val()
+    {
+        std::array<double, AMMAX * AMMAX> a;
+        myvector b;
+
+        for (std::size_t i = 0; i < AMMAX; i++) {
+            auto rtmp = pdiffdata_->r_mesh_[i + 1];
+
+            for (std::size_t j = 0; j < AMMAX; j++) {
+                a[AMMAX * i + j] = rtmp;
+                rtmp *= pdiffdata_->r_mesh_[i + 1];
+            }
+
+            b[i] = - pdiffdata_->r_mesh_[i] * (*prho_)(pdiffdata_->r_mesh_[i]);
+        }
+
+        auto const bn = solve_linear_equ(std::move(a), std::move(b));
+        
+        myarray state{ 0.0, 0.0 };
+        auto const r0 = pdiffdata_->r_mesh_[0];
+
+        auto const l = static_cast<double>(pdata_->l_);
+        auto const istart = static_cast<std::int32_t>(AMMAX - 1);
+        for (auto i = istart; i >= 0; i--) {
+            auto const di = static_cast<double>(i);
+            state[0] += bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
+            state[0] *= r0;
+        }
+
+        for (auto i = istart; i >= 0; i--) {
+            auto const di = static_cast<double>(i);
+            state[1] += (di + 1.0) * bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
+
+            if (!i) {
+                break;
+            }
+
+            state[1] *= r0;
+        }
+
+        return std::move(state);
+    }
+
     template <typename Stepper>
     void DiffSolver::solve_poisson_run(Stepper const & stepper)
     {
-        myarray state = { 0.0, 1.0 };
-                
-        integrate_adaptive(
-            stepper,
-            [this](myarray const & f, myarray & dfdx, double r) {
-                dfdx[0] = f[1];
-                dfdx[1] = -r * (*prho_)(r);
-            },
-            state,
-            0.0,
-            pdiffdata_->r_mesh_[0],
-            pdiffdata_->r_mesh_[0]);
-
+        auto state = req_poisson_init_val();
         auto const loop = boost::numeric_cast<std::int32_t>(pdiffdata_->r_mesh_.size() - 1);
+
+        std::vector<double> vhart;
+        vhart.reserve(pdiffdata_->r_mesh_.size());
         for (auto i = 0; i < loop; i++) {
             integrate_adaptive(
                 stepper,
@@ -325,17 +367,17 @@ namespace schrac {
             pdiffdata_->r_mesh_[i + 1],
             pdiffdata_->r_mesh_[i + 1] - pdiffdata_->r_mesh_[i]);
 
-            pvh_->PVhart().push_back(state[0]);
+            vhart.push_back(state[0] / pdiffdata_->r_mesh_[i]);
         }
+
+        vhart.push_back(state[0] / pdiffdata_->r_mesh_.back());
+        pvh_->PVhart(vhart);
     }
 
     template <typename Stepper>
     void DiffSolver::solve_diff_equ_i(Stepper const & stepper)
     {
-        myarray state = { pdiffdata_->li_[0], pdiffdata_->mi_[0] };
-
-        pdiffdata_->li_.pop_back();
-        pdiffdata_->mi_.pop_back();
+        myarray state = req_lm_i_init_val();
 
         integrate_const(
             stepper,
@@ -355,10 +397,8 @@ namespace schrac {
     template <typename Stepper>
     void DiffSolver::solve_diff_equ_o(Stepper const & stepper)
     {
-        myarray state = { pdiffdata_->lo_[0], pdiffdata_->mo_[0] };
-
-        pdiffdata_->lo_.pop_back();
-        pdiffdata_->mo_.pop_back();
+        auto state = req_lm_o_init_val();
+        auto state2 = state;
 
         integrate_const(
             stepper,
@@ -373,54 +413,28 @@ namespace schrac {
             pdiffdata_->mo_.push_back(f[1]);
             node_count(pdiffdata_->lo_);
         });
+
+        if (pdiffdata_->lo_.size() != pdiffdata_->mp_o_ + 1) {
+            pdiffdata_->lo_.pop_back();
+            pdiffdata_->mo_.pop_back();
+
+            integrate_const(
+                stepper,
+                [this](myarray const & f, myarray & dfdx, double x) { return derivs(f, dfdx, x); },
+                state,
+                pdiffdata_->x_o_[pdiffdata_->mp_o_],
+                pdiffdata_->x_o_[pdiffdata_->mp_o_] + pdiffdata_->dx_,
+                pdiffdata_->dx_,
+                [this](myarray const & f, double const x)
+            {
+                pdiffdata_->lo_.push_back(f[0]);
+                pdiffdata_->mo_.push_back(f[1]);
+                node_count(pdiffdata_->lo_);
+            });
+        }
     }
 
     // #endregion privateメンバ関数
-
-    // #region 非メンバ関数
-
-    DiffSolver::myvector solve_linear_equ(std::array<double, DiffSolver::AMMAX * DiffSolver::AMMAX> a, DiffSolver::myvector b)
-    {
-        // save original handler, install new handler
-        auto old_handler = gsl_set_error_handler(
-            [](char const * reason, char const * file, std::int32_t line, std::int32_t)
-        {
-            auto const str = std::string(reason) + "\nFile: " + file + "\nline: " + std::to_string(line);
-            throw std::runtime_error(str);
-        });
-
-        auto m = gsl_matrix_view_array(a.data(), DiffSolver::AMMAX, DiffSolver::AMMAX);
-        auto const v = gsl_vector_view_array(b.data(), DiffSolver::AMMAX);
-
-        auto const gsl_vector_deleter = [](gsl_vector * p)
-        {
-            gsl_vector_free(p);
-        };
-        std::unique_ptr<gsl_vector, decltype(gsl_vector_deleter)> x(
-            gsl_vector_alloc(DiffSolver::AMMAX),
-            gsl_vector_deleter);
-
-        auto const gsl_perm_deleter = [](gsl_permutation * p)
-        {
-            gsl_permutation_free(p);
-        };
-        std::unique_ptr<gsl_permutation, decltype(gsl_perm_deleter)> p(
-            gsl_permutation_alloc(DiffSolver::AMMAX),
-            gsl_perm_deleter);
-
-        std::int32_t s;
-        gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
-        gsl_linalg_LU_solve(&m.matrix, p.get(), &v.vector, x.get());
-        DiffSolver::myvector solution{ 0.0, 0.0, 0.0 };
-        std::copy(x->data, x->data + DiffSolver::AMMAX, solution.begin());
-
-        // restore original handler
-        gsl_set_error_handler(old_handler);
-
-        return std::move(solution);
-    }
-    
-    // #endregion 非メンバ関数
 
     // #region templateメンバ関数の実体化
 

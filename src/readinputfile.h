@@ -226,6 +226,12 @@ namespace schrac {
         */
         static const ci_string SPIN_ORBITAL;
 
+        //! A private member variable (constant).
+        /*!
+        デフォルトの「spin_orbital」の文字列
+        */
+        static const ci_string SPIN_ORBITAL_DEFAULT;
+
         //! A private member variable.
         /*!
             ファイル読み込み用のストリーム

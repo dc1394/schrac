@@ -63,7 +63,7 @@ namespace schrac {
         /*!
             密度ρ(r)
         */
-        std::vector<double> const rho_;
+        std::vector<double> rho_;
 
         // #endregion メンバ変数
 

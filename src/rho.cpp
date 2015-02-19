@@ -17,8 +17,7 @@ namespace schrac {
     {
         BOOST_ASSERT(r_mesh.size() == rho.size());
         
-        gsl_spline_init(spline_.get(), r_mesh.data(), rho.data(), r_mesh.size());
-        int i = 1;
+        gsl_spline_init(spline_.get(), r_mesh.data(), rho_.data(), r_mesh.size());
     }
 
     // #endregion コンストラクタ

@@ -6,13 +6,14 @@
 
 #include "vhartree.h"
 #include <array>
-#include <boost/assert.hpp>
+#include <boost/assert.hpp>     // for BOOST_ASSERT
+#include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
     // #region コンストラクタ
     
     Vhartree::Vhartree(std::vector<double> const & r_mesh) :
-        PVhart([this]{ return vhart_; }, nullptr),
+        PVhart([this]{ return vhart_; }, [this](std::vector<double> const & v) { return vhart_ = v; }),
         acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
         r_mesh_(r_mesh),
         spline_(gsl_spline_alloc(gsl_interp_cspline, r_mesh.size()), gsl_spline_deleter)
@@ -24,9 +25,17 @@ namespace schrac {
 
     // #region publicメンバ関数
 
-    double Vhartree::operator()(double r) const
+    double Vhartree::operator()(double r)
     {
         return gsl_spline_eval(spline_.get(), r, acc_.get());
+    }
+
+    void Vhartree::set_vhartree_boundary_condition(double Z)
+    {
+        auto const size = boost::numeric_cast<std::int32_t>(vhart_.size());
+        for (auto i = 0; i < size; i++) {
+            vhart_[i] += (Z / r_mesh_.back() - vhart_.back());
+        }
     }
 
     void Vhartree::vhart_init()

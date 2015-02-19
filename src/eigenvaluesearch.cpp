@@ -28,7 +28,9 @@ namespace schrac {
         PDiffSolver([this]() { return pdiffsolver_; }, nullptr),
         loop_(1),
         pdata_(pdata),
-        pdiffdata_(pdiffdata)
+        pdiffdata_(pdiffdata),
+        prho_(prho),
+        pvh_(pvh)
 	{	
 		initialize();
 		setoutstream();

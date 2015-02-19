@@ -95,11 +95,11 @@
     <ClCompile Include="schnormalize.cpp" />
     <ClCompile Include="schracmain.cpp" />
     <ClCompile Include="simpson.cpp" />
+    <ClCompile Include="solvelinearequ.cpp" />
     <ClCompile Include="vhartree.cpp" />
     <ClCompile Include="wavefunctionsave.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\C++\Thomas_Fermi\Thomas_Fermi\solvelinearequ.h" />
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="deleter.h" />
@@ -117,6 +117,7 @@
     <ClInclude Include="scfloop.h" />
     <ClInclude Include="schnormalize.h" />
     <ClInclude Include="simpson.h" />
+    <ClInclude Include="solvelinearequ.h" />
     <ClInclude Include="vhartree.h" />
     <ClInclude Include="wavefunctionsave.h" />
   </ItemGroup>
