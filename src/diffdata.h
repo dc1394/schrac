@@ -114,12 +114,6 @@ namespace schrac {
 
         //!  A public member variable.
         /*!
-            密度ρ(r)
-        */
-        dvector rho_;
-
-        //!  A public member variable.
-        /*!
             rのメッシュ
         */
         dvector r_mesh_;

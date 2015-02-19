@@ -145,7 +145,7 @@ namespace schrac {
             return coulomb;
         }
         else {
-            return coulomb + (*pvh_)(r);
+            return coulomb + pvh_->vhartree(r);
         }
     }
 
@@ -251,7 +251,13 @@ namespace schrac {
 
     double DiffSolver::dV_dr(double r) const
     {
-        return pdiffdata_->Z_ / (r * r);
+        auto const dcoulomb_dr = pdiffdata_->Z_ / (r * r);
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            return dcoulomb_dr;
+        }
+        else {
+            return dcoulomb_dr + pvh_->dvhartree_dr(r);
+        }
     }
     
     void DiffSolver::node_count(dvector const & L)
@@ -371,7 +377,7 @@ namespace schrac {
         }
 
         vhart.push_back(state[0] / pdiffdata_->r_mesh_.back());
-        pvh_->PVhart(vhart);
+        pvh_->Vhart(vhart);
     }
 
     template <typename Stepper>

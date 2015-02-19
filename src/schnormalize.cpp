@@ -52,7 +52,7 @@ namespace schrac {
     Normalize<SchNormalize>::mymap SchNormalize::getresult() const
     {
         Normalize<SchNormalize>::mymap wf;
-        wf["1 Mesh (r)"] = std::move(pdiffdata_->r_mesh_);
+        wf["1 Mesh (r)"] = pdiffdata_->r_mesh_;
         wf["2 Eigen function"] = std::move(rf_);
         wf["3 Eigen function (multiply r)"] = std::move(pf_);
 

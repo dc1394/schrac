@@ -13,7 +13,7 @@ namespace schrac {
     // #region コンストラクタ
     
     Vhartree::Vhartree(std::vector<double> const & r_mesh) :
-        PVhart([this]{ return vhart_; }, [this](std::vector<double> const & v) { return vhart_ = v; }),
+        Vhart([this]{ return vhart_; }, [this](std::vector<double> const & v) { return vhart_ = v; }),
         acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
         r_mesh_(r_mesh),
         spline_(gsl_spline_alloc(gsl_interp_cspline, r_mesh.size()), gsl_spline_deleter)
@@ -25,9 +25,9 @@ namespace schrac {
 
     // #region publicメンバ関数
 
-    double Vhartree::operator()(double r)
+    double Vhartree::dvhartree_dr(double r) const
     {
-        return gsl_spline_eval(spline_.get(), r, acc_.get());
+        return gsl_spline_eval_deriv(spline_.get(), r, acc_.get());
     }
 
     void Vhartree::set_vhartree_boundary_condition(double Z)
@@ -41,6 +41,11 @@ namespace schrac {
     void Vhartree::vhart_init()
     {
         gsl_spline_init(spline_.get(), r_mesh_.data(), vhart_.data(), r_mesh_.size());
+    }
+
+    double Vhartree::vhartree(double r) const
+    {
+        return gsl_spline_eval(spline_.get(), r, acc_.get());
     }
 
     // #endregion publicメンバ関数

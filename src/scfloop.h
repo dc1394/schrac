@@ -59,18 +59,38 @@ namespace schrac {
             状態の初期化を行う
         */
         void initialize();
-
-        //! A private member function.
-        /*!
-            密度ρ(r)を生成する
-        */
-        void make_rho();
-
+        
         //! A private member function.
         /*!
             Hartreeポテンシャルを生成する
         */
         void make_vhartree();
+
+        //! A private member function.
+        /*!
+            与えられた固有値、密度及びHartreeポテンシャルから全エネルギーを求める
+            \param eigen 固有値
+            \param rho 密度
+            \param vhartree Hartreeポテンシャル
+        */
+        double req_energy(double eigen, dvector const & rho, dvector const & vhartree) const;
+
+        //! A private member function.
+        /*!
+            残差ノルムを求める
+            \param newrho 新しい密度ρnew
+            \param oldrho 密度ρ
+            \return 残差
+        */
+        double req_normrd(dvector const & newrho, dvector const & oldrho) const;
+
+        //! A private member function.
+        /*!
+            RF(r)から、新しい密度ρnew(r)を求める
+            \param rf RF(r)
+            \return 密度ρnew(r)
+        */
+        dvector req_newrho(dvector const & rf) const;
 
         // #endregion privateメンバ関数
 

@@ -4,7 +4,9 @@
     Copyright © 2015 @dc1394 All Rights Reserved.
 */
 
+#include "data.h"
 #include "deleter.h"
+#include "property.h"
 #include <memory>
 #include <vector>
 
@@ -20,9 +22,9 @@ namespace schrac {
         //! A constructor.
         /*!
             唯一のコンストラクタ
-            \param rho 電子密度
+            \param pdiffdata 微分方程式のデータオブジェクト
         */
-        Rho(std::vector<double> const & rho, std::vector<double> const & r_mesh);
+        Rho(std::shared_ptr<DiffData> const & pdiffdata);
 
         //! A destructor.
         /*!
@@ -42,7 +44,26 @@ namespace schrac {
         */
         double operator()(double r) const;
 
+        //!  A public member function (const).
+        /*!
+            電子密度ρ(r)を返す
+            \param r rの値
+            \return ρ(r)の値
+        */
+        void rhomix();
+
         // #endregion メンバ関数
+
+        // #region プロパティ
+
+    public:
+        //! A property.
+        /*!
+            電子密度が格納された可変長配列へのプロパティ
+        */
+        Property<std::vector<double>> const PRho;
+
+        // #endregion プロパティ
 
         // #region メンバ変数
 
@@ -53,17 +74,23 @@ namespace schrac {
         */
         std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc_;
 
+        //!  A private member variable.
+        /*!
+            密度ρ(r)
+        */
+        std::shared_ptr<Data> pdata_;
+
+        //!  A private member variable.
+        /*!
+            密度ρ(r)
+        */
+        std::vector<double> rho_;
+
         //! A private member variable.
         /*!
             gsl_interp_typeへのスマートポインタ
         */
         std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline_;
-
-        //!  A public member variable.
-        /*!
-            密度ρ(r)
-        */
-        std::vector<double> rho_;
 
         // #endregion メンバ変数
 

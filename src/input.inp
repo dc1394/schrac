@@ -21,7 +21,7 @@ grid.xmax                   6.0             # default = 5.0 rmax(a.u.) = exp(gri
 grid.num                    20000           # default = 20000
 eps                         1.0E-15         # default = 1.0E-15
 solver.type                 Adams_Bashforth_Moulton  # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
-search.LowerE               Auto            # default = Auto
+search.LowerE               -1.1            # default = Auto
 num.of.partition            300             # default = 300
 matching.point.ratio        0.67            # default = 0.67
 

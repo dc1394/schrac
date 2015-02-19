@@ -5,9 +5,12 @@
 */
 
 #include "eigenvaluesearch.h"
+#include "normalization.h"
 #include "readinputfile.h"
 #include "scfloop.h"
+#include "simpson.h"
 #include <iostream>         // for std::cout
+#include <boost/math/constants/constants.hpp>
 
 namespace schrac {
     // #region コンストラクタ
@@ -21,13 +24,12 @@ namespace schrac {
         pdata_ = rif.PData;
 
         initialize();
-        make_rho();
         
         if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
             pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_);
         }
         else {
-            prho_ = std::make_shared<Rho>(pdiffdata_->r_mesh_, pdiffdata_->rho_);
+            prho_ = std::make_shared<Rho>(pdiffdata_);
             pvh_ = std::make_shared<Vhartree>(pdiffdata_->r_mesh_);
             pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
         }
@@ -70,7 +72,12 @@ namespace schrac {
             //return EXIT_FAILURE;
         }
 
-        //auto const pdsol = nomalization(evs.PDiffSolver);
+        auto const pdsol = nomalization(evs.PDiffSolver);
+        auto const newrho = req_newrho(pdsol.at("2 Eigen function"));
+        auto const res = req_normrd(newrho, prho_->PRho);
+
+        std::cout << "NormRD = " << res;
+        std::cout << ", Energy = " << req_energy(pdiffdata_->E_, newrho, pvh_->Vhart) << std::endl;
     }
 
     // #endregion publicメンバ関数
@@ -87,31 +94,50 @@ namespace schrac {
         }
     }
 
-    void ScfLoop::make_rho()
-    {
-        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
-            pdiffdata_->rho_.resize(pdata_->grid_num_ + 1);
-
-            return;
-        } else if (pdata_->rho0_c_ == boost::none || pdata_->rho0_alpha_ == boost::none) {
-            // デフォルト値を代入
-            auto const w = 2.0;
-            pdata_->rho0_c_ = boost::optional<double>(std::pow(w, 4) / 16.0);
-            pdata_->rho0_alpha_ = boost::optional<double>(0.5 * w);
-            *pdata_->rho0_c_ *= (pdata_->Z_ / w);
-        }
-
-        pdiffdata_->rho_.reserve(pdata_->grid_num_ + 1);
-        for (auto i = 0; i <= pdata_->grid_num_; i++) {
-            pdiffdata_->rho_.push_back(*pdata_->rho0_c_ * std::exp(- *pdata_->rho0_alpha_ * pdiffdata_->r_mesh_[i]));
-        }
-    }
-
     void ScfLoop::make_vhartree()
     {
         pdiffsolver_->solve_poisson();
         pvh_->set_vhartree_boundary_condition(pdata_->Z_);
         pvh_->vhart_init();
+    }
+
+    double ScfLoop::req_energy(double eigen, dvector const & rho, dvector const & vhartree) const
+    {
+        dvector u2;
+        u2.reserve(pdata_->grid_num_ + 1);
+        for (auto i = 0; i <= pdata_->grid_num_; i++) {
+            u2.push_back(sqr(pdiffdata_->r_mesh_[i]) * rho[i]);
+        }
+
+        Simpson simpson(pdiffdata_->dx_);
+        return 2.0 * eigen - simpson(vhartree, u2, pdiffdata_->r_mesh_, 1);
+    }
+
+    double ScfLoop::req_normrd(dvector const & newrho, dvector const & oldrho) const
+    {
+        BOOST_ASSERT(newrho.size() == oldrho.size());
+
+        dvector residual;
+        residual.reserve(newrho.size());
+
+        for (auto i = 0; i <= pdata_->grid_num_; i++) {
+            residual.push_back(newrho[i] - oldrho[i]);
+        }
+
+        Simpson const simpson(pdiffdata_->dx_);
+        return 4.0 * boost::math::constants::pi<double>() *
+            simpson(residual, residual, pdiffdata_->r_mesh_, 3);
+    }
+
+    dvector ScfLoop::req_newrho(dvector const & rf) const
+    {
+        dvector newrho;
+        newrho.reserve(pdata_->grid_num_ + 1);
+        for (auto i = 0; i <= pdata_->grid_num_; i++) {
+            newrho.push_back(sqr(rf[i]));
+        }
+
+        return std::move(newrho);
     }
 
     // #endregion privateメンバ関数

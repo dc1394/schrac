@@ -13,7 +13,6 @@
 #include "diffdata.h"
 #include "property.h"
 #include <memory>       // for std::unique_ptr
-#include <tbb/mutex.h>
 
 namespace schrac {
     //! A class.
@@ -43,10 +42,11 @@ namespace schrac {
         
         //!  A public member function (const).
         /*!
-            Hartreeポテンシャルを返す
-            \return Hartreeポテンシャル
+            Hartreeポテンシャルの微分値を返す
+            \param r 極座標のr
+            \return Hartreeポテンシャルの微分値
         */
-        double operator()(double r);
+        double dvhartree_dr(double r) const;
 
         //!  A public member function.
         /*!
@@ -61,6 +61,14 @@ namespace schrac {
         */
         void vhart_init();
 
+        //!  A public member function (const).
+        /*!
+            Hartreeポテンシャルの値を返す
+            \param r 極座標のr
+            \return Hartreeポテンシャルの値
+        */
+        double vhartree(double r) const;
+
         // #endregion メンバ関数
 
         // #region プロパティ
@@ -70,7 +78,7 @@ namespace schrac {
         /*!
             Hartreeポテンシャルが格納された可変長配列へのプロパティ
         */
-        Property<std::vector<double>> PVhart;
+        Property<std::vector<double>> Vhart;
 
         // #endregion プロパティ       
 
