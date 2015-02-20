@@ -12,7 +12,7 @@
 #include <boost/assert.hpp>     // for BOOST_ASSERT
 #include <boost/cast.hpp>       // boost::numeric_cast
 #include <gsl/gsl_errno.h>      // for GSL_SUCCESS
-#include <gsl/gsl_roots.h>
+#include <gsl/gsl_roots.h>      // gsl_root_fsolver
 
 namespace schrac {
     // #region staticメンバ変数
@@ -29,10 +29,9 @@ namespace schrac {
         loop_(1),
         pdata_(pdata),
         pdiffdata_(pdiffdata),
-        prho_(prho),
         pvh_(pvh)
-	{	
-		initialize();
+	{
+		initialize(prho);
 		setoutstream();
 	}
 
@@ -149,7 +148,7 @@ namespace schrac {
         }
     }
 
-	void EigenValueSearch::initialize()
+    void EigenValueSearch::initialize(std::shared_ptr<Rho> const & prho)
 	{
 		switch (pdata_->eq_type_) {
         case Data::Eq_type::SCH:
@@ -166,7 +165,7 @@ namespace schrac {
 			break;
 		}
 
-        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
+        pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho, pvh_);
 
 		if (pdata_->search_lowerE_) {
             pdiffsolver_->E_ = *pdata_->search_lowerE_;
@@ -183,7 +182,9 @@ namespace schrac {
         auto pdiffsolver = reinterpret_cast<void *>(pdiffsolver_.get());
         Dold = func_D(pdiffsolver_->E_, pdiffsolver);
 
-		info();
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            info();
+        }
 
 		++loop_;
 
@@ -205,7 +206,9 @@ namespace schrac {
 				Dold = Dnew;
    			}
 
-			info();
+            if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+                info();
+            }
 		}
 
 		return loop_ != EVALSEARCHMAX;

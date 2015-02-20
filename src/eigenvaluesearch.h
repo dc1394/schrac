@@ -96,8 +96,9 @@ namespace schrac {
         //! A private member function.
         /*!
             状態の初期化を行う
+            \param prho Rhoオブジェクトへのスマートポインタ
         */
-        void initialize();
+        void initialize(std::shared_ptr<Rho> const & prho);
         
         //! A private member function.
         /*!
@@ -120,7 +121,7 @@ namespace schrac {
         /*!
             エネルギー固有値探索の最大のループ回数
         */
-		static constexpr auto EVALSEARCHMAX = 1000;
+		static constexpr auto EVALSEARCHMAX = 100000;
 
     public:
         //! A public static member variable.
@@ -183,12 +184,6 @@ namespace schrac {
             微分方程式データのオブジェクト
         */
 		std::shared_ptr<DiffData> const pdiffdata_;
-        
-        //!  A private member variable (constant).
-        /*!
-            関数ρ(r)
-        */
-        std::shared_ptr<Rho> const prho_;
 
         //!  A private member variable.
         /*!

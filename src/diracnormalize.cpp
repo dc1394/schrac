@@ -26,9 +26,9 @@ namespace schrac {
 
         auto const mp_o = pdiffdata_->mp_o_;
         
-        rf_.reserve(pdata_->grid_num_);
-        pf_large_.reserve(pdata_->grid_num_);
-        pf_small_.reserve(pdata_->grid_num_);
+        rf_.reserve(pdata_->grid_num_ + 1);
+        pf_large_.reserve(pdata_->grid_num_ + 1);
+        pf_small_.reserve(pdata_->grid_num_ + 1);
 
         for (auto i = 0; i <= mp_o; i++) {
             rf_.push_back(std::pow(pdiffdata_->r_mesh_[i], pdata_->l_) * lo[i]);
@@ -44,7 +44,7 @@ namespace schrac {
         }        
 
         for (auto i = mp_im1; i >= 0; i--) {
-            rf_.push_back(std::pow(pdiffdata_->r_mesh_.back(), pdata_->l_) * ratio * li[i]);
+            rf_.push_back(std::pow(pdiffdata_->r_mesh_i_[i], pdata_->l_) * ratio * li[i]);
 
             auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffsolver_->V(pdiffdata_->r_mesh_.back()));
             auto const dG = std::pow(
@@ -61,7 +61,7 @@ namespace schrac {
     Normalize<DiracNormalize>::mymap DiracNormalize::getresult() const
     {
         Normalize<DiracNormalize>::mymap wf;
-        wf["1 Mesh (r)"] = std::move(pdiffdata_->r_mesh_);
+        wf["1 Mesh (r)"] = pdiffdata_->r_mesh_;
         wf["2 Eigen function"] = std::move(rf_);
         wf["3 Eigen function large (multiply r)"] = std::move(pf_large_);
         wf["4 Eigen function small (multiply r)"] = std::move(pf_small_);
@@ -72,6 +72,7 @@ namespace schrac {
     void DiracNormalize::normalize()
     {
         Simpson simpson(pdiffdata_->dx_);
+        double a = simpson(pf_large_, pdiffdata_->r_mesh_);
         auto const n = 1.0 / 
             std::sqrt(simpson(pf_large_, pdiffdata_->r_mesh_) + simpson(pf_small_, pdiffdata_->r_mesh_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {

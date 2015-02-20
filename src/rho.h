@@ -36,6 +36,12 @@ namespace schrac {
 
         // #region メンバ関数
 
+        //!  A public member function.
+        /*!
+            現在の電子密度ρ(r)で初期化する
+        */
+        void init();
+
         //!  A public member function (const).
         /*!
             電子密度ρ(r)を返す
@@ -46,11 +52,10 @@ namespace schrac {
 
         //!  A public member function (const).
         /*!
-            電子密度ρ(r)を返す
-            \param r rの値
-            \return ρ(r)の値
+            新しい電子密度ρnew(r)と、電子密度ρ(r)を一次混合する
+            \param rhonew 新しい電子密度ρnew(r)
         */
-        void rhomix();
+        void rhomix(dvector const & rhonew);
 
         // #endregion メンバ関数
 
@@ -76,9 +81,9 @@ namespace schrac {
 
         //!  A private member variable.
         /*!
-            密度ρ(r)
+            データオブジェクト
         */
-        std::shared_ptr<Data> pdata_;
+        std::shared_ptr<DiffData> pdiffdata_;
 
         //!  A private member variable.
         /*!

@@ -316,11 +316,11 @@ namespace schrac {
         myvector b;
 
         for (std::size_t i = 0; i < AMMAX; i++) {
-            auto rtmp = pdiffdata_->r_mesh_[i + 1];
+            auto rtmp = std::pow(pdiffdata_->r_mesh_[i], 2 * pdata_->l_ + 1);
 
             for (std::size_t j = 0; j < AMMAX; j++) {
                 a[AMMAX * i + j] = rtmp;
-                rtmp *= pdiffdata_->r_mesh_[i + 1];
+                rtmp *= pdiffdata_->r_mesh_[i];
             }
 
             b[i] = - pdiffdata_->r_mesh_[i] * (*prho_)(pdiffdata_->r_mesh_[i]);
@@ -338,17 +338,19 @@ namespace schrac {
             state[0] += bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
             state[0] *= r0;
         }
-
+                
         for (auto i = istart; i >= 0; i--) {
             auto const di = static_cast<double>(i);
-            state[1] += (di + 1.0) * bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
-
+            state[1] += (2.0 * l + di + 1.0) * bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
+                            
             if (!i) {
                 break;
             }
 
             state[1] *= r0;
         }
+
+        state[1] *= std::pow(r0, pdata_->l_);
 
         return std::move(state);
     }

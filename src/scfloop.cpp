@@ -58,32 +58,28 @@ namespace schrac {
 
     void ScfLoop::operator()()
     {
-        if (pdata_->chemical_symbol_ != Data::Chemical_Symbol[0]) {
-            make_vhartree();
+        if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+            run();
         }
-
-        EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
-
-        //cp.checkpoint("入力ファイル読み込み処理", __LINE__);
-
-        if (!evs.search()) {
-            std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
-            //goexit();
-            //return EXIT_FAILURE;
+        else {
+            scfrun();
         }
-
-        auto const pdsol = nomalization(evs.PDiffSolver);
-        auto const newrho = req_newrho(pdsol.at("2 Eigen function"));
-        auto const res = req_normrd(newrho, prho_->PRho);
-
-        std::cout << "NormRD = " << res;
-        std::cout << ", Energy = " << req_energy(pdiffdata_->E_, newrho, pvh_->Vhart) << std::endl;
     }
 
     // #endregion publicメンバ関数
 
     // #region privateメンバ関数
     
+    bool ScfLoop::check_converge(dvector const & newrho)
+    {
+        auto const res = req_normrd(newrho, prho_->PRho);
+
+        std::cout << "NormRD = " << res;
+        std::cout << ", Energy = " << req_energy(pdiffdata_->E_, newrho, pvh_->Vhart) << std::endl;
+
+        return std::abs(res) < pdata_->scf_criterion_;
+    }
+
     void ScfLoop::initialize()
     {        
         pdiffdata_ = std::make_shared<DiffData>(pdata_);
@@ -138,6 +134,45 @@ namespace schrac {
         }
 
         return std::move(newrho);
+    }
+
+    bool ScfLoop::run()
+    {
+        EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
+
+        if (!evs.search()) {
+            std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
+            return false;
+        }
+
+        auto const pdsol = nomalization(evs.PDiffSolver);
+
+        return true;
+    }
+
+    bool ScfLoop::scfrun()
+    {
+        auto scfloop = 0;
+        for (; scfloop < pdata_->scf_maxiter_; scfloop++) {
+            prho_->init();
+            make_vhartree();
+
+            EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
+
+            if (!evs.search()) {
+                std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
+                return false;
+            }
+
+            auto const pdsol = nomalization(evs.PDiffSolver);
+            auto const newrho = req_newrho(pdsol.at("2 Eigen function"));
+            if (check_converge(newrho)) {
+                break;
+            }
+            prho_->rhomix(newrho);
+        }
+
+        return scfloop != pdata_->scf_maxiter_;
     }
 
     // #endregion privateメンバ関数

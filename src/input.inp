@@ -2,7 +2,7 @@
 # Chemical Symbol and orbital
 #
 
-chemical.symbol             He
+chemical.symbol             H
 orbital                     1s
 spin.orbital                alpha           # alpha|beta default = alpha
 
@@ -10,7 +10,7 @@ spin.orbital                alpha           # alpha|beta default = alpha
 # Calculation type
 #
 
-eq.type                     sch             # sch|sdirac|dirac default = sch
+eq.type                     dirac             # sch|sdirac|dirac default = sch
 
 #
 # Parameters for solving 1D-differential equations
@@ -18,11 +18,11 @@ eq.type                     sch             # sch|sdirac|dirac default = sch
 
 grid.xmin                  -8.0             # default = -7.0 rmin(a.u.) = exp(grid.xmin)
 grid.xmax                   6.0             # default = 5.0 rmax(a.u.) = exp(grid.xmax)
-grid.num                    20000           # default = 20000
+grid.num                    30000           # default = 20000
 eps                         1.0E-15         # default = 1.0E-15
-solver.type                 Adams_Bashforth_Moulton  # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
-search.LowerE               -1.1            # default = Auto
-num.of.partition            300             # default = 300
+solver.type                 Controlled_Runge_Kutta  # Adams_Bashforth_Moulton|Bulirsch_Stoer|Controlled_Runge_Kutta default = Bulirsch_Stoer
+search.LowerE               Auto            # default = Auto
+num.of.partition            100             # default = 300
 matching.point.ratio        0.67            # default = 0.67
 
 #
@@ -36,6 +36,6 @@ rho0.alpha                  Auto            # default = Auto
 # SCF
 #
 
-scf.maxIter                 65              # default = 40            
-scf.Mixing.Weight           default         # default = 0.3
-scf.criterion               1.0E-13         # default = 1.0E-12
+scf.maxIter                 100             # default = 40            
+scf.Mixing.Weight           1.0             # default = 0.3
+scf.criterion               1.0E-15         # default = 1.0E-12

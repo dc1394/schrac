@@ -13,9 +13,10 @@ namespace schrac {
     Rho::Rho(std::shared_ptr<DiffData> const & pdiffdata) :
         PRho([this] { return rho_; }, nullptr),
         acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
+        pdiffdata_(pdiffdata),
         spline_(gsl_spline_alloc(gsl_interp_cspline, pdiffdata->r_mesh_.size()), gsl_spline_deleter)
     {
-        auto const & pdata = pdiffdata->pdata_;
+        auto const & pdata = pdiffdata_->pdata_;
         if (pdata->chemical_symbol_ == Data::Chemical_Symbol[0]) {
             rho_.resize(pdata->grid_num_ + 1);
 
@@ -33,17 +34,30 @@ namespace schrac {
         for (auto i = 0; i <= pdata->grid_num_; i++) {
             rho_.push_back(*pdata->rho0_c_ * std::exp(-*pdata->rho0_alpha_ * pdiffdata->r_mesh_[i]));
         }
-        
-        gsl_spline_init(spline_.get(), pdiffdata->r_mesh_.data(), rho_.data(), pdiffdata->r_mesh_.size());
+        int i = 1;
     }
 
     // #endregion コンストラクタ
 
     // #region publicメンバ関数
 
+    void Rho::init()
+    {
+        gsl_spline_init(spline_.get(), pdiffdata_->r_mesh_.data(), rho_.data(), pdiffdata_->r_mesh_.size());
+    }
+
     double Rho::operator()(double r) const
     {
         return gsl_spline_eval(spline_.get(), r, acc_.get());
+    }
+
+    void Rho::rhomix(dvector const & newrho)
+    {
+        auto const & pdata = pdiffdata_->pdata_;
+        for (auto i = 0; i <= pdata->grid_num_; i++) {
+            rho_[i] = (1.0 - pdata->scf_mixing_weight_) * rho_[i] +
+                pdata->scf_mixing_weight_ * newrho[i];
+        }
     }
 
     // #endregion publicメンバ関数

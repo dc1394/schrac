@@ -34,9 +34,7 @@ namespace schrac {
         // #endregion コンストラクタ・デストラクタ
 
         // #region publicメンバ関数
-
-        bool check_converge();
-                
+        
         //! A public member function (const).
         /*!
             対象の原子と解く方程式についてメッセージを表示する
@@ -45,7 +43,7 @@ namespace schrac {
         
         //! A public member function.
         /*!
-            実際にSCFを実行する    
+            水素原子の場合は一回のループを、He原子の場合はSCFを行う    
         */
         void operator()();
 
@@ -54,6 +52,14 @@ namespace schrac {
         // #region privateメンバ関数
 
     private:
+        //! A private member function.
+        /*!
+            与えられた密度ρ(r)で、SCFが収束したかどうか判定する
+            \param newrho ρ(r)
+            \return SCFが収束したかどうか
+        */
+        bool check_converge(dvector const & newrho);
+
         //! A private member function.
         /*!
             状態の初期化を行う
@@ -91,6 +97,18 @@ namespace schrac {
             \return 密度ρnew(r)
         */
         dvector req_newrho(dvector const & rf) const;
+
+        //! A private member function.
+        /*!
+            H原子の場合に実行する
+        */
+        bool run();
+
+        //! A private member function.
+        /*!
+            実際にSCFを実行する
+        */
+        bool scfrun();
 
         // #endregion privateメンバ関数
 
