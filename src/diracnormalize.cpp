@@ -72,7 +72,6 @@ namespace schrac {
     void DiracNormalize::normalize()
     {
         Simpson simpson(pdiffdata_->dx_);
-        double a = simpson(pf_large_, pdiffdata_->r_mesh_);
         auto const n = 1.0 / 
             std::sqrt(simpson(pf_large_, pdiffdata_->r_mesh_) + simpson(pf_small_, pdiffdata_->r_mesh_));
         for (auto i = 0; i < pdata_->grid_num_; i++) {
