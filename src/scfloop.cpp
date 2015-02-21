@@ -9,15 +9,18 @@
 #include "readinputfile.h"
 #include "scfloop.h"
 #include "simpson.h"
-#include <iostream>         // for std::cout
-#include <boost/math/constants/constants.hpp>
+#include <iostream>                             // for std::cout
+#include <stdexcept>                            // for std::runtime_error
+#include <boost/math/constants/constants.hpp>   // boost::math::constants
 
 namespace schrac {
     // #region コンストラクタ
 
     ScfLoop::ScfLoop(std::pair<std::string, bool> const & arg) :
         PData([this]{ return pdata_; }, nullptr),
-        PDiffData([this]{ return pdiffdata_; }, nullptr)
+        PDiffData([this]{ return pdiffdata_; }, nullptr),
+        PEhartree([this]{ return ehartree_; }, nullptr),
+        ehartree_(boost::none)
     {
         ReadInputFile rif(arg);			// ファイルを読み込む
         rif.readFile();
@@ -56,13 +59,13 @@ namespace schrac {
         std::cout << "の波動関数と固有値を計算します。\n" << std::endl;
     }
 
-    void ScfLoop::operator()()
+    ScfLoop::mypair ScfLoop::operator()()
     {
         if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
-            run();
+            return std::make_pair(pdiffdata_, run());
         }
         else {
-            scfrun();
+            return std::make_pair(pdiffdata_, scfrun());
         }
     }
 
@@ -70,12 +73,15 @@ namespace schrac {
 
     // #region privateメンバ関数
     
-    bool ScfLoop::check_converge(dvector const & newrho)
+    bool ScfLoop::check_converge(dvector const & newrho, std::int32_t scfloop)
     {
         auto const res = req_normrd(newrho, prho_->PRho);
 
-        std::cout << "NormRD = " << res;
-        std::cout << ", Energy = " << req_energy(pdiffdata_->E_, newrho, pvh_->Vhart) << std::endl;
+        req_hartree_energy(newrho, pvh_->Vhart);
+        std::cout << "SCF = " << scfloop
+            << ", NormRD = " << res
+            << ", Energy = " << req_energy(pdiffdata_->E_)
+            << std::endl;
 
         return std::abs(res) < pdata_->scf_criterion_;
     }
@@ -97,7 +103,7 @@ namespace schrac {
         pvh_->vhart_init();
     }
 
-    double ScfLoop::req_energy(double eigen, dvector const & rho, dvector const & vhartree) const
+    void ScfLoop::req_hartree_energy(dvector const & rho, dvector const & vhartree)
     {
         dvector u2;
         u2.reserve(pdata_->grid_num_ + 1);
@@ -106,11 +112,17 @@ namespace schrac {
         }
 
         Simpson simpson(pdiffdata_->dx_);
-        return 2.0 * eigen - simpson(vhartree, u2, pdiffdata_->r_mesh_, 1);
+        ehartree_ = boost::optional<double>(- simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
+    }
+
+    double ScfLoop::req_energy(double eigen) const
+    {
+        return 2.0 * eigen + *ehartree_;
     }
 
     double ScfLoop::req_normrd(dvector const & newrho, dvector const & oldrho) const
     {
+        using namespace boost::math::constants;
         BOOST_ASSERT(newrho.size() == oldrho.size());
 
         dvector residual;
@@ -121,8 +133,7 @@ namespace schrac {
         }
 
         Simpson const simpson(pdiffdata_->dx_);
-        return 4.0 * boost::math::constants::pi<double>() *
-            simpson(residual, residual, pdiffdata_->r_mesh_, 3);
+        return 4.0 * pi<double>() * simpson(residual, residual, pdiffdata_->r_mesh_, 3);
     }
 
     dvector ScfLoop::req_newrho(dvector const & rf) const
@@ -136,43 +147,44 @@ namespace schrac {
         return std::move(newrho);
     }
 
-    bool ScfLoop::run()
+    ScfLoop::mymap ScfLoop::run()
     {
         EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
 
         if (!evs.search()) {
-            std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
-            return false;
+            throw std::runtime_error("固有値が見つかりませんでした。終了します。");
         }
 
-        auto const pdsol = nomalization(evs.PDiffSolver);
-
-        return true;
+        return nomalization(evs.PDiffSolver);
     }
 
-    bool ScfLoop::scfrun()
+    ScfLoop::mymap ScfLoop::scfrun()
     {
-        auto scfloop = 0;
-        for (; scfloop < pdata_->scf_maxiter_; scfloop++) {
+        auto scfloop = 1;
+        ScfLoop::mymap wavefunctions;
+        for (; scfloop <= pdata_->scf_maxiter_; scfloop++) {
             prho_->init();
             make_vhartree();
 
             EigenValueSearch evs(pdata_, pdiffdata_, prho_, pvh_);
 
             if (!evs.search()) {
-                std::cerr << "固有値が見つかりませんでした。終了します。" << std::endl;
-                return false;
+                throw std::runtime_error("固有値が見つかりませんでした。終了します。");
             }
 
-            auto const pdsol = nomalization(evs.PDiffSolver);
-            auto const newrho = req_newrho(pdsol.at("2 Eigen function"));
-            if (check_converge(newrho)) {
+            wavefunctions = nomalization(evs.PDiffSolver);
+            auto const newrho = req_newrho(wavefunctions.at("2 Eigen function"));
+            if (check_converge(newrho, scfloop)) {
                 break;
             }
             prho_->rhomix(newrho);
         }
 
-        return scfloop != pdata_->scf_maxiter_;
+        if (scfloop == pdata_->scf_maxiter_) {
+            throw std::runtime_error("SCFが収束しませんでした。終了します。");
+        }
+
+        return wavefunctions;
     }
 
     // #endregion privateメンバ関数

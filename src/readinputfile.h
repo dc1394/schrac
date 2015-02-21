@@ -140,7 +140,14 @@ namespace schrac {
             \return 読み込みが成功したかどうか
         */
         bool readLowerE();
-        
+
+        //! A private member function.
+        /*!
+            SCFの一次混合の重みを読み込む
+            \return 読み込みが成功したかどうか
+        */
+        bool readScfMixingWeight();
+
         //! A private member function.
         /*!
             微分方程式の解法を読み込む

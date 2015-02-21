@@ -49,17 +49,29 @@ namespace schrac {
         
         //! A public member function (const).
         /*!
-            固有エネルギーを表示する
+            エネルギーを表示する
         */
-        void express_energy() const;
+        void express_energy(boost::optional<double> const & ehartree) const;
 
     private:
+        //! A private member function (const).
+        /*!
+            Coulombエネルギーを表示する
+        */
+        void coulomb_energy() const;
+
         //! A private member function (const).
         /*!
             固有エネルギーを表示する
         */
         void eigenvalue() const;
 
+        //! A private member function (const).
+        /*!
+            ポテンシャルエネルギーを表示する
+        */
+        void hartree_energy(double ehartree) const;
+        
         //! A private member function (const).
         /*!
             運動エネルギーを表示する
@@ -92,7 +104,7 @@ namespace schrac {
         /*!
             ポテンシャルエネルギー
         */
-        double const potential_energy_;
+        double const potcoulomb_energy_;
 
         // #endregion メンバ変数
 

@@ -121,7 +121,7 @@ namespace schrac {
         /*!
             エネルギー固有値探索の最大のループ回数
         */
-		static constexpr auto EVALSEARCHMAX = 100000;
+		static constexpr auto EVALSEARCHMAX = 10000;
 
     public:
         //! A public static member variable.

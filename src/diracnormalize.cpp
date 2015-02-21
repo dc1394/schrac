@@ -44,15 +44,14 @@ namespace schrac {
         }        
 
         for (auto i = mp_im1; i >= 0; i--) {
-            rf_.push_back(std::pow(pdiffdata_->r_mesh_i_[i], pdata_->l_) * ratio * li[i]);
+            rf_.push_back(std::pow(r_mesh_i[i], pdata_->l_) * ratio * li[i]);
 
-            auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffsolver_->V(pdiffdata_->r_mesh_.back()));
-            auto const dG = std::pow(
-                r_mesh_i[i],
-                static_cast<double>(pdata_->l_ * (pdata_->l_ + 1)) * li[i] + mi[i]);
+            auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffsolver_->V(r_mesh_i[i]));
+            auto const dG = ratio * std::pow(r_mesh_i[i], static_cast<double>(pdata_->l_)) *
+                (static_cast<double>(pdata_->l_ + 1) * li[i] + mi[i]);
 
-            pf_large_.push_back(r_mesh_i[i] * rf_[i]);
-            pf_small_.push_back(h * (dG + pdata_->kappa_ * std::pow(pdiffdata_->r_mesh_.back(), pdata_->l_) * li[i]));
+            pf_large_.push_back(r_mesh_i[i] * rf_.back());
+            pf_small_.push_back(h * (dG + pdata_->kappa_ * std::pow(r_mesh_i[i], pdata_->l_) * ratio * li[i]));
         }
 
         normalize();

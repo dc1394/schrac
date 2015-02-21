@@ -110,9 +110,11 @@ namespace schrac {
         // SCFの最大ループ回数を読み込む
         readValue("scf.maxIter", Data::SCF_MAXITER_DEFAULT, pdata_->scf_maxiter_);
 
-        // SCFの収束判定条件の値を読み込む
-        readValue("scf.Mixing.Weight", Data::SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
-
+        // SCFの一次混合の重みを読み込む
+        if (!readScfMixingWeight()) {
+            errorendfunc();
+        }
+        
         // SCFの収束判定条件の値を読み込む
         readValue("scf.criterion", Data::SCF_CRITERION_DEFAULT, pdata_->scf_criterion_);
 	}
@@ -164,6 +166,116 @@ namespace schrac {
         else {
             return std::make_pair(1, boost::none);
         }
+    }
+
+    bool ReadInputFile::readAtom()
+    {
+        // 原子の種類を読み込む
+        auto const chemsym(readData(ReadInputFile::CHEMICAL_SYMBOL));
+        if (!chemsym) {
+            return false;
+        }
+
+        try {
+            auto const itr(boost::find(Data::Chemical_Symbol, chemsym->c_str()));
+            if (itr == Data::Chemical_Symbol.end()) {
+                throw std::invalid_argument("");
+            }
+
+            pdata_->chemical_symbol_ = *itr;
+            pdata_->Z_ = static_cast<double>(std::distance(Data::Chemical_Symbol.begin(), itr)) + 1.0;
+        }
+        catch (std::invalid_argument const &) {
+            errorMessage(lineindex_ - 1, ReadInputFile::CHEMICAL_SYMBOL, *chemsym);
+            return false;
+        }
+
+        // 軌道を読み込む
+        auto const porbital(readData(ReadInputFile::ORBITAL));
+        if (!porbital) {
+            return false;
+        }
+
+        auto const orbital(*porbital);
+        if (orbital.length() != 2) {
+            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+            return false;
+        }
+
+        if (!std::isdigit(orbital[0])) {
+            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+            return false;
+        }
+        pdata_->orbital_ = orbital[0];
+        pdata_->n_ = boost::numeric_cast<std::uint8_t>(orbital[0] - '0');
+
+        switch (orbital[1]) {
+        case 's':
+            pdata_->l_ = 0;
+            pdata_->orbital_ += 's';
+            break;
+
+        case 'p':
+            pdata_->l_ = 1;
+            pdata_->orbital_ += 'p';
+            break;
+
+        case 'd':
+            pdata_->l_ = 2;
+            pdata_->orbital_ += 'd';
+            break;
+
+        case 'f':
+            pdata_->l_ = 3;
+            pdata_->orbital_ += 'f';
+            break;
+
+        case 'g':
+            pdata_->l_ = 4;
+            pdata_->orbital_ += 'g';
+            break;
+
+        default:
+            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
+            return false;
+            break;
+        }
+
+        if (pdata_->n_ - pdata_->l_ < 1) {
+            std::cerr << "量子数の指定が異常です" << std::endl;
+            return false;
+        }
+
+        // スピン軌道を読み込む
+        auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL, ReadInputFile::SPIN_ORBITAL_DEFAULT));
+        if (!pspin_orbital) {
+            return false;
+        }
+
+        pdata_->spin_orbital_ = *pspin_orbital;
+        if (pdata_->spin_orbital_ != Data::ALPHA && pdata_->spin_orbital_ != Data::BETA) {
+            errorMessage(lineindex_ - 1, ReadInputFile::SPIN_ORBITAL, pdata_->spin_orbital_);
+            return false;
+        }
+
+        if (!pdata_->l_) {
+            // s軌道は特別なケース
+            // j = l_ + 1/2
+            pdata_->j_ = 0.5;
+            pdata_->kappa_ = -1.0;
+        }
+        else if (pdata_->spin_orbital_ == Data::ALPHA) {
+            // j = l_ + 1/2に対して
+            pdata_->j_ = static_cast<double>(pdata_->l_) + 0.5;
+            pdata_->kappa_ = -static_cast<double>(pdata_->l_) - 1.0;
+        }
+        else {
+            // j = l_ - 1/2に対して
+            pdata_->j_ = static_cast<double>(pdata_->l_) - 0.5;
+            pdata_->kappa_ = static_cast<double>(pdata_->l_);
+        }
+
+        return true;
     }
 
     boost::optional<ci_string> ReadInputFile::readData(ci_string const & article)
@@ -318,113 +430,6 @@ namespace schrac {
 		}
 	}
 	
-	bool ReadInputFile::readAtom()
-	{
-		// 原子の種類を読み込む
-        auto const chemsym(readData(ReadInputFile::CHEMICAL_SYMBOL));
-        if (!chemsym) {
-            return false;
-        }
-
-		try {
-            auto const itr(boost::find(Data::Chemical_Symbol, chemsym->c_str()));
-            if (itr == Data::Chemical_Symbol.end()) {
-                throw std::invalid_argument("");
-            }
-
-            pdata_->chemical_symbol_ = *itr;
-            pdata_->Z_ = static_cast<double>(std::distance(Data::Chemical_Symbol.begin(), itr)) + 1.0;
-		} catch (std::invalid_argument const &) {
-            errorMessage(lineindex_ - 1, ReadInputFile::CHEMICAL_SYMBOL, *chemsym);
-			return false;
-		}
-
-		// 軌道を読み込む
-        auto const porbital(readData(ReadInputFile::ORBITAL));
-		if (!porbital) {
-			return false;
-		}
-        
-        auto const orbital(*porbital);
-        if (orbital.length() != 2) {
-            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
-			return false;
-		}
-
-		if (!std::isdigit(orbital[0])) {
-            errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
-			return false;
-		}
-		pdata_->orbital_ = orbital[0];
-		pdata_->n_ = boost::numeric_cast<std::uint8_t>(orbital[0] - '0');
-					
-		switch (orbital[1]) {
-			case 's':
-				pdata_->l_ = 0;
-				pdata_->orbital_ += 's';
-			break;
-
-			case 'p':
-				pdata_->l_ = 1;
-				pdata_->orbital_ += 'p';
-			break;
-
-			case 'd':
-				pdata_->l_ = 2;
-				pdata_->orbital_ += 'd';
-			break;
-
-			case 'f':
-				pdata_->l_ = 3;
-				pdata_->orbital_ += 'f';
-			break;
-
-			case 'g':
-				pdata_->l_ = 4;
-				pdata_->orbital_ += 'g';
-			break;
-
-			default:
-                errorMessage(lineindex_ - 1, ReadInputFile::ORBITAL, orbital);
-				return false;
-			break;
-		}
-
-		if (pdata_->n_ - pdata_->l_ < 1) {
-			std::cerr << "量子数の指定が異常です" << std::endl;
-			return false;
-		}
-
-		// スピン軌道を読み込む
-        auto const pspin_orbital(readData(ReadInputFile::SPIN_ORBITAL, ReadInputFile::SPIN_ORBITAL_DEFAULT));
-		if (!pspin_orbital) {
-			return false;
-		}
-        
-        pdata_->spin_orbital_ = *pspin_orbital;
-        if (pdata_->spin_orbital_ != Data::ALPHA && pdata_->spin_orbital_ != Data::BETA) {
-            errorMessage(lineindex_ - 1, ReadInputFile::SPIN_ORBITAL, pdata_->spin_orbital_);
-			return false;
-		}
-
-		if (!pdata_->l_) {
-            // s軌道は特別なケース
-			// j = l_ + 1/2
-			pdata_->j_ = 0.5;
-			pdata_->kappa_ = - 1.0;
-		} else if (pdata_->spin_orbital_ == Data::ALPHA) {
-            // j = l_ + 1/2に対して
-			pdata_->j_ = static_cast<double>(pdata_->l_) + 0.5;
-			pdata_->kappa_ = - static_cast<double>(pdata_->l_) - 1.0;
-		} else {
-            // j = l_ - 1/2に対して
-			pdata_->j_ = static_cast<double>(pdata_->l_) - 0.5;
-			pdata_->kappa_ = static_cast<double>(pdata_->l_);
-		}
-
-		return true;
-	}
-
 	bool ReadInputFile::readEq()
 	{
         auto const peqtype(readData(ReadInputFile::EQ_TYPE, ReadInputFile::EQ_TYPE_DEFAULT));
@@ -446,7 +451,16 @@ namespace schrac {
 		return true;
 	}
 
-    
+    bool ReadInputFile::readScfMixingWeight()
+    {
+        readValue("scf.Mixing.Weight", Data::SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
+        if (pdata_->scf_mixing_weight_ <= 0.0) {
+            std::cerr << "インプットファイルの[scf.Mixing.Weight]の行が正しくありません" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
 	bool ReadInputFile::readType()
 	{
         auto const psolvetype(readData("solver.type", ReadInputFile::SOLVER_TYPE_DEFAULT));

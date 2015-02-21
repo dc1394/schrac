@@ -54,14 +54,32 @@ int main(int argc, char * argv[])
     //cp.checkpoint("コマンドラインオプション解析処理", __LINE__);
 
     ScfLoop sl(mg.getpairdata());
-    sl();
+
+    std::shared_ptr<DiffData> pdiffdata;
+    ScfLoop::mymap wavefunctions;
     
-    //Energy en(evs.PDiffSolver()->PDiffData, pdsol.at("1 Mesh (r)"), pdsol.at("2 Eigen function"));
-    //en.express_energy();
-    //WaveFunctionSave wfs(pdsol, evs.PData);
-    //wfs();
+    try {
+        std::tie(pdiffdata, wavefunctions) = sl();
+    }
+    catch (std::runtime_error const & e) {
+        std::cerr << e.what() << std::endl;
+        goexit();
+        return EXIT_FAILURE;
+    }
+
+    Energy en(
+        pdiffdata,
+        wavefunctions.at("1 Mesh (r)"),
+        wavefunctions.at("2 Eigen function"),
+        pdiffdata->pdata_->Z_);
+
+    en.express_energy(sl.PEhartree);
+    WaveFunctionSave wfs(wavefunctions, pdiffdata->pdata_);
+    wfs();
 
     goexit();
+
+    return EXIT_SUCCESS;
 }
 	/*cp.checkpoint("微分方程式の積分と固有値探索処理", __LINE__);
 

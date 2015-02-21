@@ -102,8 +102,11 @@ namespace schrac {
             default:
                 break;
             }
-            
-            info(func_D(pdiffsolver_->E_, F.params), pdiffsolver_->E_);
+
+            if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
+                info(func_D(pdiffsolver_->E_, F.params), pdiffsolver_->E_);
+            }
+
             pdiffsolver_->E_ = gsl_root_fsolver_root(s.get());
             
             auto const status = gsl_root_test_interval(
@@ -218,7 +221,7 @@ namespace schrac {
     {
         std::cout.setf(std::ios::fixed, std::ios::floatfield);
         std::cout << std::setprecision(
-            boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))) - 1.0);
+            boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))));
     }
 	
     // #endregion privateメンバ関数 

@@ -34,7 +34,6 @@ namespace schrac {
         for (auto i = 0; i <= pdata->grid_num_; i++) {
             rho_.push_back(*pdata->rho0_c_ * std::exp(-*pdata->rho0_alpha_ * pdiffdata->r_mesh_[i]));
         }
-        int i = 1;
     }
 
     // #endregion コンストラクタ

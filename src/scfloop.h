@@ -10,12 +10,20 @@
 #pragma once
 
 #include "diffsolver.h"
+#include <boost/optional.hpp>   // for boost::optional
 
 namespace schrac {
 	class ScfLoop final {
+    public:
+        // #region 型エイリアス
+
+        using mymap = boost::container::flat_map < std::string, dvector > ;
+        using mypair = std::pair < std::shared_ptr<DiffData>, mymap > ;
+
+        // #endregion 型エイリアス
+
         // #region コンストラクタ・デストラクタ
 
-    public:
         //! A constructor.
         /*!
             唯一のコンストラクタ
@@ -43,9 +51,10 @@ namespace schrac {
         
         //! A public member function.
         /*!
-            水素原子の場合は一回のループを、He原子の場合はSCFを行う    
+            水素原子の場合は一回のループを、He原子の場合はSCFを行う
+            \return 計算結果
         */
-        void operator()();
+        ScfLoop::mypair operator()();
 
         // #endregion publicメンバ関数
 
@@ -56,9 +65,10 @@ namespace schrac {
         /*!
             与えられた密度ρ(r)で、SCFが収束したかどうか判定する
             \param newrho ρ(r)
+            \param scfloop SCFのループ回数
             \return SCFが収束したかどうか
         */
-        bool check_converge(dvector const & newrho);
+        bool check_converge(dvector const & newrho, std::int32_t scfloop);
 
         //! A private member function.
         /*!
@@ -78,8 +88,17 @@ namespace schrac {
             \param eigen 固有値
             \param rho 密度
             \param vhartree Hartreeポテンシャル
+            \return 全エネルギー
         */
-        double req_energy(double eigen, dvector const & rho, dvector const & vhartree) const;
+        double req_energy(double eigen) const;
+
+        //! A private member function.
+        /*!
+            Hartreeエネルギーを求める
+            \param rho 密度
+            \param vhartree Hartreeポテンシャル
+        */
+        void req_hartree_energy(dvector const & rho, dvector const & vhartree);
 
         //! A private member function.
         /*!
@@ -102,13 +121,13 @@ namespace schrac {
         /*!
             H原子の場合に実行する
         */
-        bool run();
+        mymap run();
 
         //! A private member function.
         /*!
             実際にSCFを実行する
         */
-        bool scfrun();
+        mymap scfrun();
 
         // #endregion privateメンバ関数
 
@@ -118,22 +137,35 @@ namespace schrac {
         //! A property.
         /*!
             データオブジェクトを得る
-            \return データオブジェクト
+            \return データオブジェクトへのスマートポインタ
         */
         Property<std::shared_ptr<Data>> const PData;
 
         //! A property.
         /*!
             微分方程式オブジェクトを得る
-            \return 微分方程式オブジェクト
+            \return 微分方程式オブジェクトへのスマートポインタ
         */
         Property<std::shared_ptr<DiffData>> const PDiffData;
+        
+        //! A property.
+        /*!
+            Hartreeエネルギーを得る
+            \return Hartreeエネルギー
+        */
+        Property<boost::optional<double>> const PEhartree;
 
         // #endregion プロパティ
 
         // #region メンバ変数
 
     private:
+        //!  A private member variable.
+        /*!
+            Hartreeエネルギー
+        */
+        boost::optional<double> ehartree_;
+
         //!  A private member variable (constant).
         /*!
             データオブジェクト
@@ -164,6 +196,7 @@ namespace schrac {
         */
         std::shared_ptr<Vhartree> pvh_;
         
+
         // #endregion メンバ変数
 
     private:
@@ -191,13 +224,6 @@ namespace schrac {
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
-
-	/*inline void SCFLoop::setExp() const
-	{
-		std::cout.setf(std::ios::fixed, std::ios::floatfield);
-		std::cout << std::setprecision(
-			boost::numeric_cast<const std::streamsize>(std::fabs(std::log10(pdata_->eps))) - 2);
-	}*/
 }
 
 #endif  // _SCFLOOP_H_
