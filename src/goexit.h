@@ -1,0 +1,3 @@
+namespace schrac {
+    void goexit();
+}
