@@ -46,7 +46,11 @@ namespace schrac {
         for (auto i = mp_im1; i >= 0; i--) {
             rf_.push_back(std::pow(r_mesh_i[i], pdata_->l_) * ratio * li[i]);
             pf_large_.push_back(r_mesh_i[i] * rf_.back());
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 0db1d3d7f2727c244a0e7089a39ad31e9df7b2cf
             auto const h = 1.0 / (2.0 / Data::al + Data::al * pdiffdata_->E_ - Data::al * pdiffsolver_->V_(r_mesh_i[i]));
             auto const dG = ratio * std::pow(r_mesh_i[i], static_cast<double>(pdata_->l_)) *
                 (static_cast<double>(pdata_->l_ + 1) * li[i] + mi[i]);
