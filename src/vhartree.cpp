@@ -21,6 +21,13 @@ namespace schrac {
         vhart_.reserve(r_mesh.size());
     }
 
+    Vhartree::Vhartree(Vhartree const & rhs) :
+        Vhartree(rhs.r_mesh_)
+    {
+        vhart_ = rhs.vhart_;
+        gsl_spline_init(spline_.get(), r_mesh_.data(), vhart_.data(), r_mesh_.size());
+    }
+
     // #endregion コンストラクタ
 
     // #region publicメンバ関数

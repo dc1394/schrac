@@ -31,11 +31,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~GetComLineOption()
-        {
-        }
+        ~GetComLineOption() = default;
         
         // #endregion コンストラクタ・デストラクタ
 

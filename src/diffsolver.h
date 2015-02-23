@@ -15,12 +15,27 @@
 #include "solvelinearequ.h"
 #include "vhartree.h"
 
+#include <functional>
+
 namespace schrac {
     // #region 型エイリアス
 
     using myarray = std::array < double, 2 >;
 
     // #endregion 型エイリアス
+
+    // #region 非メンバ関数の宣言
+
+    template <typename T>
+    //! A template function.
+    /*!
+        x ** 2を計算する
+        \param x xの値
+        \return x ** 2の値
+    */
+    T sqr(T x);
+
+    // #endregion 非メンバ関数の宣言
 
     //! A class.
     /*!
@@ -58,11 +73,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~DiffSolver()
-        {
-        }
+        ~DiffSolver() = default;
 
         // #endregion コンストラクタ・デストラクタ
 
@@ -96,14 +109,6 @@ namespace schrac {
         */
         void solve_poisson();
 
-        //! A public member function (const).
-        /*!
-            ポテンシャルV(r)の値を返す
-            \param r rの値
-            \return ポテンシャルV(r)の値
-        */
-        double V(double r) const;
-
         // #endregion publicメンバ関数 
 
         // #region privateメンバ関数
@@ -111,13 +116,13 @@ namespace schrac {
     private:
         //! A private member function.
         /*!
-            V(r)の級数展開の係数amを求める
+            V_(r)の級数展開の係数am_を求める
         */
         void am_evaluate();
 
         //! A private member function.
         /*!
-            L(r)の級数展開の係数bmを求める
+            L(r)の級数展開の係数bm_を求める
         */
         void bm_evaluate();
 
@@ -128,32 +133,36 @@ namespace schrac {
             \param dfdx dfdx[0] = dL / dx, dfdx[1] = dM / dx 
             \param x xの値
         */
-        void derivs(myarray const & f, myarray & dfdx, double x) const;
+        void derivs(myarray const & f, myarray & dfdx, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const;
         
         //! A private member function (const).
         /*!
             the radial differential equation with a full relativistic treatment
 
             d = alpha^2 / 2 * r /MQ * dV / dr
-            dM / dx = - (2NL + 1 + d)M + 2r^2 * MQ * (V - ep) * L - d * (NL + 1 + kappa) * L
+            dM / dx = - (2NL + 1 + d)M + 2r^2 * MQ * (V_ - ep) * L - d * (NL + 1 + kappa) * L
             \param L L(x)の値
             \param M M(x)の値
             \param x xの値
+            \param V ポテンシャルの関数オブジェクト
+            \param dV_dr ポテンシャルの微分の関数オブジェクト
             \return dM / dxの値
         */
-        double dM_dx_dirac(double L, double M, double x) const;
+        double dM_dx_dirac(double L, double M, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const;
 
         //! A private member function (const).
         /*!
             the usual radial differential equation without relativistic corrections 
 
-            dM/dx = -(2NL + 1)M + 2r^2(V - ep)L
+            dM/dx = -(2NL + 1)M + 2r^2(V_ - ep)L
             \param L L(x)の値
             \param M M(x)の値
             \param x xの値
+            \param V ポテンシャルの関数オブジェクト
+            \param dV_dr ポテンシャルの微分の関数オブジェクト
             \return dM / dxの値
         */
-        double dM_dx_sch(double L, double M, double x) const;
+        double dM_dx_sch(double L, double M, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const;
         
         //! A private member function (const).
         /*!
@@ -162,21 +171,15 @@ namespace schrac {
                  J.Phys.C: Solid State Phys. 10, 3107 (1977).
 
 		    d = alpha^2 / 2 * r / MQ * dV / dr
-		    dM / dx = -(2 * NL + 1 + d)M +(2 * r^2 * MQ(V - ep) - d * NL)L
+		    dM / dx = -(2 * NL + 1 + d)M +(2 * r^2 * MQ(V_ - ep) - d * NL)L
             \param L L(x)の値
             \param M M(x)の値
             \param x xの値
+            \param V ポテンシャルの関数オブジェクト
+            \param dV_dr ポテンシャルの微分の関数オブジェクト
             \return dM / dxの値
         */
-        double dM_dx_sdirac(double L, double M, double x) const;
-
-        //! A private member function (const).
-        /*!
-            ポテンシャルの微分V'(r)の値を返す
-            \param r rの値
-            \return ポテンシャルの微分V'(r)の値
-        */
-        double dV_dr(double r) const;
+        double dM_dx_sdirac(double L, double M, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const;
 
         //! A private member function.
         /*!
@@ -217,16 +220,20 @@ namespace schrac {
         /*!
             無限遠に近い点から、微分方程式を解く
             \param stepper 微分方程式のソルバーのアルゴリズム
+            \param V ポテンシャルの関数オブジェクト
+            \param dV_dr ポテンシャルの微分の関数オブジェクト
         */
-        void solve_diff_equ_i(Stepper const & stepper);
+        void solve_diff_equ_i(Stepper const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
 
         template <typename Stepper>
         //! A private member function.
         /*!
             原点に近い点から、微分方程式を解く
             \param stepper 微分方程式のソルバーのアルゴリズム
+            \param V ポテンシャルの関数オブジェクト
+            \param dV_dr ポテンシャルの微分の関数オブジェクト
         */
-        void solve_diff_equ_o(Stepper const & stepper);
+        void solve_diff_equ_o(Stepper const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
 
         template <typename Stepper>
         //!  A private member function.
@@ -250,32 +257,50 @@ namespace schrac {
 
         // #region メンバ変数
 
+        //! A public member variable.
+        /*!
+            ポテンシャルV_(r)の値を返す関数オブジェクト
+        */
+        std::function<double (double)> V_;
+
     private:
         //!  A private static member variable (constant expression).
         /*!
-            L(r)の級数展開の係数bmの最大値
+            L(r)の級数展開の係数bm_の最大値
         */
         static std::size_t constexpr BMMAX = 5;
 
         //!  A private static member variable (constant expression).
         /*!
-            ポテンシャルVの最小値
+            ポテンシャルV_の最小値
         */
         static auto constexpr MINVALUE = 1.0E-200;
 
         //!  A private member variable.
         /*!
-            V(r)の級数展開の係数am
+            V_(r)の級数展開の係数am_
         */
-        std::array<double, AMMAX> am;
+        std::array<double, AMMAX> am_;
 
         //!  A private member variable.
         /*!
-            L(r)の級数展開の係数bm
+            L(r)の級数展開の係数bm_
         */
-        std::array<double, DiffSolver::BMMAX> bm;
+        std::array<double, DiffSolver::BMMAX> bm_;
         
     public:
+        //! A private member variable.
+        /*!
+            ポテンシャルの微分V_'(r)の値を返す関数オブジェクト
+        */
+        std::function<double (double r)> dV_dr_;
+
+        //! A private member variable.
+        /*!
+            ポテンシャルの微分V_'(r)の値を返す関数オブジェクトその2（並列計算用）
+        */
+        std::function<double(double r)> dV_dr2_;
+
         //! A private member variable.
         /*!
             エネルギー固有値
@@ -306,6 +331,20 @@ namespace schrac {
         */
         std::shared_ptr<Vhartree> pvh_;
 
+        //!  A private member variable.
+        /*!
+            Hartreeポテンシャルオブジェクトその2（並列計算用）
+        */
+        std::shared_ptr<Vhartree> pvh2_;
+
+        //! A private member variable.
+        /*!
+            ポテンシャルV_(r)の値を返す関数オブジェクト（並列計算用）
+            \param r rの値
+            \return ポテンシャルV_(r)の値
+        */
+        std::function<double(double)> V2_;
+
         // #endregion メンバ変数
 
         // #region 禁止されたコンストラクタ・メンバ関数
@@ -333,21 +372,15 @@ namespace schrac {
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
     
-    // #region 非メンバ関数
+    // #region 非メンバ関数の実装
     
 	template <typename T>
-    //! A template function.
-    /*!
-        x ** 2を計算する
-        \param x xの値
-        \return x ** 2の値
-    */
 	T sqr(T x)
 	{
 		return x * x;
 	}
     
-    // #endregion 非メンバ関数
+    // #endregion 非メンバ関数の実装
 }
 
 #endif	// _DIFFSOLVER_H_

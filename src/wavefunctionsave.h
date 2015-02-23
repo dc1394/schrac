@@ -33,11 +33,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~WaveFunctionSave()
-        {
-        }
+        ~WaveFunctionSave() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

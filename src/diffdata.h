@@ -36,11 +36,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~DiffData()
-        {
-        }
+        ~DiffData() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

@@ -32,11 +32,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-        何もしないデストラクタ
+        デフォルトデストラクタ
         */
-        ~DiracNormalize()
-        {
-        }
+        ~DiracNormalize() = default;
 
         // #endregion コンストラクタ・デストラクタ
 
@@ -113,4 +111,4 @@ namespace schrac {
     };
 }
 
-#endif // _SCHNORMALIZE_H_
+#endif // _DIRACNORMALIZE_H_

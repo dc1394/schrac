@@ -30,13 +30,17 @@ namespace schrac {
         */
         Vhartree(std::vector<double> const & r_mesh);
 
+        //! A private copy constructor.
+        /*!
+            コピーコンストラクタ
+        */
+        Vhartree(Vhartree const & rhs);
+
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~Vhartree()
-        {
-        }
+        ~Vhartree() = default;
 
         // #region メンバ関数
         
@@ -95,7 +99,7 @@ namespace schrac {
         /*!
             rのメッシュが格納された可変長配列
         */
-        std::vector<double> r_mesh_;
+        std::vector<double> const r_mesh_;
 
         //! A private member variable.
         /*!
@@ -119,12 +123,6 @@ namespace schrac {
             デフォルトコンストラクタ（禁止）
         */
         Vhartree() = delete;
-
-        //! A private copy constructor (deleted).
-        /*!
-            コピーコンストラクタ（禁止）
-        */
-        Vhartree(Vhartree const &) = delete;
 
         //! A private member function (deleted).
         /*!

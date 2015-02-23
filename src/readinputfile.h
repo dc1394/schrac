@@ -42,11 +42,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~ReadInputFile()
-        {
-        }
+        ~ReadInputFile() = default;
 
         // #region コンストラクタ・デストラクタ
         
@@ -177,6 +175,18 @@ namespace schrac {
 
         // #endregion メンバ関数
 
+        // #region プロパティ
+
+    public:
+        //! A property.
+        /*!
+            読み込んだデータを返す
+            \return 読み込んだデータ
+        */
+        Property<std::shared_ptr<Data>> const PData;
+
+        // #endregion プロパティ
+
         // #region メンバ変数
 
         //! A private member variable (constant expression).
@@ -258,18 +268,6 @@ namespace schrac {
 		std::shared_ptr<Data> pdata_;
         	
         // #endregion メンバ変数
-        
-        // #region プロパティ
-
-    public:
-        //! A property.
-        /*!
-            読み込んだデータを返す
-            \return 読み込んだデータ
-        */
-        Property<std::shared_ptr<Data>> const PData;
-
-        // #endregion プロパティ
         
         // #region 禁止されたコンストラクタ・メンバ関数
 
@@ -357,11 +355,10 @@ namespace schrac {
                         errorMessage(lineindex_ - 1, article, val);
                         return boost::none;
                     }
-                    break;
                 }
                 }
             }
-            break;
+                break;
 
             case 1:
                 break;

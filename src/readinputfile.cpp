@@ -31,7 +31,7 @@ namespace schrac {
         ci_string("bulirsch_stoer"),
         ci_string("controlled_runge_kutta")
     };
-    const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "bulirsch_stoer";
+    const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "controlled_runge_kutta";
     const ci_string ReadInputFile::SPIN_ORBITAL = "spin.orbital";
     const ci_string ReadInputFile::SPIN_ORBITAL_DEFAULT = "alpha";
 
@@ -355,7 +355,6 @@ namespace schrac {
                         }
 
                         return std::move(val);
-                        break;
                     }
                 }
             }
@@ -414,11 +413,10 @@ namespace schrac {
                         }
 
                         return boost::optional<ci_string>(std::move(val));
-                        break;
                     }
                 }
             }
-            break;
+                break;
 
             case 1:
                 break;
@@ -454,7 +452,7 @@ namespace schrac {
     bool ReadInputFile::readScfMixingWeight()
     {
         readValue("scf.Mixing.Weight", Data::SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
-        if (pdata_->scf_mixing_weight_ <= 0.0) {
+        if (pdata_->scf_mixing_weight_ <= 0.0 || pdata_->scf_mixing_weight_ > 1.0) {
             std::cerr << "インプットファイルの[scf.Mixing.Weight]の行が正しくありません" << std::endl;
             return false;
         }

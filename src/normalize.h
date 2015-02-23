@@ -39,11 +39,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~Normalize()
-        {
-        }
+        virtual ~Normalize() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstdint>                  // for std::uint32_t
 #include <boost/static_assert.hpp>  // for BOOST_STATIC_ASSERT
 
 namespace checkpoint {
@@ -48,8 +49,9 @@ namespace checkpoint {
         
         //! A destructor.
         /*!
+            デフォルトデストラクタ
         */
-        ~ArraiedAllocator() {}
+        ~ArraiedAllocator() = default;
 
         // #endregion コンストラクタ・デストラクタ
 
@@ -141,7 +143,7 @@ namespace checkpoint {
     template <std::size_t TTypeSize, std::size_t TNumArray>
     inline ArraiedAllocator<TTypeSize, TNumArray>::ArraiedAllocator() {
         first_ = &items_[0];
-        for (int i = 0; i < TNumArray; i++) {
+        for (std::uint32_t i = 0; i < TNumArray; i++) {
             items_[i].next_ = &items_[i + 1];
         }
         items_[TNumArray - 1].next_ = nullptr;

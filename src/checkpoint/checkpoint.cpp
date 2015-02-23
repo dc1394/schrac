@@ -65,9 +65,9 @@ namespace checkpoint {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~CheckPointFastImpl() {}
+        ~CheckPointFastImpl() = default;
 
         // #endregion コンストラクタ・デストラクタ
 
@@ -128,7 +128,7 @@ namespace checkpoint {
 		for (std::int32_t i = 0; i < cfp->cur; ++i, ++itr) {
 			if (prevreal) {
 				auto const realtime(duration_cast<duration<double, std::milli>>(itr->realtime - *prevreal));
-				std::cout << itr->action << " にかかった時間 = "
+				std::cout << itr->action << " elapsed time = "
 						  << boost::format("%.4f") % realtime.count()
 						  << " (msec)\n";
 			}

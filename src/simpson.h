@@ -38,11 +38,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~Simpson()
-        {
-        }
+        ~Simpson() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

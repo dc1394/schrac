@@ -39,11 +39,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~Energy()
-        {
-        }
+        ~Energy() = default;
 
         // #region メンバ関数
         

@@ -33,11 +33,9 @@ namespace schrac {
         
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~ScfLoop()
-        {
-        }
+        ~ScfLoop() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

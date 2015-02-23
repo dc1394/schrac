@@ -29,11 +29,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~EigenValueSearch()
-        {
-        }
+        ~EigenValueSearch() = default;
 
         // #endregion コンストラクタ・デストラクタ
 

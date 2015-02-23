@@ -28,11 +28,9 @@ namespace schrac {
 
         //! A destructor.
         /*!
-            何もしないデストラクタ
+            デフォルトデストラクタ
         */
-        ~Rho()
-        {
-        }
+        ~Rho() = default;
 
         // #region メンバ関数
 

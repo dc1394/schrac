@@ -11,7 +11,7 @@
 #include <string>           // for std::to_string
 
 namespace schrac {
-    myvector solve_linear_equ(std::array<double, AMMAX * AMMAX> a, myvector b)
+    myvector solve_linear_equ(std::array<double, AMMAX * AMMAX> & a, myvector & b)
     {
         // save original handler, install new handler
         auto old_handler = gsl_set_error_handler(

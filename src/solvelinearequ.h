@@ -15,7 +15,7 @@
 namespace schrac {
 	//!  A static variable (constant expression).
     /*!
-        級数展開の係数amの最大値
+        級数展開の係数am_の最大値
     */
     static std::size_t constexpr AMMAX = 3;
 
@@ -31,7 +31,7 @@ namespace schrac {
         \param b 連立一次方程式Ax = bにおける右辺のベクトルb
         \return 方程式の解ベクトル
     */
-    myvector solve_linear_equ(std::array<double, AMMAX * AMMAX> a, myvector b);
+    myvector solve_linear_equ(std::array<double, AMMAX * AMMAX> & a, myvector & b);
 }
 
 #endif  // _SOLVELINEAREQU_H_
