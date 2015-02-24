@@ -4,11 +4,12 @@
     Copyright © 2015 @dc1394 All Rights Reserved.
 */
 
-#include "schnormalize.h"
-#include "diracnormalize.h"
 
 #ifndef _NORMALIZATION_H_
 #define _NORMALIZATION_H_
+
+#include "diffsolver.h"
+#include <boost/container/flat_map.hpp>
 
 #pragma once
 

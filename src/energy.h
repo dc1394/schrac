@@ -82,6 +82,12 @@ namespace schrac {
         */
         void potential_energy() const;
 
+        //! A private member function (const).
+        /*!
+            全エネルギーを表示する
+        */
+        void total_energy(boost::optional<double> const & ehartree) const;
+
         // #endregion メンバ関数
 
         // #region メンバ変数

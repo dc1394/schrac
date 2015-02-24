@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "fastarenaobject.h"
 #include <cstdint>              // for std::int32_t, std::int64_t
 #include <memory>               // for std::unique_ptr
 #include <utility>              // for std::pair
@@ -72,10 +73,9 @@ namespace checkpoint {
         //! A public member function.
         /*!
             最初のチェックポイントから最後のチェックポイント
-            までの経過時間を返す
-            \return 経過時間
+            までの経過時間を表示する
         */
-        double totalpassageoftime() const;
+        void totalpassageoftime() const;
 
         // #endregion メンバ関数 
 
@@ -109,9 +109,15 @@ namespace checkpoint {
         // #endregion 禁止されたコンストラクタ・メンバ関数
 	};
 
-#ifdef _WIN32
+    // #region 非メンバ関数
+
+    //! A function.
+    /*!
+        自分自身のプロセスのメモリ使用量を計測する    
+    */
     void usedmem();
-#endif
+
+    // #endregion 非メンバ関数
 }
 
 #endif  // _CHECKPOINT_H_

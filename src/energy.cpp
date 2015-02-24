@@ -28,6 +28,7 @@ namespace schrac {
         }
 
         eigenvalue();
+        total_energy(ehartree);
     }
 
     void Energy::coulomb_energy() const
@@ -53,6 +54,13 @@ namespace schrac {
     void Energy::potential_energy() const
     {
         std::cout << "E(Potential Energy)\t= " << potcoulomb_energy_ << std::endl;
+    }
+
+    void Energy::total_energy(boost::optional<double> const & ehartree) const
+    {
+        std::cout << "E(Total Energy)\t\t= "; 
+        std::cout << (ehartree ? 2.0 * pdiffdata_->E_ + *ehartree : pdiffdata_->E_);
+        std::cout << std::endl;
     }
 
     // #endregion メンバ関数

@@ -79,16 +79,12 @@ int main(int argc, char * argv[])
     cp.checkpoint("ファイル書き込み処理", __LINE__);
 
     cp.checkpoint_print();
-    auto const elapsedtime = cp.totalpassageoftime();
+    cp.totalpassageoftime();
 
-    std::cout << "Total elapsed time = " << boost::format("%.4f") % elapsedtime
-        << std::endl;
-
-#if defined(_WIN32) || defined(_WIN64)
     checkpoint::usedmem();
-#endif
 
     goexit();
 
     return EXIT_SUCCESS;
 }
+

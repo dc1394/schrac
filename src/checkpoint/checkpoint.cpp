@@ -4,25 +4,24 @@
     Copyright ©  2014 @dc1394 All Rights Reserved.
 */
 #include "checkpoint.h"
-#include "fastarenaobject.h"
 #include <array>                // for std::array
 #include <chrono>               // for std::chrono
 #include <iostream>             // for std::cout
-
-#ifdef _WIN32
-    #include <system_error>
-#endif
-
+#include <system_error>         // for std::system_category
 #include <boost/assert.hpp>     // for boost::assert
 #include <boost/cast.hpp>       // for boost::numeric_cast
 #include <boost/format.hpp>     // for boost::format
 #include <boost/optional.hpp>   // for boost::optional
 
 #ifdef _WIN32
-    #include <Windows.h>
-    #include <Psapi.h>
+    #include <Windows.h>        // for GetCurrentProcess
+    #include <Psapi.h>          // for GetProcessMemoryInfo
 
 	#pragma comment(lib, "Psapi.Lib")
+#else
+    #include <errno.h>          // for errno 
+    #include <sys/time.h>       // for struct timeval
+    #include <sys/resource.h>   // for getrusage
 #endif
 
 namespace checkpoint {
@@ -128,27 +127,28 @@ namespace checkpoint {
 		for (std::int32_t i = 0; i < cfp->cur; ++i, ++itr) {
 			if (prevreal) {
 				auto const realtime(duration_cast<duration<double, std::milli>>(itr->realtime - *prevreal));
-				std::cout << itr->action << " elapsed time = "
-						  << boost::format("%.4f") % realtime.count()
-						  << " (msec)\n";
+				std::cout << itr->action
+                          << boost::format(" elapsed time = %.4f (msec)\n") % realtime.count();
 			}
 
             prevreal = boost::optional<high_resolution_clock::time_point>(itr->realtime);
 		}
 	}
 
-    double CheckPoint::totalpassageoftime() const
+    void CheckPoint::totalpassageoftime() const
     {
         using namespace std::chrono;
 
         auto const realtime = duration_cast<duration<double, std::milli>>(
             cfp->points[cfp->cur - 1].realtime - cfp->points[0].realtime);
 
-        return realtime.count();
+        std::cout << boost::format("Total elapsed time = %.4f (msec)") % realtime.count() << std::endl;
     }
 
+    // #region 非メンバ関数
+
 #ifdef _WIN32
-	void usedmem()
+    void usedmem()
 	{
 		PROCESS_MEMORY_COUNTERS memInfo = { 0 };
 		
@@ -158,7 +158,24 @@ namespace checkpoint {
 
 		std::cout << "Used Memory Size: "
 				  << boost::numeric_cast<std::uint32_t>(memInfo.PeakWorkingSetSize >> 10)
-				  << "(kB)" << std::endl; 
+				  << "(kB)"
+                  << std::endl; 
 	}
+#else
+    void usedmem()
+	{
+	    struct rusage r = { 0 };
+
+	    if (getrusage(RUSAGE_SELF, &r)) {
+		    throw std::system_error(errno, std::system_category());
+    	}
+
+        std::cout << "Used Memory Size: "
+				  << boost::numeric_cast<std::uint32_t>(r.ru_maxrss)
+				  << "(kB)"
+                  << std::endl;
+    }
 #endif
+
+    // #endregion 非メンバ関数
 }

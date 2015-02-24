@@ -10,7 +10,7 @@
 namespace schrac {
     void goexit()
     {
-        std::cout << "I—¹‚·‚é‚É‚Í‰½‚©ƒL[‚ð‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢..." << std::endl;
+        std::cout << "çµ‚äº†ã™ã‚‹ã«ã¯ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦ãã ã•ã„..." << std::endl;
 
 #if defined(_WIN32) || defined(_WIN64)
         ::_getch();
