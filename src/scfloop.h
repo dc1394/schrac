@@ -13,7 +13,7 @@
 #include <boost/optional.hpp>   // for boost::optional
 
 namespace schrac {
-	class ScfLoop final {
+    class ScfLoop final {
     public:
         // #region 型エイリアス
 
@@ -221,7 +221,7 @@ namespace schrac {
         ScfLoop & operator=(ScfLoop const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 }
 
 #endif  // _SCFLOOP_H_

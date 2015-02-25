@@ -1,4 +1,4 @@
-#include "goexit.h"
+﻿#include "goexit.h"
 #include <iostream>
 
 #if defined(_WIN32) || defined(_WIN64)

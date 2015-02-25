@@ -17,7 +17,7 @@ namespace schrac {
     /*!
         コマンドラインオプションを解析するクラス    
     */
-	class GetComLineOption final {
+    class GetComLineOption final {
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -97,7 +97,7 @@ namespace schrac {
         GetComLineOption & operator=(GetComLineOption const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 }
 
-#endif	// _GETCOMLINEOPTION_H_
+#endif  // _GETCOMLINEOPTION_H_

@@ -22,7 +22,7 @@ namespace schrac {
 
     // #endregion 型エイリアス
 
-	// #region コンストラクタ
+    // #region コンストラクタ
 
     DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata) :
         DiffSolver(pdata, pdiffdata, nullptr, nullptr)
@@ -36,7 +36,7 @@ namespace schrac {
         prho_(prho),
         pvh_(pvh),
         pvh2_(pvh ? std::make_shared<Vhartree>(*pvh_) : nullptr)
-	{
+    {
         if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
             V_ = [this](double r)
             {
@@ -72,7 +72,7 @@ namespace schrac {
                 return pdiffdata_->Z_ / (r * r) + pvh2_->dvhartree_dr(r);
             };
         };
-	}
+    }
 
     // #endregion コンストラクタ
 
@@ -92,10 +92,10 @@ namespace schrac {
 
     void DiffSolver::initialize(double E)
     {
-        pdiffdata_->E_ = E;			// エネルギーを代入
-        pdiffdata_->thisnode_ = 0;	// ノード数初期化
+        pdiffdata_->E_ = E;         // エネルギーを代入
+        pdiffdata_->thisnode_ = 0;  // ノード数初期化
         am_evaluate();              // am_を求める
-        bm_evaluate();				// bm_を求める
+        bm_evaluate();              // bm_を求める
 
         pdiffdata_->li_.clear();
         pdiffdata_->mi_.clear();
@@ -180,32 +180,32 @@ namespace schrac {
     // #region privateメンバ関数
 
     void DiffSolver::am_evaluate()
-	{
+    {
         std::array<double, AMMAX * AMMAX> a;
-		myvector b;
+        myvector b;
 
-		for (std::size_t i = 0; i < AMMAX; i++) {
-			auto rtmp = 1.0;
+        for (std::size_t i = 0; i < AMMAX; i++) {
+            auto rtmp = 1.0;
 
-			for (std::size_t j = 0; j < AMMAX; j++) {
+            for (std::size_t j = 0; j < AMMAX; j++) {
                 a[AMMAX * i + j] = rtmp;
-				rtmp *= pdiffdata_->r_mesh_[i];
-			}
+                rtmp *= pdiffdata_->r_mesh_[i];
+            }
 
-			b[i] = V_(std::exp(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_));    
-		}
+            b[i] = V_(std::exp(pdata_->xmin_ + static_cast<double>(i) * pdiffdata_->dx_));    
+        }
             
         am_ = solve_linear_equ(a, b);
-	}
+    }
 
     void DiffSolver::bm_evaluate()
-	{
-		bm_[0] = 1.0;
-		bm_[1] = 0.0;
-		bm_[2] = (am_[0] - pdiffdata_->E_) / static_cast<double>(2 * pdata_->l_ + 3) * bm_[0];
-		bm_[3] = am_[1] / static_cast<double>(3 * pdata_->l_ + 6) * bm_[0];
-		bm_[4] = (am_[0] * bm_[2] + am_[2] * bm_[0] - pdiffdata_->E_ * bm_[2]) / static_cast<double>(4 * pdata_->l_ + 10);
-	}
+    {
+        bm_[0] = 1.0;
+        bm_[1] = 0.0;
+        bm_[2] = (am_[0] - pdiffdata_->E_) / static_cast<double>(2 * pdata_->l_ + 3) * bm_[0];
+        bm_[3] = am_[1] / static_cast<double>(3 * pdata_->l_ + 6) * bm_[0];
+        bm_[4] = (am_[0] * bm_[2] + am_[2] * bm_[0] - pdiffdata_->E_ * bm_[2]) / static_cast<double>(4 * pdata_->l_ + 10);
+    }
 
     void DiffSolver::derivs(myarray const & f, myarray & dfdx, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const
     {

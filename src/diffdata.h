@@ -24,7 +24,7 @@ namespace schrac {
     /*!
         微分方程式のデータを集めた構造体
     */
-	struct DiffData final {
+    struct DiffData final {
         // #region コンストラクタ・デストラクタ
 
         //! A constructor.
@@ -132,7 +132,7 @@ namespace schrac {
         /*!
             無限遠に近い点からのxのメッシュ
         */
-		dvector x_i_;
+        dvector x_i_;
 
         //!  A public member variable.
         /*!
@@ -141,8 +141,8 @@ namespace schrac {
         dvector x_o_;
 
         // #endregion メンバ変数
-	};
+    };
 }
 
-#endif	// _DIFFDATA_H_
+#endif  // _DIFFDATA_H_
 

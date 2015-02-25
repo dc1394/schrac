@@ -23,7 +23,7 @@ namespace schrac {
     /*!
         インプットファイルを読み込み、Dataクラスのオブジェクトに格納するクラス
     */
-	class ReadInputFile final {
+    class ReadInputFile final {
         // #region 型エイリアス
 
         using strvec = std::vector < ci_string > ;
@@ -259,14 +259,14 @@ namespace schrac {
         /*!
             現在の行数
         */
-	    std::size_t lineindex_;
+        std::size_t lineindex_;
 
         //! A private member variable.
         /*!
             インプットファイルから読み込んだデータ
         */
-		std::shared_ptr<Data> pdata_;
-        	
+        std::shared_ptr<Data> pdata_;
+            
         // #endregion メンバ変数
         
         // #region 禁止されたコンストラクタ・メンバ関数
@@ -293,7 +293,7 @@ namespace schrac {
         ReadInputFile & operator=(ReadInputFile const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 
     template <typename T>
     boost::optional<T> ReadInputFile::readData(ci_string const & article, T const & default_value)
@@ -411,4 +411,4 @@ namespace schrac {
     }
 }
 
-#endif	// _READINPUTFILE_H_
+#endif  // _READINPUTFILE_H_

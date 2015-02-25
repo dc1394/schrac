@@ -30,10 +30,10 @@ namespace schrac {
         pdata_(pdata),
         pdiffdata_(pdiffdata),
         pvh_(pvh)
-	{
-		initialize(prho);
-		setoutstream();
-	}
+    {
+        initialize(prho);
+        setoutstream();
+    }
 
     // #endregion コンストラクタ
 
@@ -63,7 +63,7 @@ namespace schrac {
 
     // #endregion publicメンバ関数
 
-	// #region privateメンバ関数
+    // #region privateメンバ関数
 
     bool EigenValueSearch::brent()
     {
@@ -152,36 +152,36 @@ namespace schrac {
     }
 
     void EigenValueSearch::initialize(std::shared_ptr<Rho> const & prho)
-	{
-		switch (pdata_->eq_type_) {
+    {
+        switch (pdata_->eq_type_) {
         case Data::Eq_type::SCH:
-				Eapprox_ = Eapprox_sch(pdata_);
-			break;
+                Eapprox_ = Eapprox_sch(pdata_);
+            break;
 
         case Data::Eq_type::SDIRAC:
         case Data::Eq_type::DIRAC:
-				Eapprox_ = Eapprox_dirac(pdata_);
-			break;
+                Eapprox_ = Eapprox_dirac(pdata_);
+            break;
 
         default:
-				BOOST_ASSERT("何かがおかしい！！");
-			break;
-		}
+                BOOST_ASSERT("何かがおかしい！！");
+            break;
+        }
 
         pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho, pvh_);
 
-		if (pdata_->search_lowerE_) {
+        if (pdata_->search_lowerE_) {
             pdiffsolver_->E_ = *pdata_->search_lowerE_;
-			DE_ = - pdiffsolver_->E_ / static_cast<double>(pdata_->num_of_partition_);
-		} else {
-			pdiffsolver_->E_ = Eapprox_;
-			DE_ = - pdiffsolver_->E_ / static_cast<const double>(pdata_->num_of_partition_);
-			pdiffsolver_->E_ -= 3.0 * DE_;
-		}
-	}
+            DE_ = - pdiffsolver_->E_ / static_cast<double>(pdata_->num_of_partition_);
+        } else {
+            pdiffsolver_->E_ = Eapprox_;
+            DE_ = - pdiffsolver_->E_ / static_cast<const double>(pdata_->num_of_partition_);
+            pdiffsolver_->E_ -= 3.0 * DE_;
+        }
+    }
 
-	bool EigenValueSearch::rough_search()
-	{
+    bool EigenValueSearch::rough_search()
+    {
         auto pdiffsolver = reinterpret_cast<void *>(pdiffsolver_.get());
         Dold = func_D(pdiffsolver_->E_, pdiffsolver);
 
@@ -189,33 +189,33 @@ namespace schrac {
             info();
         }
 
-		++loop_;
+        ++loop_;
 
         for (; loop_ < EVALSEARCHMAX; loop_++) {
-   			pdiffsolver_->E_ += DE_;
+            pdiffsolver_->E_ += DE_;
 
             if (pdiffsolver_->E_ > 0.0) {
                 return false;
             }
 
-			auto const Dnew = func_D(pdiffsolver_->E_, pdiffsolver);
-	 
-			if (Dnew * Dold < 0.0) {
-				Emax_ = pdiffsolver_->E_;
-   				Emin_ = pdiffsolver_->E_ - DE_;
+            auto const Dnew = func_D(pdiffsolver_->E_, pdiffsolver);
+     
+            if (Dnew * Dold < 0.0) {
+                Emax_ = pdiffsolver_->E_;
+                Emin_ = pdiffsolver_->E_ - DE_;
 
-				break;
-   			} else {
-				Dold = Dnew;
-   			}
+                break;
+            } else {
+                Dold = Dnew;
+            }
 
             if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
                 info();
             }
-		}
+        }
 
-		return loop_ != EVALSEARCHMAX;
-	}
+        return loop_ != EVALSEARCHMAX;
+    }
 
     void EigenValueSearch::setoutstream() const
     {
@@ -223,7 +223,7 @@ namespace schrac {
         std::cout << std::setprecision(
             boost::numeric_cast<std::streamsize>(std::fabs(std::log10(pdata_->eps_))));
     }
-	
+    
     // #endregion privateメンバ関数 
 
     // #region 非メンバ関数

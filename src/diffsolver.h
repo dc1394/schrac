@@ -41,7 +41,7 @@ namespace schrac {
     /*!
         微分方程式を解くクラス
     */
-	class DiffSolver final {
+    class DiffSolver final {
         // #region 型エイリアス
 
     private:
@@ -170,8 +170,8 @@ namespace schrac {
             ref: D.D.Koelling and B.N.Harmon,
                  J.Phys.C: Solid State Phys. 10, 3107 (1977).
 
-		    d = alpha^2 / 2 * r / MQ * dV / dr
-		    dM / dx = -(2 * NL + 1 + d)M +(2 * r^2 * MQ(V_ - ep) - d * NL)L
+            d = alpha^2 / 2 * r / MQ * dV / dr
+            dM / dx = -(2 * NL + 1 + d)M +(2 * r^2 * MQ(V_ - ep) - d * NL)L
             \param L L(x)の値
             \param M M(x)の値
             \param x xの値
@@ -317,7 +317,7 @@ namespace schrac {
         /*!
             微分方程式のデータオブジェクト
         */
-		std::shared_ptr<DiffData> const pdiffdata_;
+        std::shared_ptr<DiffData> const pdiffdata_;
 
         //!  A private member variable (constant).
         /*!
@@ -370,17 +370,17 @@ namespace schrac {
         DiffSolver & operator=(DiffSolver const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
     
     // #region 非メンバ関数の実装
     
-	template <typename T>
-	T sqr(T x)
-	{
-		return x * x;
-	}
+    template <typename T>
+    T sqr(T x)
+    {
+        return x * x;
+    }
     
     // #endregion 非メンバ関数の実装
 }
 
-#endif	// _DIFFSOLVER_H_
+#endif  // _DIFFSOLVER_H_

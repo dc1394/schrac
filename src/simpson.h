@@ -105,4 +105,4 @@ namespace schrac {
     };
 }
 
-#endif	// _SIMPSON_H_
+#endif  // _SIMPSON_H_

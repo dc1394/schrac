@@ -19,7 +19,7 @@ namespace schrac {
     /*! 
         得られた波動関数を正規化するクラス
     */
-	class Normalize {
+    class Normalize {
         // #region 型エイリアス
 
     public:
@@ -76,7 +76,7 @@ namespace schrac {
         /*!
             データオブジェクト
         */
-		std::shared_ptr<Data> const pdata_;
+        std::shared_ptr<Data> const pdata_;
 
         //! A protected member variable.
         /*!
@@ -128,7 +128,7 @@ namespace schrac {
         Normalize & operator=(Normalize const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 
     // #region コンストラクタの実装
 

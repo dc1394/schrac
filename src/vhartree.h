@@ -84,7 +84,7 @@ namespace schrac {
         */
         Property<std::vector<double>> Vhart;
 
-        // #endregion プロパティ       
+        // #endregion プロパティ
 
         // #region メンバ変数
 

@@ -52,10 +52,10 @@ namespace schrac {
 
     // #region publicメンバ関数
         
-	void ReadInputFile::readFile()
-	{
-		if (!ifs_.is_open())
-			throw std::runtime_error("インプットファイルが開けませんでした");
+    void ReadInputFile::readFile()
+    {
+        if (!ifs_.is_open())
+            throw std::runtime_error("インプットファイルが開けませんでした");
 
         auto const errorendfunc = []() {
             throw std::runtime_error("インプットファイルが異常です");
@@ -65,7 +65,7 @@ namespace schrac {
             errorendfunc();
         }
 
-		if (!readEq()) {
+        if (!readEq()) {
             errorendfunc();
         }
 
@@ -82,7 +82,7 @@ namespace schrac {
         readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
 
         // 解く方程式のタイプを読み込む
-		if (!readType()) {
+        if (!readType()) {
             errorendfunc();
         }
 
@@ -117,7 +117,7 @@ namespace schrac {
         
         // SCFの収束判定条件の値を読み込む
         readValue("scf.criterion", Data::SCF_CRITERION_DEFAULT, pdata_->scf_criterion_);
-	}
+    }
     
     // #endregion publicメンバ関数
 
@@ -279,8 +279,8 @@ namespace schrac {
     }
 
     boost::optional<ci_string> ReadInputFile::readData(ci_string const & article)
-	{
-		for (; true; lineindex_++) {
+    {
+        for (; true; lineindex_++) {
             auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
@@ -309,13 +309,13 @@ namespace schrac {
                 BOOST_ASSERT(!"何かがおかしい!");
                 break;
             }
-		}
-	}
+        }
+    }
 
     boost::optional<ci_string> ReadInputFile::readData(ci_string const & article, ci_string const & def)
-	{
-		// グリッドを読み込む
-		for (; true; lineindex_++) {
+    {
+        // グリッドを読み込む
+        for (; true; lineindex_++) {
             auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
@@ -367,12 +367,12 @@ namespace schrac {
                 BOOST_ASSERT(!"何かがおかしい!");
                 break;
             }
-		}
-	}
+        }
+    }
 
     boost::optional<ci_string> ReadInputFile::readDataAuto(ci_string const & article)
-	{
-		for (; true; lineindex_++) {
+    {
+        for (; true; lineindex_++) {
             auto const ret(getToken(article));
 
             switch (std::get<0>(ret))
@@ -425,11 +425,11 @@ namespace schrac {
                 BOOST_ASSERT(!"何かがおかしい!");
                 break;
             }
-		}
-	}
-	
-	bool ReadInputFile::readEq()
-	{
+        }
+    }
+    
+    bool ReadInputFile::readEq()
+    {
         auto const peqtype(readData(ReadInputFile::EQ_TYPE, ReadInputFile::EQ_TYPE_DEFAULT));
         if (!peqtype) {
             return false;
@@ -440,14 +440,14 @@ namespace schrac {
         
         if (itr == ReadInputFile::EQ_TYPE_ARRAY.end()) {
             errorMessage(lineindex_ - 1, ReadInputFile::EQ_TYPE, eqtype);
-			return false;
+            return false;
         }
         else if (itr != ReadInputFile::EQ_TYPE_ARRAY.begin()) {
             pdata_->eq_type_ = boost::numeric_cast<Data::Eq_type>(std::distance(ReadInputFile::EQ_TYPE_ARRAY.begin(), itr));
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     bool ReadInputFile::readScfMixingWeight()
     {
@@ -459,25 +459,25 @@ namespace schrac {
         return true;
     }
 
-	bool ReadInputFile::readType()
-	{
+    bool ReadInputFile::readType()
+    {
         auto const psolvetype(readData("solver.type", ReadInputFile::SOLVER_TYPE_DEFAULT));
         if (!psolvetype) {
             return false;
         }
 
         auto const solvertype = *psolvetype;
-		auto const itr(boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype));
+        auto const itr(boost::find(ReadInputFile::SOLVER_TYPE_ARRAY, solvertype));
         if (itr == ReadInputFile::SOLVER_TYPE_ARRAY.end()) {
-			errorMessage(lineindex_ - 1, "solver.type", solvertype);
-			return false;
-		} else {
+            errorMessage(lineindex_ - 1, "solver.type", solvertype);
+            return false;
+        } else {
             pdata_->solver_type_ = boost::numeric_cast<Data::Solver_type>(
                 std::distance(ReadInputFile::SOLVER_TYPE_ARRAY.begin(), itr));
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     // #endregion privateメンバ関数
 }

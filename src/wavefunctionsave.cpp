@@ -17,13 +17,13 @@ namespace schrac {
     {
     }
 
-	std::string WaveFunctionSave::make_filename() const
-	{
-		std::string filename("wavefunction_");
+    std::string WaveFunctionSave::make_filename() const
+    {
+        std::string filename("wavefunction_");
 
-		filename += pdata_->chemical_symbol_ + '_';		
-		filename += pdata_->orbital_.c_str();
-		
+        filename += pdata_->chemical_symbol_ + '_';
+        filename += pdata_->orbital_.c_str();
+
         switch (pdata_->eq_type_) {
         case Data::Eq_type::DIRAC:
             filename += '_';
@@ -43,14 +43,14 @@ namespace schrac {
             BOOST_ASSERT(!"何かがおかしい！");
         }
 
-		filename += ".csv";
+        filename += ".csv";
 
-		return std::move(filename);
-	}
+        return std::move(filename);
+    }
 
     bool WaveFunctionSave::operator()()
-	{
-		auto const filename(make_filename());
+    {
+        auto const filename(make_filename());
 
         auto const fcloser = [](FILE * fp)
         {
@@ -59,14 +59,14 @@ namespace schrac {
             }
         };
 
-		std::unique_ptr<FILE, decltype(fcloser)> fp(
+        std::unique_ptr<FILE, decltype(fcloser)> fp(
             std::fopen(filename.c_str(), "w"),
             fcloser);
 
-		if (!fp) {
-			std::cerr << "ファイルが作成できませんでした。" << std::endl;
-			return false;
-		}
+        if (!fp) {
+            std::cerr << "ファイルが作成できませんでした。" << std::endl;
+            return false;
+        }
 
         auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
         for (auto i = 0; i < size; i++) {
@@ -75,10 +75,10 @@ namespace schrac {
                 std::fprintf(fp.get(), "%.15f,", itr->second[i]);
             }
             std::fputs("\n", fp.get());
-		}
+        }
 
-		std::cout << '\n' << filename << "に波動関数を書き込みました。" << std::endl;
+        std::cout << '\n' << filename << "に波動関数を書き込みました。" << std::endl;
 
-		return true;
-	}
+        return true;
+    }
 }

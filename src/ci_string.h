@@ -17,7 +17,7 @@ namespace schrac {
     /*!
         大文字小文字を区別しない文字列クラス
     */
-	struct ci_char_traits : public std::char_traits<char> {
+    struct ci_char_traits : public std::char_traits<char> {
         // #region staticメンバ関数
 
         //! A public static member function.
@@ -37,11 +37,11 @@ namespace schrac {
             \param rhs 二つ目の文字
             \return 二つの文字が等しいかどうか
         */
-		static bool eq(char lhs, char rhs)
+        static bool eq(char lhs, char rhs)
         {
-			return std::toupper(lhs) == std::toupper(rhs);
-		}
-		
+            return std::toupper(lhs) == std::toupper(rhs);
+        }
+        
         //! A public static member function.
         /*!
             引数で与えられた二つの文字の大小関係を判別する
@@ -51,11 +51,11 @@ namespace schrac {
         */
         static bool lt(char lhs, char rhs)
         {
-			return std::toupper(lhs) < std::toupper(rhs);
-		}
+            return std::toupper(lhs) < std::toupper(rhs);
+        }
 
         // #endregion staticメンバ関数
-	};
+    };
 
     // #region 型エイリアス
 
@@ -89,4 +89,4 @@ namespace schrac {
     // #endregion 非メンバ関数
 }
 
-#endif	// _CISTRING_H_
+#endif  // _CISTRING_H_

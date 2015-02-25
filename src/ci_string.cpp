@@ -15,13 +15,13 @@ namespace schrac {
     // #region staticメンバ関数
 
     int ci_char_traits::compare(char const * s1, char const * s2, std::size_t n)
-	{
+    {
 #ifdef _MSC_VER
-		return _memicmp(s1, s2, n);
+        return _memicmp(s1, s2, n);
 #else
-		return memIcmp(s1, s2, n);
+        return memIcmp(s1, s2, n);
 #endif
-	}
+    }
     
     // #region staticメンバ関数
 
@@ -45,12 +45,12 @@ namespace schrac {
     }
 #endif
 
-	std::ostream & operator<<(std::ostream & os, const ci_string & s)
-	{
-		os << s.c_str();
+    std::ostream & operator<<(std::ostream & os, const ci_string & s)
+    {
+        os << s.c_str();
 
-		return os;
-	}
+        return os;
+    }
 
     // #endregion 非メンバ関数
 }

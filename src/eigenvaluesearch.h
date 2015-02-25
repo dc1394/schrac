@@ -16,7 +16,7 @@ namespace schrac {
     /*!
         エネルギー固有値検索を行うクラス
     */
-	class EigenValueSearch final {
+    class EigenValueSearch final {
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -119,7 +119,7 @@ namespace schrac {
         /*!
             エネルギー固有値探索の最大のループ回数
         */
-		static constexpr auto EVALSEARCHMAX = 10000;
+        static constexpr auto EVALSEARCHMAX = 10000;
 
     public:
         //! A public static member variable.
@@ -158,7 +158,7 @@ namespace schrac {
             関数Dの古い値
         */
         double Dold;
-		
+        
         //! A private member variable.
         /*!
             エネルギー固有値探索のループ回数
@@ -169,19 +169,19 @@ namespace schrac {
         /*!
             インプットファイルのデータオブジェクト
         */
-		std::shared_ptr<Data> const pdata_;
+        std::shared_ptr<Data> const pdata_;
 
         //! A private member variable.
         /*!
             微分方程式オブジェクト
         */
-		std::shared_ptr<DiffSolver> pdiffsolver_;
+        std::shared_ptr<DiffSolver> pdiffsolver_;
 
         //! A private member variable.
         /*!
             微分方程式データのオブジェクト
         */
-		std::shared_ptr<DiffData> const pdiffdata_;
+        std::shared_ptr<DiffData> const pdiffdata_;
 
         //!  A private member variable.
         /*!
@@ -215,7 +215,7 @@ namespace schrac {
         EigenValueSearch & operator=(EigenValueSearch const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 
     // #region 非メンバ関数
 

@@ -22,7 +22,7 @@ namespace schrac {
         PEhartree([this]{ return ehartree_; }, nullptr),
         ehartree_(boost::none)
     {
-        ReadInputFile rif(arg);			// ファイルを読み込む
+        ReadInputFile rif(arg);         // ファイルを読み込む
         rif.readFile();
         pdata_ = rif.PData;
 
