@@ -85,9 +85,8 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-  SchracにはGNU ProjectによるIntel® Threading Building Blocks (Intel® TBB)を使
-  用しています。
-  こちらのライセンスは GNU General Public License になります。
+  SchracにはGNU ProjectによるGNU Scientific Libraryを使用しています。こちらのラ
+  イセンスは GNU General Public License になります。
 
   Schracには®Intel CorpolationによるIntel® Threading Building Blocks (Intel® 
   TBB)を使用しています。
