@@ -4,10 +4,12 @@
 ================================================================================
 
 ★これは何？
-　水素原子に対して、Schrödinger方程式を数値的に解くプログラムです。
+　水素原子とヘリウム原子に対して、Schrödinger方程式とScalar Dirac方程式及びDirac
+  方程式を数値的に解くプログラムです。
 
 ★更新履歴
 　2015/02/11 ver.0.1  コードを全面的に書き直して公開。
+  2015/02/24 ver.0.2  ヘリウム原子に対しても計算できるようにした。
 
 ★ライセンス
 　このソフトはフリーソフトウェアです（修正BSDライセンス）。
@@ -30,7 +32,7 @@
 
   Copyright (c) 2015, @dc1394
   All rights reserved.
-  
+
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
   * Redistributions of source code must retain the above copyright notice, 
@@ -41,7 +43,7 @@
   * Neither the name of the <organization> nor the　names of its contributors 
     may be used to endorse or promote products derived from this software 
     without specific prior written permission.
-  
+
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
   AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -82,3 +84,11 @@
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 * DEALINGS IN THE SOFTWARE.
 */
+
+  SchracにはGNU ProjectによるIntel® Threading Building Blocks (Intel® TBB)を使
+  用しています。
+  こちらのライセンスは GNU General Public License になります。
+
+  Schracには®Intel CorpolationによるIntel® Threading Building Blocks (Intel® 
+  TBB)を使用しています。
+  こちらのライセンスは GNU General Public License, version 2 になります。
