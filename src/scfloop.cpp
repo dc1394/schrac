@@ -112,12 +112,12 @@ namespace schrac {
         }
 
         Simpson simpson(pdiffdata_->dx_);
-        ehartree_ = boost::optional<double>(- simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
+        ehartree_ = boost::optional<double>(simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
     }
 
     double ScfLoop::req_energy(double eigen) const
     {
-        return 2.0 * eigen + *ehartree_;
+        return 2.0 * eigen - *ehartree_;
     }
 
     double ScfLoop::req_normrd(dvector const & newrho, dvector const & oldrho) const
