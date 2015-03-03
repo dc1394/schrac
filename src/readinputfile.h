@@ -392,7 +392,7 @@ namespace schrac {
                     if (idx != val->length()) {
                         throw std::invalid_argument("");
                     }
-                    pdata_->search_lowerE_ = boost::optional<double>(v);
+                    value = boost::optional<double>(v);
                 }
                 catch (std::invalid_argument const &) {
                     errorMessage(lineindex_ - 1, article, *val);

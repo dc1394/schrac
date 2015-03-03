@@ -25,9 +25,7 @@ namespace schrac {
         /*!
             何もしないコンストラクタ
         */
-        GetComLineOption()
-        {
-        }
+        GetComLineOption() = default;
 
         //! A destructor.
         /*!

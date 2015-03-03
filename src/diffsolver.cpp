@@ -331,7 +331,7 @@ namespace schrac {
         myvector b;
 
         for (std::size_t i = 0; i < AMMAX; i++) {
-            auto rtmp = std::pow(pdiffdata_->r_mesh_[i], 2 * pdata_->l_ + 1);
+            auto rtmp = pdiffdata_->r_mesh_[i];
 
             for (std::size_t j = 0; j < AMMAX; j++) {
                 a[AMMAX * i + j] = rtmp;
@@ -346,26 +346,8 @@ namespace schrac {
         myarray state{ 0.0, 0.0 };
         auto const r0 = pdiffdata_->r_mesh_[0];
 
-        auto const l = static_cast<double>(pdata_->l_);
-        auto const istart = static_cast<std::int32_t>(AMMAX - 1);
-        for (auto i = istart; i >= 0; i--) {
-            auto const di = static_cast<double>(i);
-            state[0] += bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
-            state[0] *= r0;
-        }
-                
-        for (auto i = istart; i >= 0; i--) {
-            auto const di = static_cast<double>(i);
-            state[1] += (2.0 * l + di + 1.0) * bn[i] / (2.0 * l + 2.0 + di) / (2.0 * l + 3.0 + di);
-                            
-            if (!i) {
-                break;
-            }
-
-            state[1] *= r0;
-        }
-
-        state[1] *= std::pow(r0, pdata_->l_);
+        state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
+        state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
 
         return std::move(state);
     }
@@ -375,6 +357,8 @@ namespace schrac {
     {
         auto state = req_poisson_init_val();
         auto const loop = boost::numeric_cast<std::int32_t>(pdiffdata_->r_mesh_.size() - 1);
+
+        std::vector<double> aa;
 
         std::vector<double> vhart;
         vhart.reserve(pdiffdata_->r_mesh_.size());
@@ -391,6 +375,7 @@ namespace schrac {
             pdiffdata_->r_mesh_[i + 1] - pdiffdata_->r_mesh_[i]);
 
             vhart.push_back(state[0] / pdiffdata_->r_mesh_[i]);
+         
         }
 
         vhart.push_back(state[0] / pdiffdata_->r_mesh_.back());

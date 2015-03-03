@@ -40,8 +40,8 @@ namespace schrac {
     void Vhartree::set_vhartree_boundary_condition(double Z)
     {
         auto const size = boost::numeric_cast<std::int32_t>(vhart_.size());
-        for (auto i = 0; i < size; i++) {
-            vhart_[i] += (Z / r_mesh_.back() - vhart_.back());
+        for (auto & v : vhart_) {
+            v += (Z / r_mesh_.back() - vhart_.back());
         }
     }
 
