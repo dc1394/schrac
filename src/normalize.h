@@ -51,8 +51,9 @@ namespace schrac {
         //! A public member function.
         /*!
             波動関数を求める
+            \param prho 4πr ** 2のかかった形の電子密度
         */
-        void base_evaluate();
+        void base_evaluate(boost::optional<std::vector<double>> const & prho);
 
         //! A public member function.
         /*!
@@ -102,6 +103,18 @@ namespace schrac {
         */
         dvector M_;
         
+        //! A protected member variable.
+        /*!
+            固有関数
+        */
+        dvector rf_;
+
+        //! A private member variable.
+        /*!
+            4πr ** 2のかかった形の電子密度
+        */
+        dvector rho_;
+
         // #endregion メンバ変数 
         
     private:
@@ -147,9 +160,9 @@ namespace schrac {
     // #region protectedメンバ関数の実装
 
     template <typename Derived>
-    void Normalize<Derived>::base_evaluate()
+    void Normalize<Derived>::base_evaluate(boost::optional<std::vector<double>> const & prho)
     {
-        static_cast<Derived &>(*this).evaluate();
+        static_cast<Derived &>(*this).evaluate(boost::optional<std::vector<double>> const & prho);
     }
 
     template <typename Derived>

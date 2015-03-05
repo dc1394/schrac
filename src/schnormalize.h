@@ -10,7 +10,8 @@
 #pragma once
 
 #include "normalize.h"
-#include <tuple>            // for std::tuple
+#include <tuple>                                // for std::tuple
+#include <boost/optional.hpp>                   // for boost::optional
 
 namespace schrac {
     //! A class.
@@ -34,8 +35,7 @@ namespace schrac {
             \param pdiffsolver 微分方程式のデータオブジェクト
         */
         SchNormalize(std::shared_ptr<DiffSolver> const & pdiffsolver) :
-            Normalize<SchNormalize>(pdiffsolver),
-            Pf([this] { return pf_; }, nullptr)
+            Normalize<SchNormalize>(pdiffsolver)
         {
         }
 
@@ -47,23 +47,14 @@ namespace schrac {
 
         // #endregion コンストラクタ・デストラクタ
 
-        // #region プロパティ
-
-        //! A property.
-        /*!
-            規格化された波動関数
-        */
-        Property<const dvector &> const Pf;
-
-        // #endregion プロパティ
-
-        // #region メンバ関数
+        // #region publicメンバ関数
 
         //! A public member function.
         /*!
-            波動関数を求める
+            波動関数と4πr ** 2のかかった形の電子密度を求める
+            \param prho 4πr ** 2のかかった形の電子密度が格納された可変長配列へのboost::optional
         */
-        void evaluate();
+        void evaluate(boost::optional<std::vector<double>> const & prho);
         
         //! A public member function.
         /*!
@@ -71,22 +62,20 @@ namespace schrac {
         */
         Normalize<SchNormalize>::mymap getresult() const;
 
+        // #endregion publicメンバ関数
+
+        // #region privateメンバ関数
+
     private:
-        //! A public member function.
+        //! A private member function.
         /*!
             波動関数を正規化する
         */
         void normalize();
 
-        // #endregion メンバ関数
+        // #endregion privateメンバ関数
 
         // #region メンバ変数
-        
-        //! A private member variable.
-        /*!
-            固有関数
-        */
-        dvector rf_;
         
         //! A private member variable.
         /*!
@@ -98,7 +87,6 @@ namespace schrac {
 
         // #region 禁止されたコンストラクタ・メンバ関数
 
-    private:
         //! A private constructor (deleted).
         /*!
             デフォルトコンストラクタ（禁止）

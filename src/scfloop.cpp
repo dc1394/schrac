@@ -11,7 +11,7 @@
 #include "simpson.h"
 #include <iostream>                             // for std::cout
 #include <stdexcept>                            // for std::runtime_error
-#include <boost/math/constants/constants.hpp>   // boost::math::constants
+#include <boost/math/constants/constants.hpp>   // for boost::math::constants
 
 namespace schrac {
     // #region コンストラクタ
@@ -155,7 +155,7 @@ namespace schrac {
             throw std::runtime_error("固有値が見つかりませんでした。終了します。");
         }
 
-        return nomalization(evs.PDiffSolver);
+        return nomalization(evs.PDiffSolver, boost::none);
     }
 
     ScfLoop::mymap ScfLoop::scfrun()
@@ -172,7 +172,7 @@ namespace schrac {
                 throw std::runtime_error("固有値が見つかりませんでした。終了します。");
             }
 
-            wavefunctions = nomalization(evs.PDiffSolver);
+            wavefunctions = nomalization(evs.PDiffSolver, boost::optional<std::vector<double>>(prho_->PRho));
             auto const newrho = req_newrho(wavefunctions.at("2 Eigen function"));
             if (check_converge(newrho, scfloop)) {
                 break;

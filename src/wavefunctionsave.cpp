@@ -64,13 +64,27 @@ namespace schrac {
             fcloser);
 
         if (!fp) {
-            std::cerr << "ファイルが作成できませんでした。" << std::endl;
+            std::cerr << "波動関数のファイルが作成できませんでした。" << std::endl;
+            return false;
+        }
+        
+        std::unique_ptr<FILE, decltype(fcloser)> fp2(
+            std::fopen(filename.c_str(), "w"),
+            fcloser);
+
+        if (!fp) {
+            std::cerr << "波動関数のファイルが作成できませんでした。" << std::endl;
             return false;
         }
 
+        auto const end(wf_.end());
+        for (auto itr(wf_.begin()); itr != end; ++itr) {
+            std::fprintf(fp.get(), "%s,", itr->first.c_str());
+        }
+        std::fputs("\n", fp.get());
+
         auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
         for (auto i = 0; i < size; i++) {
-            auto const end(wf_.end());
             for (auto itr(wf_.begin()); itr != end; ++itr) {
                 std::fprintf(fp.get(), "%.15f,", itr->second[i]);
             }

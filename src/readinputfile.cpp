@@ -446,6 +446,13 @@ namespace schrac {
             pdata_->eq_type_ = boost::numeric_cast<Data::Eq_type>(std::distance(ReadInputFile::EQ_TYPE_ARRAY.begin(), itr));
         }
 
+        if (pdata_->eq_type_ == Data::Eq_type::SDIRAC) {
+            // scalar Dirac方程式の場合
+            // j = l_ + 1/2
+            pdata_->j_ = 0.5;
+            pdata_->kappa_ = -1.0;
+        }
+
         return true;
     }
 

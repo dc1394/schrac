@@ -137,7 +137,6 @@
     <ClCompile Include="scfloop.cpp" />
     <ClCompile Include="schnormalize.cpp" />
     <ClCompile Include="schracmain.cpp" />
-    <ClCompile Include="sdiracnormalize.cpp" />
     <ClCompile Include="simpson.cpp" />
     <ClCompile Include="solvelinearequ.cpp" />
     <ClCompile Include="vhartree.cpp" />
@@ -161,7 +160,6 @@
     <ClInclude Include="rho.h" />
     <ClInclude Include="scfloop.h" />
     <ClInclude Include="schnormalize.h" />
-    <ClInclude Include="sdiracnormalize.h" />
     <ClInclude Include="simpson.h" />
     <ClInclude Include="solvelinearequ.h" />
     <ClInclude Include="vhartree.h" />

@@ -6,17 +6,17 @@
 
 #include "normalization.h"
 #include "schnormalize.h"
-#include "sdiracnormalize.h"
 #include "diracnormalize.h"
 
 namespace schrac {
-    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver)
+    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver, boost::optional<std::vector<double>> const & prho)
     {
         switch (pdiffsolver->pdata_->eq_type_) {
         case Data::Eq_type::DIRAC:
+        case Data::Eq_type::SDIRAC:
         {
             DiracNormalize dn(pdiffsolver);
-            dn.evaluate();
+            dn.evaluate(prho);
             return dn.getresult();
         }
             break;
@@ -24,17 +24,10 @@ namespace schrac {
         case Data::Eq_type::SCH:
         {
             SchNormalize sn(pdiffsolver);
-            sn.evaluate();
+            sn.evaluate(prho);
             return sn.getresult();
         }
             break;
-
-        case Data::Eq_type::SDIRAC:
-        {
-            SDiracNormalize sdn(pdiffsolver);
-            sdn.evaluate();
-            return sdn.getresult();
-        }
 
         default:
             BOOST_ASSERT(!"何かがおかしい！");

@@ -11,7 +11,7 @@
 namespace schrac {
     // #region publicメンバ関数
 
-    void DiracNormalize::evaluate()
+    void DiracNormalize::evaluate(boost::optional<std::vector<double>> const & prho)
     {
         auto const mp_im1 = pdiffdata_->mp_i_ - 1;
 
@@ -55,6 +55,19 @@ namespace schrac {
         }
 
         normalize();
+
+        if (prho) {
+            rho_.reserve(pdata_->grid_num_ + 1);
+            for (auto i = 0; i <= pdata_->grid_num_; i++) {
+                rho_.push_back(sqr(pdiffdata_->r_mesh_[i]) * (*prho)[i]);
+            }
+        }
+        else {
+            rho_.reserve(pdata_->grid_num_ + 1);
+            for (auto i = 0; i <= pdata_->grid_num_; i++) {
+                rho_.push_back(sqr(pf_large_[i]) + sqr(pf_small_[i]));
+            }
+        }
     }
 
     Normalize<DiracNormalize>::mymap DiracNormalize::getresult() const
@@ -62,8 +75,9 @@ namespace schrac {
         Normalize<DiracNormalize>::mymap wf;
         wf["1 Mesh (r)"] = pdiffdata_->r_mesh_;
         wf["2 Eigen function"] = std::move(rf_);
-        wf["3 Eigen function large (multiply r)"] = std::move(pf_large_);
-        wf["4 Eigen function small (multiply r)"] = std::move(pf_small_);
+        wf["3 Rho (multiply 4 * pi * r ** 2)"] = std::move(rho_);
+        wf["4 Eigen function large (multiply r)"] = std::move(pf_large_);
+        wf["5 Eigen function small (multiply r)"] = std::move(pf_small_);
 
         return std::move(wf);
     }
@@ -73,7 +87,7 @@ namespace schrac {
         Simpson simpson(pdiffdata_->dx_);
         auto const n = 1.0 / 
             std::sqrt(simpson(pf_large_, pdiffdata_->r_mesh_) + simpson(pf_small_, pdiffdata_->r_mesh_));
-        for (auto i = 0; i < pdata_->grid_num_; i++) {
+        for (auto i = 0; i <= pdata_->grid_num_; i++) {
             rf_[i] *= n;
             pf_large_[i] *= n;
             pf_small_[i] *= n;

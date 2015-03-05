@@ -38,20 +38,13 @@ namespace schrac {
 
         // #endregion コンストラクタ・デストラクタ
 
-        // #region メンバ関数
+        // #region publicメンバ関数
 
         //! A public member function.
         /*!
-        波動関数を求める
+            波動関数を求める
         */
-        void evaluate();
-
-    private:
-        //! A public member function.
-        /*!
-            波動関数を正規化する
-        */
-        void normalize();
+        void evaluate(boost::optional<std::vector<double>> const & prho);
 
     public:
         //! A public member function.
@@ -60,16 +53,22 @@ namespace schrac {
         */
         Normalize<DiracNormalize>::mymap getresult() const;
 
-        // #endregion メンバ関数
+        // #endregion publicメンバ関数
+
+        // #region privateメンバ関数
+
+    private:
+        //! A private member function.
+        /*!
+            波動関数を正規化する
+        */
+        void normalize();
+
+        // #endregion privateメンバ関数
 
         // #region メンバ変数
 
-        //! A private member variable.
-        /*!
-            固有関数
-        */
-        dvector rf_;
-
+    private:
         //! A private member variable.
         /*!
             角度方向のrをかけた固有関数のlarge成分
@@ -84,7 +83,6 @@ namespace schrac {
         
         // #endregion メンバ変数
 
-    private:
         // #region 禁止されたコンストラクタ・メンバ関数
 
         //! A private constructor (deleted).
