@@ -10,9 +10,10 @@
 #pragma once
 
 #include "data.h"
-#include <memory>
-#include <vector>
-#include <boost/container/flat_map.hpp>
+#include <memory>                       // for std::shared_ptr
+#include <utility>                      // for std::pair
+#include <vector>                       // for std::vector
+#include <boost/container/flat_map.hpp> // for boost::container::flat_map
 
 namespace schrac {
     //! A class.
@@ -40,10 +41,20 @@ namespace schrac {
         // #endregion コンストラクタ・デストラクタ
 
         // #region メンバ関数
-
-	    std::string make_filename() const;
+    
+        //!  A private member function.
+        /*!
+            ファイル名を生成する関数
+            \return 波動関数のファイル名と電子密度のファイル名のstd::pair
+        */
+	    std::pair<std::string, std::string> make_filename() const;
 
 	public:
+        //!  A public member function.
+        /*!
+            実際にファイル出力処理を実行する関数
+            \return ファイル出力処理が成功したかどうか
+        */
 		bool operator()();
 
         // #endregion メンバ関数
@@ -53,7 +64,7 @@ namespace schrac {
         
         //!  A private member variable.
         /*!
-            波動関数が格納されたwf
+            波動関数が格納されたboost::container::flat_map
         */
         boost::container::flat_map<std::string, std::vector<double>> wf_;
 
