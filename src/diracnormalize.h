@@ -42,14 +42,15 @@ namespace schrac {
 
         //! A public member function.
         /*!
-            波動関数を求める
+            波動関数と4πr ** 2のかかった形の電子密度を求める
         */
-        void evaluate(boost::optional<std::vector<double>> const & prho);
+        void evaluate();
 
     public:
         //! A public member function.
         /*!
-        求めた結果を返す
+            求めた結果を返す
+            \return メッシュと波動関数が格納されたmap
         */
         Normalize<DiracNormalize>::mymap getresult() const;
 

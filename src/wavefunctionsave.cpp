@@ -16,6 +16,29 @@ namespace schrac {
         pdata_(pdata)
     {
     }
+    
+    boost::optional<std::string> WaveFunctionSave::get_spin_orbital() const
+    {
+        switch (pdata_->eq_type_) {
+        case Data::Eq_type::DIRAC:
+            if (pdata_->spin_orbital_ == Data::ALPHA) {
+                return boost::optional<std::string>("alpha");
+            }
+            else {
+                return boost::optional<std::string>("beta");
+            }
+            break;
+
+        case Data::Eq_type::SCH:
+        case Data::Eq_type::SDIRAC:
+            return boost::none;
+            break;
+
+        default:
+            BOOST_ASSERT(!"何かがおかしい！");
+            return boost::none;
+        }
+    }
 
     std::pair<std::string, std::string> WaveFunctionSave::make_filename() const
     {
@@ -25,23 +48,9 @@ namespace schrac {
         auto filename = pdata_->chemical_symbol_ + '_';
         filename += pdata_->orbital_.c_str();
 
-        switch (pdata_->eq_type_) {
-        case Data::Eq_type::DIRAC:
-            filename += '_';
-            if (pdata_->spin_orbital_ == Data::ALPHA) {
-                filename += "alpha";
-            }
-            else {
-                filename += "beta";
-            }
-            break;
-
-        case Data::Eq_type::SCH:
-        case Data::Eq_type::SDIRAC:
-            break;
-
-        default:
-            BOOST_ASSERT(!"何かがおかしい！");
+        auto const pspin_orbital(get_spin_orbital());
+        if (pspin_orbital) {
+            filename += '_' + *pspin_orbital;
         }
 
         filename += ".csv";
@@ -84,7 +93,7 @@ namespace schrac {
             std::fprintf(wffp.get(), "%s,", itr->first.c_str());
         }
         std::fputs("\n", wffp.get());
-
+        
         auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
         for (auto i = 0; i < size; i++) {
             for (auto itr(wf_.begin()); itr != end; ++itr) {

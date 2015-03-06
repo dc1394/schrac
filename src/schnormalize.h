@@ -52,13 +52,13 @@ namespace schrac {
         //! A public member function.
         /*!
             波動関数と4πr ** 2のかかった形の電子密度を求める
-            \param prho 4πr ** 2のかかった形の電子密度が格納された可変長配列へのboost::optional
         */
-        void evaluate(boost::optional<std::vector<double>> const & prho);
+        void evaluate();
         
         //! A public member function.
         /*!
             求めた結果を返す
+            \return メッシュと波動関数が格納されたmap
         */
         Normalize<SchNormalize>::mymap getresult() const;
 

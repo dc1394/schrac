@@ -18,10 +18,9 @@ namespace schrac {
     /*!
         波動関数の正規化を行う関数
         \param pdiffsolver 微分方程式のデータオブジェクト
-        \param rho 4πr ** 2のかかった形の電子密度
-        \return メッシュと波動関数が格納されたハッシュ
+        \return メッシュと波動関数が格納されたmap
     */
-    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver, boost::optional<std::vector<double>> const & prho);
+    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver);
 }
 
 #endif	// _NORMALIZATION_H_

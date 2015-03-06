@@ -9,14 +9,14 @@
 #include "diracnormalize.h"
 
 namespace schrac {
-    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver, boost::optional<std::vector<double>> const & prho)
+    boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver)
     {
         switch (pdiffsolver->pdata_->eq_type_) {
         case Data::Eq_type::DIRAC:
         case Data::Eq_type::SDIRAC:
         {
             DiracNormalize dn(pdiffsolver);
-            dn.evaluate(prho);
+            dn.evaluate();
             return dn.getresult();
         }
             break;
@@ -24,7 +24,7 @@ namespace schrac {
         case Data::Eq_type::SCH:
         {
             SchNormalize sn(pdiffsolver);
-            sn.evaluate(prho);
+            sn.evaluate();
             return sn.getresult();
         }
             break;

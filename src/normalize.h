@@ -50,14 +50,14 @@ namespace schrac {
     public:
         //! A public member function.
         /*!
-            波動関数を求める
-            \param prho 4πr ** 2のかかった形の電子密度
+            波動関数と電子密度を求める
         */
-        void base_evaluate(boost::optional<std::vector<double>> const & prho);
+        void base_evaluate();
 
         //! A public member function.
         /*!
             結果を返す
+            \return メッシュと波動関数が格納されたmap
         */
         mymap base_getresult() const;
 
@@ -160,9 +160,9 @@ namespace schrac {
     // #region protectedメンバ関数の実装
 
     template <typename Derived>
-    void Normalize<Derived>::base_evaluate(boost::optional<std::vector<double>> const & prho)
+    void Normalize<Derived>::base_evaluate()
     {
-        static_cast<Derived &>(*this).evaluate(boost::optional<std::vector<double>> const & prho);
+        static_cast<Derived &>(*this).evaluate();
     }
 
     template <typename Derived>

@@ -11,7 +11,7 @@
 namespace schrac {
     // #region publicメンバ関数
 
-    void DiracNormalize::evaluate(boost::optional<std::vector<double>> const & prho)
+    void DiracNormalize::evaluate()
     {
         auto const mp_im1 = pdiffdata_->mp_i_ - 1;
 
@@ -56,17 +56,9 @@ namespace schrac {
 
         normalize();
 
-        if (prho) {
-            rho_.reserve(pdata_->grid_num_ + 1);
-            for (auto i = 0; i <= pdata_->grid_num_; i++) {
-                rho_.push_back(sqr(pdiffdata_->r_mesh_[i]) * (*prho)[i]);
-            }
-        }
-        else {
-            rho_.reserve(pdata_->grid_num_ + 1);
-            for (auto i = 0; i <= pdata_->grid_num_; i++) {
-                rho_.push_back(sqr(pf_large_[i]) + sqr(pf_small_[i]));
-            }
+        rho_.reserve(pdata_->grid_num_ + 1);
+        for (auto i = 0; i <= pdata_->grid_num_; i++) {
+            rho_.push_back(sqr(pf_large_[i]) + sqr(pf_small_[i]));
         }
     }
 

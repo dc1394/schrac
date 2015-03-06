@@ -155,7 +155,7 @@ namespace schrac {
             throw std::runtime_error("固有値が見つかりませんでした。終了します。");
         }
 
-        return nomalization(evs.PDiffSolver, boost::none);
+        return nomalization(evs.PDiffSolver);
     }
 
     ScfLoop::mymap ScfLoop::scfrun()
@@ -172,7 +172,7 @@ namespace schrac {
                 throw std::runtime_error("固有値が見つかりませんでした。終了します。");
             }
 
-            wavefunctions = nomalization(evs.PDiffSolver, boost::optional<std::vector<double>>(prho_->PRho));
+            wavefunctions = nomalization(evs.PDiffSolver);
             auto const newrho = req_newrho(wavefunctions.at("2 Eigen function"));
             if (check_converge(newrho, scfloop)) {
                 break;
