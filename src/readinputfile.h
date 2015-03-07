@@ -193,7 +193,7 @@ namespace schrac {
         /*!
             バッファサイズ
         */
-        static constexpr std::streamsize BUFSIZE = 1024;
+        static std::streamsize constexpr BUFSIZE = 1024;
 
         //! A private member variable (constant).
         /*!
