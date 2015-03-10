@@ -43,7 +43,7 @@ namespace schrac {
     std::pair<std::string, std::string> WaveFunctionSave::make_filename() const
     {
         std::string wffilename("wavefunction_");
-        std::string rhofilename("rho_");
+        std::string rhofilename("wf_");
 
         auto filename = pdata_->chemical_symbol_ + '_';
         filename += pdata_->orbital_.c_str();
@@ -102,7 +102,7 @@ namespace schrac {
             std::fputs("\n", wffp.get());
 
             std::fprintf(rhofp.get(), "%.15f,", wf_["1 Mesh (r)"][i]);
-            std::fprintf(rhofp.get(), "%.15f\n", wf_["3 Rho (multiply 4 * pi * r ** 2)"][i]);
+            std::fprintf(rhofp.get(), "%.15f\n", wf_["2 Eigen function"][i]);
         }
 
         std::cout << wffilename << " に波動関数を、 " << rhofilename << " に電子密度を書き込みました。" << std::endl;
