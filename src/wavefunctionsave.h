@@ -11,7 +11,7 @@
 
 #include "data.h"
 #include <memory>                       // for std::shared_ptr
-#include <utility>                      // for std::pair
+#include <tuple>                        // for std::tuple
 #include <vector>                       // for std::vector
 #include <boost/container/flat_map.hpp> // for boost::container::flat_map
 #include <boost/optional.hpp>           // for boost::optional
@@ -54,9 +54,9 @@ namespace schrac {
         //!  A private member function.
         /*!
             ファイル名を生成する関数
-            \return 波動関数のファイル名と電子密度のファイル名のstd::pair
+            \return 波動関数のファイル名と電子密度のファイル名と動径波動関数のstd::tuple
         */
-	    std::pair<std::string, std::string> make_filename() const;
+	    std::tuple<std::string, std::string, std::string> make_filename() const;
 
 	public:
         //!  A public member function.

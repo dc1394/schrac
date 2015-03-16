@@ -40,10 +40,11 @@ namespace schrac {
         }
     }
 
-    std::pair<std::string, std::string> WaveFunctionSave::make_filename() const
+    std::tuple<std::string, std::string, std::string> WaveFunctionSave::make_filename() const
     {
-        std::string wffilename("wavefunction_");
-        std::string rhofilename("wf_");
+        std::string waveffilename("wavefunction_");
+        std::string rhofilename("rho_");
+        std::string wffilename("wf_");
 
         auto filename = pdata_->chemical_symbol_ + '_';
         filename += pdata_->orbital_.c_str();
@@ -55,13 +56,13 @@ namespace schrac {
 
         filename += ".csv";
 
-        return std::make_pair(wffilename + filename, rhofilename + filename);
+        return std::make_tuple(waveffilename + filename, rhofilename + filename, wffilename + filename);
     }
 
     bool WaveFunctionSave::operator()()
     {
-        std::string wffilename, rhofilename;
-        std::tie(wffilename, rhofilename) = make_filename();
+        std::string waveffilename, rhofilename, wffilename;
+        std::tie(waveffilename, rhofilename, wffilename) = make_filename();
 
         auto const fcloser = [](FILE * fp)
         {
@@ -70,11 +71,11 @@ namespace schrac {
             }
         };
 
-        std::unique_ptr<FILE, decltype(fcloser)> wffp(
-            std::fopen(wffilename.c_str(), "w"),
+        std::unique_ptr<FILE, decltype(fcloser)> waveffp(
+            std::fopen(waveffilename.c_str(), "w"),
             fcloser);
 
-        if (!wffp) {
+        if (!waveffp) {
             std::cerr << "波動関数のファイルが作成できませんでした。" << std::endl;
             return false;
         }
@@ -84,28 +85,44 @@ namespace schrac {
             fcloser);
 
         if (!rhofp) {
-            std::cerr << "波動関数のファイルが作成できませんでした。" << std::endl;
+            std::cerr << "電子密度のファイルが作成できませんでした。" << std::endl;
+            return false;
+        }
+
+
+        std::unique_ptr<FILE, decltype(fcloser)> wffp(
+            std::fopen(wffilename.c_str(), "w"),
+            fcloser);
+
+        if (!wffp) {
+            std::cerr << "動径波動関数のファイルが作成できませんでした。" << std::endl;
             return false;
         }
 
         auto const end(wf_.end());
         for (auto itr(wf_.begin()); itr != end; ++itr) {
-            std::fprintf(wffp.get(), "%s,", itr->first.c_str());
+            std::fprintf(waveffp.get(), "%s,", itr->first.c_str());
         }
-        std::fputs("\n", wffp.get());
+        std::fputs("\n", waveffp.get());
         
         auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
         for (auto i = 0; i < size; i++) {
             for (auto itr(wf_.begin()); itr != end; ++itr) {
-                std::fprintf(wffp.get(), "%.15f,", itr->second[i]);
+                std::fprintf(waveffp.get(), "%.15f,", itr->second[i]);
             }
-            std::fputs("\n", wffp.get());
+            std::fputs("\n", waveffp.get());
 
             std::fprintf(rhofp.get(), "%.15f,", wf_["1 Mesh (r)"][i]);
-            std::fprintf(rhofp.get(), "%.15f\n", wf_["2 Eigen function"][i]);
+            std::fprintf(rhofp.get(), "%.15f\n", wf_["3 Rho (multiply 4 * pi * r ** 2)"][i]);
+
+            std::fprintf(wffp.get(), "%.15f,", wf_["1 Mesh (r)"][i]);
+            std::fprintf(wffp.get(), "%.15f\n", wf_["2 Eigen function"][i]);
         }
 
-        std::cout << wffilename << " に波動関数を、 " << rhofilename << " に電子密度を書き込みました。" << std::endl;
+        std::cout << waveffilename << " に波動関数を、 " << rhofilename
+            << " に電子密度を、" << wffilename
+            << " に動径波動関数を書き込みました。"
+            << std::endl;
 
         return true;
     }
