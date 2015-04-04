@@ -2,7 +2,9 @@
     \brief 固定サイズのメモリを確保するアロケータークラス
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
+	This software is released under the BSD-2 License.
 */
+
 #ifndef _ARRAYIEDALLOCATOR_H_
 #define _ARRAYIEDALLOCATOR_H_
 

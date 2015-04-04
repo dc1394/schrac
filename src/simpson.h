@@ -1,5 +1,5 @@
 ﻿/*! \file simpson.h
-    \brief std::vectorに格納された関数を、Simpsonの法則で積分する
+    \brief std::vectorに格納された関数を、Simpsonの法則で積分するクラスの宣言
 
     Copyright © 2015 @dc1394 All Rights Reserved.
     This software is released under the BSD-2 License.

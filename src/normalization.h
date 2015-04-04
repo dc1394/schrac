@@ -5,7 +5,6 @@
     This software is released under the BSD-2 License.
 */
 
-
 #ifndef _NORMALIZATION_H_
 #define _NORMALIZATION_H_
 

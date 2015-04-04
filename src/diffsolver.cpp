@@ -3,8 +3,7 @@
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
     This software is released under the BSD-2 License.
-    This software is released under the BSD-2 License.
-*/    This software is released under the BSD-2 License.*/
+*/
 
 #include "diffsolver.h"
 #include <algorithm>                    // for std::copy

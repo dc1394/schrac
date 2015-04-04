@@ -1,4 +1,11 @@
-﻿#include "goexit.h"
+﻿/*! \file goexit.h
+	\brief プログラムを終了するときの関数の実装
+
+	Copyright ©  2015 @dc1394 All Rights Reserved.
+	This software is released under the BSD-2 License.
+*/
+
+#include "goexit.h"
 #include <iostream>
 
 #if defined(_WIN32) || defined(_WIN64)
