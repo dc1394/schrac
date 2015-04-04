@@ -347,8 +347,8 @@ namespace schrac {
         myarray state{ 0.0, 0.0 };
         auto const r0 = pdiffdata_->r_mesh_[0];
 
-        state[0] = ((bn[2] * r0 / 3.0 + bn[1] * 0.5) * 0.2 * r0 + bn[0] / 6.0) * 0.5 * r0;
-        state[1] = ((bn[2] * r0 + bn[1]) * 0.2 * r0 + bn[0] / 6.0) * 0.5;
+		state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
+		state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
 
         return std::move(state);
     }
