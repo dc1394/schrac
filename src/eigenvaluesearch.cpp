@@ -2,6 +2,7 @@
     \brief エネルギー固有値検索を行うクラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
+    This software is released under the BSD-2 License.
 */
 
 #include "eigenvaluesearch.h"
@@ -175,7 +176,7 @@ namespace schrac {
             DE_ = - pdiffsolver_->E_ / static_cast<double>(pdata_->num_of_partition_);
         } else {
             pdiffsolver_->E_ = Eapprox_;
-            DE_ = - pdiffsolver_->E_ / static_cast<const double>(pdata_->num_of_partition_);
+            DE_ = - pdiffsolver_->E_ / static_cast<double>(pdata_->num_of_partition_);
             pdiffsolver_->E_ -= 3.0 * DE_;
         }
     }

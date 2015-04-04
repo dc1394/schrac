@@ -1,7 +1,9 @@
 ﻿/*! \file data.h
     \brief インプットファイルの各種データの構造体の宣言
     Copyright ©  2015 @dc1394 All Rights Reserved.
-*/
+    This software is released under the BSD-2 License.
+    This software is released under the BSD-2 License.
+*/    This software is released under the BSD-2 License.*/
 
 #ifndef _DATA_H_
 #define _DATA_H_

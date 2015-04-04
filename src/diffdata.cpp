@@ -2,7 +2,9 @@
     \brief 微分方程式のデータを集めた構造体の実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-*/
+    This software is released under the BSD-2 License.
+    This software is released under the BSD-2 License.
+*/    This software is released under the BSD-2 License.*/
 
 #include "diffdata.h"
 #include <boost/cast.hpp>   // for boost::numeric_cast

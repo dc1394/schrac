@@ -2,7 +2,9 @@
     \brief 微分方程式を解くクラスの宣言
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-*/
+    This software is released under the BSD-2 License.
+    This software is released under the BSD-2 License.
+*/    This software is released under the BSD-2 License.*/
 
 #ifndef _DIFFSOLVER_H_
 #define _DIFFSOLVER_H_

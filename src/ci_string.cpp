@@ -2,7 +2,9 @@
     \brief 大文字小文字を区別しない文字列クラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-*/
+    This software is released under the BSD-2 License.
+    This software is released under the BSD-2 License.
+*/    This software is released under the BSD-2 License.*/
 
 #include "ci_string.h"
 #include <cstring>          // for _memicmp, std::toupper

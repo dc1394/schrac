@@ -2,6 +2,7 @@
     \brief 電子密度ρ(r)を求めるクラスの宣言
 
     Copyright © 2015 @dc1394 All Rights Reserved.
+    This software is released under the BSD-2 License.
 */
 
 #include "data.h"

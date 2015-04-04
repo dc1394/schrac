@@ -2,7 +2,9 @@
     \brief コマンドラインオプションの解析を行うクラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-*/
+    This software is released under the BSD-2 License.
+    This software is released under the BSD-2 License.
+*/    This software is released under the BSD-2 License.*/
 
 #include "getcomlineoption.h"
 #include <iostream>                     // for std::cerr, std::cout
