@@ -359,8 +359,6 @@ namespace schrac {
         auto state = req_poisson_init_val();
         auto const loop = boost::numeric_cast<std::int32_t>(pdiffdata_->r_mesh_.size() - 1);
 
-        std::vector<double> aa;
-
         std::vector<double> vhart;
         vhart.reserve(pdiffdata_->r_mesh_.size());
         for (auto i = 0; i < loop; i++) {

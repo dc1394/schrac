@@ -15,7 +15,7 @@
 #include <gsl/gsl_spline.h>
 
 namespace schrac {
-    //! A function.
+    //! A lambda expression.
     /*!
         gsl_interp_accelへのポインタを解放するラムダ式
         \param acc gsl_interp_accelへのポインタ
@@ -24,7 +24,7 @@ namespace schrac {
         gsl_interp_accel_free(acc);
     };
 
-    //! A function.
+    //! A lambda expression.
     /*!
         gsl_splineへのポインタを解放するラムダ式
         \param spline gsl_splineへのポインタ
