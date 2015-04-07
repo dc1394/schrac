@@ -15,11 +15,11 @@
 #include <boost/optional.hpp>   // for boost::optional
 
 namespace schrac {
-    //!  A public static member variable (constant expression).
+    //! A global variable (constant expression).
     /*!
         微分方程式を解くときの許容誤差のデフォルト値
     */
-        static auto constexpr EPS_DEFAULT = 1.0E-15;
+    static auto constexpr EPS_DEFAULT = 1.0E-15;
 
         //!  A public static member variable (constant expression).
         /*!
