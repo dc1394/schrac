@@ -223,7 +223,7 @@ namespace schrac {
 
         case Data::Eq_type::SCH:
             // dM / dx 
-            dfdx[1] = dM_dx_sch(f[0], f[1], x, V, dV_dr);
+            dfdx[1] = dM_dx_sch(f[0], f[1], x, V);
             break;
 
         case Data::Eq_type::SDIRAC:
@@ -253,7 +253,7 @@ namespace schrac {
         return d1 + d2;
     }
 
-    double DiffSolver::dM_dx_sch(double L, double M, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const
+    double DiffSolver::dM_dx_sch(double L, double M, double x, std::function<double(double)> const & V) const
     {
         auto const r = std::exp(x);
 
@@ -420,7 +420,7 @@ namespace schrac {
             node_count(pdiffdata_->lo_);
         });
 
-        if (pdiffdata_->lo_.size() != pdiffdata_->mp_o_ + 1) {
+        if (pdiffdata_->lo_.size() != static_cast<std::vector<double>::size_type>(pdiffdata_->mp_o_ + 1)) {
             pdiffdata_->lo_.pop_back();
             pdiffdata_->mo_.pop_back();
 

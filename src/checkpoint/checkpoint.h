@@ -11,6 +11,7 @@
 #pragma once
 
 #include "fastarenaobject.h"
+#include <chrono>               // for std::chrono               
 #include <cstdint>              // for std::int32_t, std::int64_t
 #include <memory>               // for std::unique_ptr
 #include <utility>              // for std::pair
@@ -23,8 +24,74 @@ namespace checkpoint {
 	class CheckPoint final {
         // #region クラスの前方宣言
 
-        struct Timestamp;
-        struct CheckPointFastImpl;
+        //! A structure.
+        /*!
+            チェックポイントの情報を格納する構造体
+        */
+	    struct Timestamp {
+            //! A public member variable.
+            /*!
+                行数
+            */
+		    std::int32_t line;
+
+            //! A public member variable.
+            /*!
+                チェックポイントの名称
+            */
+            char const * action;
+
+            //! A public member variable.
+            /*!
+                チェックポイントの時間
+            */
+            std::chrono::high_resolution_clock::time_point realtime;
+	    };
+                
+        //! A struct.
+        /*!
+            チェックポイントの情報の配列を格納する構造体
+        */
+	    struct CheckPointFastImpl {
+            // #region コンストラクタ・デストラクタ
+
+            //! A constructor.
+            /*!
+                唯一のコンストラクタ
+            */
+            CheckPointFastImpl() : cur(0) {}
+
+            //! A destructor.
+            /*!
+                デフォルトデストラクタ
+            */
+            ~CheckPointFastImpl() = default;
+
+            // #endregion コンストラクタ・デストラクタ
+
+            // #region メンバ変数
+
+            //! A public static member variable (constant).
+            /*!
+                チェックポイントの数
+            */
+            static std::size_t const N = 30;
+
+            //! A public member variable.
+            /*!
+                現在の場所
+            */
+		    std::int32_t cur;
+		
+            //! A public member variable.
+            /*!
+                チェックポイントの情報の配列
+            */
+            std::array<CheckPoint::Timestamp, N> points;
+
+            // #endregion メンバ変数
+	    };
+
 
         // #endregion クラスの前方宣言
 

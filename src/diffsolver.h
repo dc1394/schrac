@@ -163,7 +163,7 @@ namespace schrac {
             \param dV_dr ポテンシャルの微分の関数オブジェクト
             \return dM / dxの値
         */
-        double dM_dx_sch(double L, double M, double x, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr) const;
+        double dM_dx_sch(double L, double M, double x, std::function<double(double)> const & V) const;
         
         //! A private member function (const).
         /*!

@@ -71,16 +71,16 @@ namespace schrac {
         }
 
         // グリッドの最小値を読み込む
-        readValue("grid.xmin", Data::XMIN_DEFAULT, pdata_->xmin_);
+        readValue("grid.xmin", XMIN_DEFAULT, pdata_->xmin_);
 
         // グリッドの最大値を読み込む
-        readValue("grid.xmax", Data::XMAX_DEFAULT, pdata_->xmax_);
+        readValue("grid.xmax", XMAX_DEFAULT, pdata_->xmax_);
 
         // グリッドのサイズを読み込む
-        readValue("grid.num", Data::GRID_NUM_DEFAULT, pdata_->grid_num_);
+        readValue("grid.num", GRID_NUM_DEFAULT, pdata_->grid_num_);
 
         // 許容誤差を読み込む
-        readValue("eps", Data::EPS_DEFAULT, pdata_->eps_);
+        readValue("eps", EPS_DEFAULT, pdata_->eps_);
 
         // 解く方程式のタイプを読み込む
         if (!readType()) {
@@ -93,10 +93,10 @@ namespace schrac {
         }
 
         // 固有値検索の間隔を読み込む
-        readValue("num.of.partition", Data::NUM_OF_PARTITION_DEFAULT, pdata_->num_of_partition_);
+        readValue("num.of.partition", NUM_OF_PARTITION_DEFAULT, pdata_->num_of_partition_);
 
         // マッチングポイントを読み込む
-        readValue("matching.point.ratio", Data::MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
+        readValue("matching.point.ratio", MAT_PO_RATIO_DEFAULT, pdata_->mat_po_ratio_);
 
         // 密度の初期値ρ0(r)のための係数cを読み込む
         if (!readValueAuto("rho0.c", pdata_->rho0_c_)) {
@@ -109,7 +109,7 @@ namespace schrac {
         }
 
         // SCFの最大ループ回数を読み込む
-        readValue("scf.maxIter", Data::SCF_MAXITER_DEFAULT, pdata_->scf_maxiter_);
+        readValue("scf.maxIter", SCF_MAXITER_DEFAULT, pdata_->scf_maxiter_);
 
         // SCFの一次混合の重みを読み込む
         if (!readScfMixingWeight()) {
@@ -117,7 +117,7 @@ namespace schrac {
         }
         
         // SCFの収束判定条件の値を読み込む
-        readValue("scf.criterion", Data::SCF_CRITERION_DEFAULT, pdata_->scf_criterion_);
+        readValue("scf.criterion", SCF_CRITERION_DEFAULT, pdata_->scf_criterion_);
     }
     
     // #endregion publicメンバ関数
@@ -459,7 +459,7 @@ namespace schrac {
 
     bool ReadInputFile::readScfMixingWeight()
     {
-        readValue("scf.Mixing.Weight", Data::SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
+        readValue("scf.Mixing.Weight", SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
         if (pdata_->scf_mixing_weight_ <= 0.0 || pdata_->scf_mixing_weight_ > 1.0) {
             std::cerr << "インプットファイルの[scf.Mixing.Weight]の行が正しくありません" << std::endl;
             return false;
