@@ -21,54 +21,53 @@ namespace schrac {
     */
     static auto constexpr EPS_DEFAULT = 1.0E-15;
 
-    //!  A public static member variable (constant expression).
+    //! A global variable (constant expression).
     /*!
-            微分方程式を解くときのメッシュの数のデフォルト値
-        */
-        static auto constexpr GRID_NUM_DEFAULT = 20000;
-        
-        //!  A public static member variable (constant expression).
-        /*!
-            マッチングポイント（xmin〜xmaxまでの比率で表す）
-        */
-        static auto constexpr MAT_PO_RATIO_DEFAULT = 0.67;
-        
-        //!  A public static member variable (constant expression).
-        /*!
-            search_lowerE_から0までをいくつに分割して検索するかのデフォルトの値
-        */
-        static auto constexpr NUM_OF_PARTITION_DEFAULT = 300;
-		
-        //!  A public static member variable (constant expression).
-        /*!
-            SCFの収束判定条件の値のデフォルト値
-        */
-        static auto constexpr SCF_CRITERION_DEFAULT = 5.0;
+        微分方程式を解くときのメッシュの数のデフォルト値
+    */
+    static auto constexpr GRID_NUM_DEFAULT = 20000;
+    
+    //! A global variable (constant expression).
+    /*!
+        マッチングポイント（xmin〜xmaxまでの比率で表す）
+    */
+    static auto constexpr MAT_PO_RATIO_DEFAULT = 0.67;
+    
+    //! A global variable (constant expression).
+    /*!
+        search_lowerE_から0までをいくつに分割して検索するかのデフォルトの値
+    */
+    static auto constexpr NUM_OF_PARTITION_DEFAULT = 300;
+	
+    //! A global variable (constant expression).
+    /*!
+        SCFの収束判定条件の値のデフォルト値
+    */
+    static auto constexpr SCF_CRITERION_DEFAULT = 5.0;
 
-        //!  A public static member variable (constant expression).
-        /*!
-            SCFの最大ループ回数のデフォルト値
-        */
-        static auto constexpr SCF_MAXITER_DEFAULT = 40;
+    //! A global variable (constant expression).
+    /*!
+        SCFの最大ループ回数のデフォルト値
+    */
+    static auto constexpr SCF_MAXITER_DEFAULT = 40;
 
-        //!  A public static member variable (constant expression).
-        /*!
-            電子密度を合成するときの重みのデフォルト値
-        */
-        static auto constexpr SCF_MIXING_WEIGHT_DEFAULT = 0.3;
+    //! A global variable (constant expression).
+    /*!
+        電子密度を合成するときの重みのデフォルト値
+    */
+    static auto constexpr SCF_MIXING_WEIGHT_DEFAULT = 0.3;
 
-        //!  A public static member variable (constant expression).
-        /*!
-            微分方程式を解くときのメッシュの最小値のデフォルト値
-        */
-        static auto constexpr XMAX_DEFAULT = 5.0;
+    //! A global variable (constant expression).
+    /*!
+        微分方程式を解くときのメッシュの最小値のデフォルト値
+    */
+    static auto constexpr XMAX_DEFAULT = 5.0;
 
-        //!  A public static member variable (constant expression).
-        /*!
-            微分方程式を解くときのメッシュの最小値のデフォルト値
-        */
-        static auto constexpr XMIN_DEFAULT = -7.0;
-		
+    //! A global variable (constant expression).
+    /*!
+        微分方程式を解くときのメッシュの最小値のデフォルト値
+    */
+    static auto constexpr XMIN_DEFAULT = -7.0;
 
     //! A struct.
     /*!
