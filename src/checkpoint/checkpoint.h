@@ -11,6 +11,7 @@
 #pragma once
 
 #include "fastarenaobject.h"
+#include <array>				// for std::array			
 #include <chrono>               // for std::chrono               
 #include <cstdint>              // for std::int32_t, std::int64_t
 #include <memory>               // for std::unique_ptr

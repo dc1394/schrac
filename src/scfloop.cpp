@@ -37,6 +37,8 @@ namespace schrac {
             pvh_ = std::make_shared<Vhartree>(pdiffdata_->r_mesh_);
             pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
         }
+
+		message();
     }
 
     // #endregion コンストラクタ
@@ -57,7 +59,7 @@ namespace schrac {
             std::cout << "スピン下向きの";
         }
 
-        std::cout << "の波動関数と固有値を計算します。\n" << std::endl;
+        std::cout << "の波動関数と固有値を計算します。\n";
     }
 
     ScfLoop::mypair ScfLoop::operator()()

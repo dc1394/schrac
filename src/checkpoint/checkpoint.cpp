@@ -6,8 +6,6 @@
 */
 
 #include "checkpoint.h"
-#include <array>                // for std::array
-#include <chrono>               // for std::chrono
 #include <iostream>             // for std::cout
 #include <system_error>         // for std::system_category
 #include <boost/assert.hpp>     // for boost::assert

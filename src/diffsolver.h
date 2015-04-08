@@ -15,7 +15,6 @@
 #include "rho.h"
 #include "solvelinearequ.h"
 #include "vhartree.h"
-
 #include <functional>
 
 namespace schrac {
