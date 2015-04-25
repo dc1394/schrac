@@ -19,7 +19,6 @@ namespace schrac {
     // #region 型エイリアス
 
     using error_stepper_type = runge_kutta_dopri5< myarray >;
-	using controlled_stepper_type = result_of::make_controlled<runge_kutta_dopri5< myarray > >::type;
 
     // #endregion 型エイリアス
 

@@ -65,10 +65,10 @@ namespace schrac {
     ScfLoop::mypair ScfLoop::operator()()
     {
         if (pdata_->chemical_symbol_ == Data::Chemical_Symbol[0]) {
-            return std::make_pair(pdiffdata_, run());
+            return std::make_pair(std::move(pdiffdata_), run());
         }
         else {
-            return std::make_pair(pdiffdata_, scfrun());
+			return std::make_pair(std::move(pdiffdata_), scfrun());
         }
     }
 
