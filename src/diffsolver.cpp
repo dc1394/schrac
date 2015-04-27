@@ -19,7 +19,6 @@ namespace schrac {
     // #region 型エイリアス
 
     using error_stepper_type = runge_kutta_dopri5< myarray >;
-    using controlled_stepper_type = controlled_runge_kutta< error_stepper_type >;
 
     // #endregion 型エイリアス
 
@@ -116,14 +115,14 @@ namespace schrac {
 
             case Data::Solver_type::BULIRSCH_STOER:
                 tbb::parallel_invoke(
-                    [this]{ solve_diff_equ_o(bulirsch_stoer < myarray >(), V_, dV_dr_); },
-                    [this]{ solve_diff_equ_i(bulirsch_stoer < myarray >(), V2_, dV_dr2_); });
+                    [this]{ solve_diff_equ_o(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_); },
+					[this]{ solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V2_, dV_dr2_); });
                 break;
 
             case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
                 tbb::parallel_invoke(
-                    [this]{ solve_diff_equ_o(controlled_stepper_type(), V_, dV_dr_); },
-                    [this]{ solve_diff_equ_i(controlled_stepper_type(), V2_, dV_dr2_); });
+					[this]{ solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_); },
+					[this]{ solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V2_, dV_dr2_); });
                 break;
 
             default:
@@ -139,13 +138,13 @@ namespace schrac {
                 break;
 
             case Data::Solver_type::BULIRSCH_STOER:
-                solve_diff_equ_o(bulirsch_stoer < myarray >(), V_, dV_dr_);
-                solve_diff_equ_i(bulirsch_stoer < myarray >(), V_, dV_dr_);
+				solve_diff_equ_o(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
+				solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
                 break;
 
             case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-                solve_diff_equ_o(controlled_stepper_type(), V_, dV_dr_);
-                solve_diff_equ_i(controlled_stepper_type(), V_, dV_dr_);
+				solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
+				solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
                 break;
 
             default:
@@ -163,11 +162,11 @@ namespace schrac {
             break;
 
         case Data::Solver_type::BULIRSCH_STOER:
-            solve_poisson_run(bulirsch_stoer < myarray >());
+			solve_poisson_run(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_));
             break;
 
         case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-            solve_poisson_run(controlled_stepper_type());
+			solve_poisson_run(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()));
             break;
 
         default:
@@ -446,13 +445,13 @@ namespace schrac {
 
     template void DiffSolver::solve_poisson_run<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
     template void DiffSolver::solve_poisson_run<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
-    template void DiffSolver::solve_poisson_run<controlled_stepper_type>(controlled_stepper_type const & stepper);
+	template void DiffSolver::solve_poisson_run<controlled_stepper_type>(controlled_stepper_type const & stepper);
     template void DiffSolver::solve_diff_equ_i<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_i<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-    template void DiffSolver::solve_diff_equ_i<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+	template void DiffSolver::solve_diff_equ_i<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-    template void DiffSolver::solve_diff_equ_o<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+	template void DiffSolver::solve_diff_equ_o<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
 
     // #endregion templateメンバ関数の実体化
 }

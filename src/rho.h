@@ -92,7 +92,7 @@ namespace schrac {
 
         //! A private member variable.
         /*!
-            gsl_interp_typeへのスマートポインタ
+            gsl_splineへのスマートポインタ
         */
         std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline_;
 

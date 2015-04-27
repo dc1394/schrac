@@ -43,7 +43,7 @@ namespace schrac {
     /*!
         SCFの収束判定条件の値のデフォルト値
     */
-    static auto constexpr SCF_CRITERION_DEFAULT = 5.0;
+    static auto constexpr SCF_CRITERION_DEFAULT = 1.0E-15;
 
     //! A global variable (constant expression).
     /*!
