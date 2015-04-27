@@ -126,13 +126,13 @@ namespace schrac {
 
     void ReadInputFile::errorMessage(ci_string const & s) const
     {
-        std::cerr << "インプットファイルに" << s << "の行が見つかりませんでした" << std::endl;
+        std::cerr << "インプットファイルに" << s.c_str() << "の行が見つかりませんでした。\n";
     }
 
     void ReadInputFile::errorMessage(std::int32_t line, ci_string const & s1, ci_string const & s2) const
     {
-        std::cerr << "インプットファイルの[" << s1 << "]の行が正しくありません" << std::endl;
-        std::cerr << line << "行目, 未知のトークン:" << s2 << std::endl;
+        std::cerr << "インプットファイルの[" << s1.c_str() << "]の行が正しくありません。\n";
+        std::cerr << line << "行目, 未知のトークン:" << s2.c_str() << std::endl;
     }
 
     std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> ReadInputFile::getToken(ci_string const & article)
@@ -243,7 +243,7 @@ namespace schrac {
         }
 
         if (pdata_->n_ - pdata_->l_ < 1) {
-            std::cerr << "量子数の指定が異常です" << std::endl;
+            std::cerr << "量子数の指定が異常です。\n";
             return false;
         }
 
@@ -296,7 +296,7 @@ namespace schrac {
 
                 // 読み込んだトークンの数がもし2個以外だったら
                 if (tokens.size() != 2 || tokens[1].empty()) {
-                    std::cerr << "インプットファイル" << lineindex_ << "行目の、[" << article << "]の行が正しくありません" << std::endl;
+                    std::cerr << "インプットファイル" << lineindex_ << "行目の、[" << article.c_str() << "]の行が正しくありません。\n";
                     return boost::none;
                 }
 
@@ -461,7 +461,7 @@ namespace schrac {
     {
         readValue("scf.Mixing.Weight", SCF_MIXING_WEIGHT_DEFAULT, pdata_->scf_mixing_weight_);
         if (pdata_->scf_mixing_weight_ <= 0.0 || pdata_->scf_mixing_weight_ > 1.0) {
-            std::cerr << "インプットファイルの[scf.Mixing.Weight]の行が正しくありません" << std::endl;
+            std::cerr << "インプットファイルの[scf.Mixing.Weight]の行が正しくありません。\n";
             return false;
         }
         return true;

@@ -56,12 +56,6 @@ namespace schrac {
             データオブジェクト
         */
         std::shared_ptr<Data> const pdata_;
-        
-        //!  A public member variable (constant).
-        /*!
-            原子核の電荷
-        */
-        double const Z_;
 
         //!  A public member variable (constant).
         /*!
@@ -140,6 +134,12 @@ namespace schrac {
             原点に近い点からのxのメッシュ
         */
         dvector x_o_;
+        
+        //!  A public member variable (constant).
+        /*!
+            原子核の電荷
+        */
+        double const Z_;
 
         // #endregion メンバ変数
     };
