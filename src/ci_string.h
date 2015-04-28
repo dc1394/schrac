@@ -78,15 +78,6 @@ namespace schrac {
     int memIcmp(char const * s1, char const * s2, std::size_t n);
 #endif
 
-    //! A function.
-    /*!
-        ci_stringに対するoperator<<()
-        \param os 対象のstd::ostream
-        \param s 対象の（大文字小文字を区別しない）文字列
-        \return 結果の参照
-    */
-    std::ostream & operator<<(std::ostream & os, ci_string const & s);
-
     // #endregion 非メンバ関数
 }
 

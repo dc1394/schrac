@@ -46,12 +46,5 @@ namespace schrac {
     }
 #endif
 
-    std::ostream & operator<<(std::ostream & os, const ci_string & s)
-    {
-        os << s.c_str();
-
-        return os;
-    }
-
     // #endregion 非メンバ関数
 }

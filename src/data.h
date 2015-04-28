@@ -59,7 +59,7 @@ namespace schrac {
 
     //! A global variable (constant expression).
     /*!
-        微分方程式を解くときのメッシュの最小値のデフォルト値
+        微分方程式を解くときのメッシュの最大値のデフォルト値
     */
     static auto constexpr XMAX_DEFAULT = 5.0;
 
