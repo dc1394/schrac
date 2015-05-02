@@ -445,13 +445,13 @@ namespace schrac {
 
     template void DiffSolver::solve_poisson_run<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
     template void DiffSolver::solve_poisson_run<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
-	template void DiffSolver::solve_poisson_run<controlled_stepper_type>(controlled_stepper_type const & stepper);
+	template void DiffSolver::solve_poisson_run<error_stepper_type>(error_stepper_type const & stepper);
     template void DiffSolver::solve_diff_equ_i<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_i<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-	template void DiffSolver::solve_diff_equ_i<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+	template void DiffSolver::solve_diff_equ_i<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-	template void DiffSolver::solve_diff_equ_o<controlled_stepper_type>(controlled_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+	template void DiffSolver::solve_diff_equ_o<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
 
     // #endregion templateメンバ関数の実体化
 }
