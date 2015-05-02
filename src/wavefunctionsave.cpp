@@ -114,7 +114,7 @@ namespace schrac {
             std::fputs("\n", waveffp.get());
 
             std::fprintf(rhofp.get(), "%.15f,", wf_["1 Mesh (r)"][i]);
-            std::fprintf(rhofp.get(), "%.15f\n", wf_["3 Rho (multiply 4 * pi * r ** 2)"][i]);
+            std::fprintf(rhofp.get(), "%.15f\n", wf_["3 Rho (mutiplied 4 * pi * r ** 2)"][i]);
 
             std::fprintf(wffp.get(), "%.15f,", wf_["1 Mesh (r)"][i]);
             std::fprintf(wffp.get(), "%.15f\n", wf_["2 Eigen function"][i]);

@@ -68,9 +68,9 @@ namespace schrac {
         Normalize<DiracNormalize>::mymap wf;
         wf["1 Mesh (r)"] = pdiffdata_->r_mesh_;
         wf["2 Eigen function"] = std::move(rf_);
-        wf["3 Rho (multiply 4 * pi * r ** 2)"] = std::move(rho_);
-        wf["4 Eigen function large (multiply r)"] = std::move(pf_large_);
-        wf["5 Eigen function small (multiply r)"] = std::move(pf_small_);
+        wf["3 Rho (mutiplied 4 * pi * r ** 2)"] = std::move(rho_);
+        wf["4 Eigen function large (mutiplied r)"] = std::move(pf_large_);
+        wf["5 Eigen function small (mutiplied r)"] = std::move(pf_small_);
 
         return std::move(wf);
     }

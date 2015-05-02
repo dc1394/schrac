@@ -60,8 +60,8 @@ namespace schrac {
         Normalize<SchNormalize>::mymap wf;
         wf["1 Mesh (r)"] = pdiffdata_->r_mesh_;
         wf["2 Eigen function"] = std::move(rf_);
-        wf["3 Rho (multiply 4 * pi * r ** 2)"] = std::move(rho_);
-        wf["4 Eigen function (multiply r)"] = std::move(pf_);
+        wf["3 Rho (mutiplied 4 * pi * r ** 2)"] = std::move(rho_);
+        wf["4 Eigen function (mutiplied r)"] = std::move(pf_);
 
         return std::move(wf);
     }
