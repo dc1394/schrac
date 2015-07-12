@@ -2,7 +2,7 @@
 	\brief std::vectorに格納された関数を、Simpsonの法則で積分するクラスの実装
 
 	Copyright © 2015 @dc1394 All Rights Reserved.
-	This software is released under the BSD-2 License.
+	This software is released under the BSD 2-Clause License.
 */
 
 #include "simpson.h"

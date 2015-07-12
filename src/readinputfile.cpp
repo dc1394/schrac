@@ -2,7 +2,7 @@
     \brief インプットファイルの読み込みを行うクラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-    This software is released under the BSD-2 License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #include "readinputfile.h"

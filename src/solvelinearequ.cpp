@@ -2,7 +2,7 @@
     \brief 連立一次方程式を解く関数の実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-    This software is released under the BSD-2 License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #include "solvelinearequ.h"

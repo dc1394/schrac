@@ -2,7 +2,7 @@
     \brief 得られた波動関数を正規化するクラスの宣言と実装
 
     Copyright © 2015 @dc1394 All Rights Reserved.
-    This software is released under the BSD-2 License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #ifndef _NORMALIZE_H_

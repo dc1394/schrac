@@ -2,7 +2,7 @@
     \brief 大文字小文字を区別しない文字列クラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-    This software is released under the BSD-2 License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #include "ci_string.h"

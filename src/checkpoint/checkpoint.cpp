@@ -2,7 +2,7 @@
     \brief 時間計測のためのクラスの実装
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
-	This software is released under the BSD-2 License.
+	This software is released under the BSD 2-Clause License.
 */
 
 #include "checkpoint.h"

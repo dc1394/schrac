@@ -2,7 +2,7 @@
     \brief 大文字小文字を区別しない文字列クラスの宣言
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-    This software is released under the BSD-2 License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #ifndef _CI_STRING_H_
