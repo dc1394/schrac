@@ -9,9 +9,9 @@ DEPS :=	$(SRCS:%.cpp=%.d)
 
 VPATH  = src src/checkpoint
 CXX = clang++
-CXXFLAGS = -Wextra -O3 -pipe -std=c++11
-LDFLAGS = -L/home/dc1394/oss/boost_1_57_0/stage/clang/lib/ -lboost_program_options \
-		  -lgsl -lgslcblas -lm -L/home/dc1394/oss/tbb43_20150316oss/lib/intel64/gcc4.4 -ltbb
+CXXFLAGS = -Wextra -O3 -pipe -std=c++14
+LDFLAGS = -L/home/dc1394/oss/boost_1_59_0/stage/clang/lib/ -lboost_program_options \
+		  -lgsl -lgslcblas -lm -L/home/dc1394/oss/tbb44_20150728oss/lib/intel64/gcc4.4 -ltbb
 
 all: $(PROG) ; rm -f $(OBJS) $(DEPS)
 
