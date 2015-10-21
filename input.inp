@@ -2,7 +2,7 @@
 # Chemical Symbol and orbital
 #
 
-chemical.symbol             He
+chemical.symbol             H
 orbital                     1s
 spin.orbital                alpha           # alpha|beta default = alpha
 
