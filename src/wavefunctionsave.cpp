@@ -9,7 +9,6 @@
 #include <cstdlib>              // for std::fclose, std::fprintf
 #include <iostream>             // for std::cerr
 #include <tuple>                // for std::tie
-#include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
     WaveFunctionSave::WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & wf, std::shared_ptr<Data> const & pdata) :
@@ -43,9 +42,9 @@ namespace schrac {
 
     std::tuple<std::string, std::string, std::string> WaveFunctionSave::make_filename() const
     {
-        std::string waveffilename("wavefunction_");
-        std::string rhofilename("rho_");
-        std::string wffilename("wf_");
+        auto waveffilename("wavefunction_");
+        auto rhofilename("rho_");
+        auto wffilename("wf_");
 
         auto filename = pdata_->chemical_symbol_ + '_';
         filename += pdata_->orbital_.c_str();
@@ -106,8 +105,8 @@ namespace schrac {
         }
         std::fputs("\n", waveffp.get());
         
-        auto const size = boost::numeric_cast<std::int32_t>(wf_.begin()->second.size());
-        for (auto i = 0; i < size; i++) {
+        auto const size = wf_.begin()->second.size();
+        for (auto i = 0U; i < size; i++) {
             for (auto itr(wf_.begin()); itr != end; ++itr) {
                 std::fprintf(waveffp.get(), "%.15f,", itr->second[i]);
             }

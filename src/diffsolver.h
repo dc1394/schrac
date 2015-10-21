@@ -33,7 +33,7 @@ namespace schrac {
         \param x xの値
         \return x ** 2の値
     */
-    T sqr(T x);
+    constexpr T sqr(T x);
 
     // #endregion 非メンバ関数の宣言
 
@@ -268,7 +268,7 @@ namespace schrac {
         /*!
             L(r)の級数展開の係数bm_の最大値
         */
-        static std::size_t constexpr BMMAX = 5;
+        static auto constexpr BMMAX = 5U;
 
         //!  A private static member variable (constant expression).
         /*!
@@ -375,7 +375,7 @@ namespace schrac {
     // #region 非メンバ関数の実装
     
     template <typename T>
-    T sqr(T x)
+    constexpr T sqr(T x)
     {
         return x * x;
     }

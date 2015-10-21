@@ -36,14 +36,14 @@ namespace schrac {
         mo_.reserve(osize);
         mi_.reserve(isize);
 
-        auto const len = boost::numeric_cast<std::int32_t>(grid_num - isize);
+        auto const len = grid_num - isize;
 
         for (auto i = 0; i <= mp_o_; i++) {
             auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
             x_o_[i] = x;
         }
 
-        for (auto i = boost::numeric_cast<std::int32_t>(grid_num); i > len; i--) {
+        for (auto i = grid_num; i > len; i--) {
             auto const x = pdata_->xmin_ + static_cast<double>(i) * dx_;
             x_i_[grid_num - i] = x;
             r_mesh_i_[grid_num - i] = std::exp(x);

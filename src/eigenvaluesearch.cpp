@@ -11,9 +11,9 @@
 #include <iostream>             // for std::cot, std::cerr
 #include <tuple>                // for std::tie
 #include <boost/assert.hpp>     // for BOOST_ASSERT
-#include <boost/cast.hpp>       // boost::numeric_cast
+#include <boost/cast.hpp>       // for boost::numeric_cast
 #include <gsl/gsl_errno.h>      // for GSL_SUCCESS
-#include <gsl/gsl_roots.h>      // gsl_root_fsolver
+#include <gsl/gsl_roots.h>      // for gsl_root_fsolver
 
 namespace schrac {
     // #region staticメンバ変数

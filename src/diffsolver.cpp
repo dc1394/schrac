@@ -9,7 +9,6 @@
 #include <algorithm>                    // for std::copy
 #include <stdexcept>                    // for std::runtime_error
 #include <utility>                      // for std::move
-#include <boost/cast.hpp>               // for boost::numeric_cast
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
 #include <tbb/parallel_invoke.h>        // for tbb::parallel_invoke
 
@@ -356,11 +355,11 @@ namespace schrac {
     void DiffSolver::solve_poisson_run(Stepper const & stepper)
     {
         auto state = req_poisson_init_val();
-        auto const loop = boost::numeric_cast<std::int32_t>(pdiffdata_->r_mesh_.size() - 1);
+        auto const loop = pdiffdata_->r_mesh_.size() - 1;
 
         std::vector<double> vhart;
         vhart.reserve(pdiffdata_->r_mesh_.size());
-        for (auto i = 0; i < loop; i++) {
+        for (auto i = 0U; i < loop; i++) {
             integrate_adaptive(
                 stepper,
                 [this](myarray const & f, myarray & dfdx, double r) {

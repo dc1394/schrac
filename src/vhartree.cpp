@@ -6,9 +6,8 @@
 */
 
 #include "vhartree.h"
-#include <array>
+#include <array>				// for std::array
 #include <boost/assert.hpp>     // for BOOST_ASSERT
-#include <boost/cast.hpp>       // for boost::numeric_cast
 
 namespace schrac {
     // #region コンストラクタ
@@ -40,7 +39,6 @@ namespace schrac {
 
     void Vhartree::set_vhartree_boundary_condition(double Z)
     {
-        auto const size = boost::numeric_cast<std::int32_t>(vhart_.size());
         for (auto & v : vhart_) {
             v += (Z / r_mesh_.back() - vhart_.back());
         }
