@@ -56,7 +56,7 @@ namespace checkpoint {
         boost::optional<high_resolution_clock::time_point> prevreal(boost::none);
 
         auto itr = cfp->points.begin();
-		for (std::int32_t i = 0; i < cfp->cur; ++i, ++itr) {
+		for (auto i = 0; i < cfp->cur; ++i, ++itr) {
 			if (prevreal) {
 				auto const realtime(duration_cast<duration<double, std::milli>>(itr->realtime - *prevreal));
 				std::cout << itr->action

@@ -64,7 +64,7 @@ namespace schrac {
         std::string waveffilename, rhofilename, wffilename;
         std::tie(waveffilename, rhofilename, wffilename) = make_filename();
 
-        auto const fcloser = [](FILE * fp)
+        auto const fcloser = [](auto fp)
         {
             if (fp) {
                 std::fclose(fp);
