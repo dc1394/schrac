@@ -1,4 +1,4 @@
-/*! \file energy.h
+﻿/*! \file energy.h
 	\brief エネルギーを計算するクラスの実装
 
 	Copyright ©  2015 @dc1394 All Rights Reserved.
