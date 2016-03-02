@@ -43,8 +43,8 @@ namespace schrac {
             L_.push_back(ratio * li[i]);
             M_.push_back(ratio * pdiffdata_->mi_[i]);
 
-        	rf_.push_back(std::pow(r_mesh_i[i], pdata_->l_) * L_.back());
-        	pf_.push_back(r_mesh_i[i] * rf_.back());
+            rf_.push_back(std::pow(r_mesh_i[i], pdata_->l_) * L_.back());
+            pf_.push_back(r_mesh_i[i] * rf_.back());
         }
 
         normalize();
