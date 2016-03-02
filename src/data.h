@@ -26,19 +26,19 @@ namespace schrac {
         微分方程式を解くときのメッシュの数のデフォルト値
     */
     static auto constexpr GRID_NUM_DEFAULT = 20000;
-    
+
     //! A global variable (constant expression).
     /*!
         マッチングポイント（xmin〜xmaxまでの比率で表す）
     */
     static auto constexpr MAT_PO_RATIO_DEFAULT = 0.67;
-    
+
     //! A global variable (constant expression).
     /*!
         search_lowerE_から0までをいくつに分割して検索するかのデフォルトの値
     */
     static auto constexpr NUM_OF_PARTITION_DEFAULT = 300;
-	
+
     //! A global variable (constant expression).
     /*!
         SCFの収束判定条件の値のデフォルト値
@@ -75,7 +75,7 @@ namespace schrac {
     */
 	struct Data final {
         // #region 列挙型
-        
+
         //!  A enumerated type
         /*!
             解く方程式のタイプを表す列挙型
@@ -105,7 +105,7 @@ namespace schrac {
         // #endregion 列挙型
 
         // #region メンバ変数
-        
+
         //!  A public static member variable (constant expression).
         /*!
             光速（原子単位系）
@@ -123,7 +123,7 @@ namespace schrac {
             微細構造定数の2乗の1/2
         */
         static auto constexpr al2half = 0.5 * al * al;
-        
+
         //!  A public static member variable (constant).
         /*!
             「ALPHA」の文字列
@@ -195,25 +195,25 @@ namespace schrac {
             主量子数
         */
         std::uint8_t n_;
-        
+
         //!  A public member variable.
         /*!
-            search_lowerE_から0までをいくつに分割して検索するか    
+            search_lowerE_から0までをいくつに分割して検索するか
         */
         std::int32_t num_of_partition_ = NUM_OF_PARTITION_DEFAULT;
-        
+
         //!  A public member variable.
         /*!
             計算対象の軌道
         */
         std::string orbital_;
-        
+
         //!  A public member variable.
         /*!
             密度の初期値ρ0(r)のための係数c（ρ0(r) = c * exp(- alpha * r)
         */
         boost::optional<double> rho0_c_;
-        
+
         //!  A public member variable.
         /*!
             密度の初期値ρ0(r)のための係数alpha（ρ0(r) = c * exp(- alpha * r)

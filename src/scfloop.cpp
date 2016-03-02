@@ -147,7 +147,7 @@ namespace schrac {
             newrho.push_back(sqr(rf[i]));
         }
 
-        return std::move(newrho);
+        return newrho;
     }
 
     ScfLoop::mymap ScfLoop::run()

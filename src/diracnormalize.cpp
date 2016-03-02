@@ -72,7 +72,7 @@ namespace schrac {
         wf["4 Eigen function large (mutiplied r)"] = std::move(pf_large_);
         wf["5 Eigen function small (mutiplied r)"] = std::move(pf_small_);
 
-        return std::move(wf);
+        return wf;
     }
 
     void DiracNormalize::normalize()

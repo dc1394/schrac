@@ -1,5 +1,5 @@
 ﻿/*! \file schnormalize.cpp
-    \brief Sch方程式を解いて得られた波動関数を正規化するクラスの宣言
+    \brief Sch方程式を解いて得られた波動関数を正規化するクラスの実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
@@ -63,7 +63,7 @@ namespace schrac {
         wf["3 Rho (mutiplied 4 * pi * r ** 2)"] = std::move(rho_);
         wf["4 Eigen function (mutiplied r)"] = std::move(pf_);
 
-        return std::move(wf);
+        return wf;
     }
 
     void SchNormalize::normalize()

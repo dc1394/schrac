@@ -42,7 +42,7 @@ namespace schrac {
         {
             return std::toupper(lhs) == std::toupper(rhs);
         }
-        
+
         //! A public static member function.
         /*!
             引数で与えられた二つの文字の大小関係を判別する

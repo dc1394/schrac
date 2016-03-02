@@ -348,14 +348,14 @@ namespace schrac {
 
                         if (val == "DEFAULT" || val[0] == '#') {
                             // デフォルト値を返す
-                            return std::move(def);
+                            return def;
                         }
                         else if ((*(++itr))[0] != '#') {
                             errorMessage(lineindex_ - 1, article, *itr);
                             return boost::none;
                         }
 
-                        return std::move(val);
+                        return val;
                     }
                 }
             }

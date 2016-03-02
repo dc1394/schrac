@@ -23,7 +23,7 @@ namespace schrac {
         return memIcmp(s1, s2, n);
 #endif
     }
-    
+
     // #region staticメンバ関数
 
     // #region 非メンバ関数

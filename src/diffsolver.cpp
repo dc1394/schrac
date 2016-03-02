@@ -8,7 +8,6 @@
 #include "diffsolver.h"
 #include <algorithm>                    // for std::copy
 #include <stdexcept>                    // for std::runtime_error
-#include <utility>                      // for std::move
 #include <boost/numeric/odeint.hpp>     // for boost::numeric::odeint
 #include <tbb/parallel_invoke.h>        // for tbb::parallel_invoke
 
@@ -300,7 +299,7 @@ namespace schrac {
             state[1] = -DiffSolver::MINVALUE;
         }
 
-        return std::move(state);
+        return state;
     }
 
     myarray DiffSolver::req_lm_o_init_val()
@@ -321,7 +320,7 @@ namespace schrac {
         }
         state[1] *= pdiffdata_->r_mesh_[0];
 
-        return std::move(state);
+        return state;
     }
     
     myarray DiffSolver::req_poisson_init_val()
@@ -348,7 +347,7 @@ namespace schrac {
 		state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
 		state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
 
-        return std::move(state);
+        return state;
     }
 
     template <typename Stepper>
