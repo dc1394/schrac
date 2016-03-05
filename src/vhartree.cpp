@@ -6,7 +6,7 @@
 */
 
 #include "vhartree.h"
-#include <array>				// for std::array
+#include <array>                // for std::array
 #include <boost/assert.hpp>     // for BOOST_ASSERT
 
 namespace schrac {

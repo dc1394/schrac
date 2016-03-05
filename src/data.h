@@ -73,7 +73,7 @@ namespace schrac {
     /*!
         インプットファイルの各種データの構造体
     */
-	struct Data final {
+    struct Data final {
         // #region 列挙型
 
         //!  A enumerated type
@@ -284,5 +284,5 @@ namespace schrac {
     };
 }
 
-#endif	// _DATA_H_
+#endif    // _DATA_H_
 

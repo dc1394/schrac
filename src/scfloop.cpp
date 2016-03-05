@@ -38,7 +38,7 @@ namespace schrac {
             pdiffsolver_ = std::make_shared<DiffSolver>(pdata_, pdiffdata_, prho_, pvh_);
         }
 
-		message();
+        message();
     }
 
     // #endregion コンストラクタ
@@ -68,7 +68,7 @@ namespace schrac {
             return std::make_pair(std::move(pdiffdata_), run());
         }
         else {
-			return std::make_pair(std::move(pdiffdata_), scfrun());
+            return std::make_pair(std::move(pdiffdata_), scfrun());
         }
     }
 

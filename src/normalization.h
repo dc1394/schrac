@@ -23,4 +23,4 @@ namespace schrac {
     boost::container::flat_map<std::string, dvector> nomalization(std::shared_ptr<DiffSolver> const & pdiffsolver);
 }
 
-#endif	// _NORMALIZATION_H_
+#endif    // _NORMALIZATION_H_

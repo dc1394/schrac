@@ -22,7 +22,7 @@ namespace schrac {
     /*!
         得られた波動関数をファイルに書き出すクラス
     */
-	class WaveFunctionSave final {
+    class WaveFunctionSave final {
         // #region コンストラクタ・デストラクタ
 
     public:
@@ -57,15 +57,15 @@ namespace schrac {
             ファイル名を生成する関数
             \return 波動関数のファイル名と電子密度のファイル名と動径波動関数のstd::tuple
         */
-	    std::tuple<std::string, std::string, std::string> make_filename() const;
+        std::tuple<std::string, std::string, std::string> make_filename() const;
 
-	public:
+    public:
         //!  A public member function.
         /*!
             実際にファイル出力処理を実行する関数
             \return ファイル出力処理が成功したかどうか
         */
-		bool operator()();
+        bool operator()();
 
         // #endregion メンバ関数
 
@@ -109,7 +109,7 @@ namespace schrac {
         WaveFunctionSave & operator=(WaveFunctionSave const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 }
 
 #endif  // _WAVEFUNCTION_H_

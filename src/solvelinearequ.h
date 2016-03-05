@@ -11,10 +11,10 @@
 #pragma once
 
 #include <array>
-#include <gsl/gsl_linalg.h>	// for gsl_linalg
+#include <gsl/gsl_linalg.h>    // for gsl_linalg
 
 namespace schrac {
-	//!  A static variable (constant expression).
+    //!  A static variable (constant expression).
     /*!
         級数展開の係数am_の最大値
     */

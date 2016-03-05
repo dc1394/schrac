@@ -2,7 +2,7 @@
     \brief 指定された型の指定された要素数のメモリを確保するクラス
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
-	This software is released under the BSD 2-Clause License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #ifndef _FASTARENAOBJECT_H_
@@ -20,11 +20,11 @@ namespace checkpoint {
         \param TTypeSize 収納する型のサイズ
         \param TnumArray 収納する要素の数
     */
-	template <size_t TTypeSize, size_t TNumArray = 1>
-	struct FastArenaObject final
-	{
-		// サイズは絶対０より大きくなくちゃダメ
-		BOOST_STATIC_ASSERT(TNumArray > 0);
+    template <size_t TTypeSize, size_t TNumArray = 1>
+    struct FastArenaObject final
+    {
+        // サイズは絶対０より大きくなくちゃダメ
+        BOOST_STATIC_ASSERT(TNumArray > 0);
 
         // #region メンバ関数
 
@@ -33,18 +33,18 @@ namespace checkpoint {
             operator newの宣言と実装
             \param 未使用
         */
-		static void * operator new(std::size_t) {
-			return ArraiedAllocator<TTypeSize, TNumArray>::GetAllocator().Alloc();
-		}
+        static void * operator new(std::size_t) {
+            return ArraiedAllocator<TTypeSize, TNumArray>::GetAllocator().Alloc();
+        }
 
         //! A public member function.
         /*!
             operator deleteの宣言と実装
             \param p 解放するメモリの先頭アドレス
         */
-		static void operator delete(void * p) {
-			ArraiedAllocator<TTypeSize, TNumArray>::GetAllocator().Free(p);
-		}
+        static void operator delete(void * p) {
+            ArraiedAllocator<TTypeSize, TNumArray>::GetAllocator().Free(p);
+        }
 
     private:
         // #region 禁止されたコンストラクタ・メンバ関数
@@ -70,7 +70,7 @@ namespace checkpoint {
         FastArenaObject & operator=(FastArenaObject const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
-	};
+    };
 }
 
 #endif // _FASTARENAOBJECT_H_

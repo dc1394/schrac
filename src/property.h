@@ -2,7 +2,7 @@
     \brief C++でプロパティを実現するクラスの宣言と実装
 
     Copyright ©  2015 @dc1394 All Rights Reserved.
-	(but this is originally adapted by επιστημη for list-07 from http://codezine.jp/article/detail/7571 )
+    (but this is originally adapted by επιστημη for list-07 from http://codezine.jp/article/detail/7571 )
     This software is released under the BSD 2-Clause License.
 */
 

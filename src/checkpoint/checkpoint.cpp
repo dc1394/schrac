@@ -2,7 +2,7 @@
     \brief 時間計測のためのクラスの実装
 
     Copyright ©  2014 @dc1394 All Rights Reserved.
-	This software is released under the BSD 2-Clause License.
+    This software is released under the BSD 2-Clause License.
 */
 
 #include "checkpoint.h"
@@ -17,7 +17,7 @@
     #include <Windows.h>        // for GetCurrentProcess
     #include <Psapi.h>          // for GetProcessMemoryInfo
 
-	#pragma comment(lib, "Psapi.Lib")
+    #pragma comment(lib, "Psapi.Lib")
 #else
     #include <errno.h>          // for errno 
     #include <sys/time.h>       // for struct timeval
@@ -29,43 +29,43 @@ namespace checkpoint {
         : cfp(
             reinterpret_cast<CheckPoint::CheckPointFastImpl *>(
                 FastArenaObject<sizeof(CheckPoint::CheckPointFastImpl)>::operator new(0)))
-	{
-	}
+    {
+    }
 
     CheckPoint::~CheckPoint()
     {
     }
 
     void CheckPoint::checkpoint(char const * action, std::int32_t line)
-	{
-		BOOST_ASSERT(cfp->cur < static_cast<std::int32_t>(CheckPoint::CheckPointFastImpl::N));
+    {
+        BOOST_ASSERT(cfp->cur < static_cast<std::int32_t>(CheckPoint::CheckPointFastImpl::N));
 
-		auto const p = cfp->points.begin() + cfp->cur;
+        auto const p = cfp->points.begin() + cfp->cur;
 
         p->action = action;
         p->line = line;
-		p->realtime = std::chrono::high_resolution_clock::now();
+        p->realtime = std::chrono::high_resolution_clock::now();
 
-		cfp->cur++;
-	}
-	
-	void CheckPoint::checkpoint_print() const
-	{
+        cfp->cur++;
+    }
+    
+    void CheckPoint::checkpoint_print() const
+    {
         using namespace std::chrono;
 
         boost::optional<high_resolution_clock::time_point> prevreal(boost::none);
 
         auto itr = cfp->points.begin();
-		for (auto i = 0; i < cfp->cur; ++i, ++itr) {
-			if (prevreal) {
-				auto const realtime(duration_cast<duration<double, std::milli>>(itr->realtime - *prevreal));
-				std::cout << itr->action
+        for (auto i = 0; i < cfp->cur; ++i, ++itr) {
+            if (prevreal) {
+                auto const realtime(duration_cast<duration<double, std::milli>>(itr->realtime - *prevreal));
+                std::cout << itr->action
                           << boost::format(" elapsed time = %.4f (msec)\n") % realtime.count();
-			}
+            }
 
             prevreal = boost::optional<high_resolution_clock::time_point>(itr->realtime);
-		}
-	}
+        }
+    }
 
     void CheckPoint::totalpassageoftime() const
     {
@@ -81,30 +81,30 @@ namespace checkpoint {
 
 #ifdef _WIN32
     void usedmem()
-	{
-		PROCESS_MEMORY_COUNTERS memInfo = { 0 };
-		
+    {
+        PROCESS_MEMORY_COUNTERS memInfo = { 0 };
+        
         if (!::GetProcessMemoryInfo(::GetCurrentProcess(), &memInfo, sizeof(memInfo))) {
-			throw std::system_error(std::error_code(::GetLastError(), std::system_category()));
-		}
-
-		std::cout << "Used Memory Size: "
-				  << boost::numeric_cast<std::uint32_t>(memInfo.PeakWorkingSetSize >> 10)
-				  << "(kB)"
-                  << std::endl; 
-	}
-#else
-    void usedmem()
-	{
-	    struct rusage r;
-
-	    if (getrusage(RUSAGE_SELF, &r)) {
-		    throw std::system_error(errno, std::system_category());
-    	}
+            throw std::system_error(std::error_code(::GetLastError(), std::system_category()));
+        }
 
         std::cout << "Used Memory Size: "
-				  << boost::numeric_cast<std::uint32_t>(r.ru_maxrss)
-				  << "(kB)"
+                  << boost::numeric_cast<std::uint32_t>(memInfo.PeakWorkingSetSize >> 10)
+                  << "(kB)"
+                  << std::endl; 
+    }
+#else
+    void usedmem()
+    {
+        struct rusage r;
+
+        if (getrusage(RUSAGE_SELF, &r)) {
+            throw std::system_error(errno, std::system_category());
+        }
+
+        std::cout << "Used Memory Size: "
+                  << boost::numeric_cast<std::uint32_t>(r.ru_maxrss)
+                  << "(kB)"
                   << std::endl;
     }
 #endif

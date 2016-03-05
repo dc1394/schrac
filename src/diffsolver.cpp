@@ -114,13 +114,13 @@ namespace schrac {
             case Data::Solver_type::BULIRSCH_STOER:
                 tbb::parallel_invoke(
                     [this]{ solve_diff_equ_o(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_); },
-					[this]{ solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V2_, dV_dr2_); });
+                    [this]{ solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V2_, dV_dr2_); });
                 break;
 
             case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
                 tbb::parallel_invoke(
-					[this]{ solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_); },
-					[this]{ solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V2_, dV_dr2_); });
+                    [this]{ solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_); },
+                    [this]{ solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V2_, dV_dr2_); });
                 break;
 
             default:
@@ -136,13 +136,13 @@ namespace schrac {
                 break;
 
             case Data::Solver_type::BULIRSCH_STOER:
-				solve_diff_equ_o(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
-				solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
+                solve_diff_equ_o(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
+                solve_diff_equ_i(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_), V_, dV_dr_);
                 break;
 
             case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-				solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
-				solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
+                solve_diff_equ_o(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
+                solve_diff_equ_i(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()), V_, dV_dr_);
                 break;
 
             default:
@@ -160,11 +160,11 @@ namespace schrac {
             break;
 
         case Data::Solver_type::BULIRSCH_STOER:
-			solve_poisson_run(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_));
+            solve_poisson_run(bulirsch_stoer < myarray >(pdata_->eps_, pdata_->eps_));
             break;
 
         case Data::Solver_type::CONTROLLED_RUNGE_KUTTA:
-			solve_poisson_run(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()));
+            solve_poisson_run(make_controlled(pdata_->eps_, pdata_->eps_, error_stepper_type()));
             break;
 
         default:
@@ -344,8 +344,8 @@ namespace schrac {
         myarray state{ 0.0, 0.0 };
         auto const r0 = pdiffdata_->r_mesh_[0];
 
-		state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
-		state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
+        state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
+        state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
 
         return state;
     }
@@ -443,13 +443,13 @@ namespace schrac {
 
     template void DiffSolver::solve_poisson_run<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper);
     template void DiffSolver::solve_poisson_run<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper);
-	template void DiffSolver::solve_poisson_run<error_stepper_type>(error_stepper_type const & stepper);
+    template void DiffSolver::solve_poisson_run<error_stepper_type>(error_stepper_type const & stepper);
     template void DiffSolver::solve_diff_equ_i<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_i<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-	template void DiffSolver::solve_diff_equ_i<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+    template void DiffSolver::solve_diff_equ_i<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<adams_bashforth_moulton< 2, myarray > >(adams_bashforth_moulton< 2, myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
     template void DiffSolver::solve_diff_equ_o<bulirsch_stoer < myarray > >(bulirsch_stoer < myarray > const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
-	template void DiffSolver::solve_diff_equ_o<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
+    template void DiffSolver::solve_diff_equ_o<error_stepper_type>(error_stepper_type const & stepper, std::function<double(double)> const & V, std::function<double(double)> const & dV_dr);
 
     // #endregion templateメンバ関数の実体化
 }
