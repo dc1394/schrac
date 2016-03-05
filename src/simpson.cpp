@@ -6,6 +6,7 @@
 */
 
 #include "simpson.h"
+#include <cmath>        // for std::pow
 
 namespace schrac {
     double Simpson::operator()(Simpson::dvector const & f, Simpson::dvector const & r) const
