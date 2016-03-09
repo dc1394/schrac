@@ -5,7 +5,7 @@
 
 ★これは何？
 　水素原子とヘリウム原子に対して、Schrödinger方程式とScalar Dirac方程式及びDirac　方程式を数値的に解くコードです。ビルドには、以下のライブラリが必要です。
-　・Boost C++ Libraries 1.60.0
+　・Boost C++ Libraries
 　・GNU Scientific Library (GSL)
 　・Intel® Threading Building Blocks (Intel® TBB)
 
