@@ -56,7 +56,7 @@ namespace schrac {
 
         filename += ".csv";
 
-        return std::make_tuple(waveffilename + filename, rhofilename + filename, wffilename + filename);
+        return std::forward_as_tuple(waveffilename + filename, rhofilename + filename, wffilename + filename);
     }
 
     bool WaveFunctionSave::operator()()
