@@ -13,7 +13,7 @@ namespace schrac {
     // #region コンストラクタ
     
     Vhartree::Vhartree(std::vector<double> const & r_mesh) :
-        Vhart([this]{ return vhart_; }, [this](std::vector<double> const & v) { return vhart_ = v; }),
+        Vhart([this]{ return std::ref(vhart_); }, [this](std::vector<double> const & v) { return vhart_ = v; }),
         acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
         r_mesh_(r_mesh),
         spline_(gsl_spline_alloc(gsl_interp_cspline, r_mesh.size()), gsl_spline_deleter)
