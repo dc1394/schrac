@@ -41,7 +41,7 @@ namespace schrac {
     // #region コンストラクタ
 
     ReadInputFile::ReadInputFile(std::pair<std::string, bool> const & arg) :
-        PData([this]() { return pdata_; }, nullptr), 
+        PData([this]() { return std::cref(pdata_); }, nullptr), 
         ifs_(std::get<0>(arg).c_str()),
         lineindex_(1),
         pdata_(std::make_shared<Data>())

@@ -28,7 +28,7 @@ namespace schrac {
     }
 
     DiffSolver::DiffSolver(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh) :
-        PDiffData([this]() { return pdiffdata_; }, nullptr),
+        PDiffData([this]() { return std::cref(pdiffdata_); }, nullptr),
         pdata_(pdata),
         pdiffdata_(pdiffdata),
         prho_(prho),

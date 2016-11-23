@@ -18,9 +18,9 @@ namespace schrac {
     // #region コンストラクタ
 
     ScfLoop::ScfLoop(std::pair<std::string, bool> const & arg) :
-        PData([this]{ return pdata_; }, nullptr),
-        PDiffData([this]{ return pdiffdata_; }, nullptr),
-        PEhartree([this]{ return ehartree_; }, nullptr),
+        PData([this]{ return std::cref(pdata_); }, nullptr),
+        PDiffData([this]{ return std::cref(pdiffdata_); }, nullptr),
+        PEhartree([this]{ return std::cref(ehartree_); }, nullptr),
         ehartree_(boost::none)
     {
         ReadInputFile rif(arg);         // ファイルを読み込む

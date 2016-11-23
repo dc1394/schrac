@@ -25,8 +25,8 @@ namespace schrac {
     // #region コンストラクタ
 
     EigenValueSearch::EigenValueSearch(std::shared_ptr<Data> const & pdata, std::shared_ptr<DiffData> const & pdiffdata, std::shared_ptr<Rho> const & prho, std::shared_ptr<Vhartree> const & pvh) :
-        PData([this]() { return pdata_; }, nullptr),
-        PDiffSolver([this]() { return pdiffsolver_; }, nullptr),
+        PData([this]() { return std::cref(pdata_); }, nullptr),
+        PDiffSolver([this]() { return std::cref(pdiffsolver_); }, nullptr),
         loop_(1),
         pdata_(pdata),
         pdiffdata_(pdiffdata),
