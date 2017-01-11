@@ -50,6 +50,6 @@ namespace schrac {
         // restore original handler
         gsl_set_error_handler(old_handler);
 
-        return std::move(solution);
+        return solution;
     }
 }
