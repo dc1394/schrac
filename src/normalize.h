@@ -48,20 +48,6 @@ namespace schrac {
 
         // #region メンバ関数
 
-    public:
-        //! A public member function.
-        /*!
-            波動関数と電子密度を求める
-        */
-        void base_evaluate();
-
-        //! A public member function.
-        /*!
-            結果を返す
-            \return メッシュと波動関数が格納されたmap
-        */
-        mymap base_getresult() const;
-
     private:
         //! A public member function.
         /*!
@@ -157,28 +143,6 @@ namespace schrac {
     }
 
     // #endregion コンストラクタの実装
-
-    // #region protectedメンバ関数の実装
-
-    template <typename Derived>
-    void Normalize<Derived>::base_evaluate()
-    {
-        static_cast<Derived &>(*this).evaluate();
-    }
-
-    template <typename Derived>
-    typename Normalize<Derived>::mymap Normalize<Derived>::base_getresult() const
-    {
-        return static_cast<Derived &>(*this).getresult();
-    }
-
-    template <typename Derived>
-    void Normalize<Derived>::base_normalize()
-    {
-        static_cast<Derived &>(*this).normalize();
-    }
-
-    // #region protectedメンバ関数の実装
 }
 
 #endif // _NORMALIZE_H_
