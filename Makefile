@@ -41,8 +41,8 @@ CXXFLAGS = -Wextra -O3 -pipe -std=c++14
 #
 # リンク対象に含めるライブラリの指定
 #
-LDFLAGS = -L/home/dc1394/oss/boost_1_60_0/stage/clang/lib/ -lboost_program_options \
-		  -lgsl -lgslcblas -lm -L/home/dc1394/oss/tbb44_20151115oss/lib/intel64/gcc4.4 -ltbb
+LDFLAGS = -L/home/dc1394/oss/boost_1_62_0/stage/clang/lib/ -lboost_program_options \
+		  -lgsl -lgslcblas -lm -ltbb
 
 #
 # makeの動作

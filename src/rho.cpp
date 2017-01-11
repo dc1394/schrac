@@ -7,6 +7,7 @@
 
 #include "diffdata.h"
 #include "rho.h"
+#include <cmath>    // for std::pow
 
 namespace schrac {
     // #region コンストラクタ
