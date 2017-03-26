@@ -182,10 +182,10 @@ namespace schrac {
         std::array<double, AMMAX * AMMAX> a;
         myvector b;
 
-        for (std::size_t i = 0; i < AMMAX; i++) {
+        for (auto i = 0U; i < AMMAX; i++) {
             auto rtmp = 1.0;
 
-            for (std::size_t j = 0; j < AMMAX; j++) {
+            for (auto j = 0U; j < AMMAX; j++) {
                 a[AMMAX * i + j] = rtmp;
                 rtmp *= pdiffdata_->r_mesh_[i];
             }
@@ -328,10 +328,10 @@ namespace schrac {
         std::array<double, AMMAX * AMMAX> a;
         myvector b;
 
-        for (std::size_t i = 0; i < AMMAX; i++) {
+        for (auto i = 0U; i < AMMAX; i++) {
             auto rtmp = pdiffdata_->r_mesh_[i];
 
-            for (std::size_t j = 0; j < AMMAX; j++) {
+            for (auto j = 0U; j < AMMAX; j++) {
                 a[AMMAX * i + j] = rtmp;
                 rtmp *= pdiffdata_->r_mesh_[i];
             }
@@ -343,6 +343,7 @@ namespace schrac {
         
         myarray state{ 0.0, 0.0 };
         auto const r0 = pdiffdata_->r_mesh_[0];
+
 
         state[0] = ((0.2 * bn[2] * r0 + bn[1] / 3.0) * 0.5 * r0 + bn[0] / 3.0) * 0.5 * r0;
         state[1] = ((0.9 * bn[2] * r0 + bn[1]) * r0 + bn[0]) / 6.0;
