@@ -312,17 +312,17 @@ namespace schrac {
                 switch (tokens.size()) {
                 case 1:
                     // デフォルト値を返す
-                    return std::optional<T>(default_value);
+                    return std::make_optional<T>(default_value);
                     break;
 
                 case 2:
                     if (*(++itr) == "DEFAULT") {
                         // デフォルト値を返す
-                        return std::optional<T>(default_value);
+                        return std::make_optional<T>(default_value);
                     }
                     else {
                         try {
-                            return std::optional<T>(boost::lexical_cast<T>(itr->c_str()));
+                            return std::make_optional<T>(boost::lexical_cast<T>(itr->c_str()));
                         }
                         catch (boost::bad_lexical_cast const &) {
                             errorMessage(lineindex_ - 1, article, *itr);
@@ -335,7 +335,7 @@ namespace schrac {
                     auto val = *itr;
 
                     if (val == "DEFAULT" || val[0] == '#') {
-                        return std::optional<T>(default_value);
+                        return std::make_optional<T>(default_value);
                     }
                     else if ((*(++itr))[0] != '#') {
                         errorMessage(lineindex_ - 1, article, *itr);
@@ -343,7 +343,7 @@ namespace schrac {
                     }
 
                     try {
-                        return std::optional<T>(boost::lexical_cast<T>(val.c_str()));
+                        return std::make_optional<T>(boost::lexical_cast<T>(val.c_str()));
                     }
                     catch (boost::bad_lexical_cast const &) {
                         errorMessage(lineindex_ - 1, article, val);
@@ -386,7 +386,7 @@ namespace schrac {
                     if (idx != val->length()) {
                         throw std::invalid_argument("");
                     }
-                    value = std::optional<double>(v);
+                    value = std::make_optional<double>(v);
                 }
                 catch (std::invalid_argument const &) {
                     errorMessage(lineindex_ - 1, article, *val);

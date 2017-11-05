@@ -162,7 +162,7 @@ namespace schrac {
                 return std::make_pair(-1, std::nullopt);
             }
 
-            return std::make_pair(0, std::optional<strvec>(std::move(tokens)));
+            return std::make_pair(0, std::make_optional<strvec>(std::move(tokens)));
         }
         else {
             return std::make_pair(1, std::nullopt);
@@ -396,7 +396,7 @@ namespace schrac {
 
                 case 2:
                     return (*itr == "DEFAULT" || *itr == "AUTO") ?
-                        std::optional<ci_string>(ci_string()) : std::optional<ci_string>(*itr);
+                        std::make_optional<ci_string>(ci_string()) : std::make_optional<ci_string>(*itr);
                     break;
 
                 default:
@@ -405,7 +405,7 @@ namespace schrac {
 
                         if (val == "DEFAULT" || val == "AUTO" || val[0] == '#') {
                             // デフォルト値を返す
-                            return std::optional<ci_string>(ci_string());
+                            return std::make_optional<ci_string>(ci_string());
                         } else if ((*(++itr))[0] != '#') {
                             errorMessage(lineindex_ - 1, article, *itr);
 
@@ -413,7 +413,7 @@ namespace schrac {
                             return std::nullopt;
                         }
 
-                        return std::optional<ci_string>(std::move(val));
+                        return std::make_optional<ci_string>(std::move(val));
                     }
                 }
             }
