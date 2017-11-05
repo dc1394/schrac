@@ -50,7 +50,7 @@ namespace schrac {
         /*!
             エネルギーを表示する
         */
-        void express_energy(boost::optional<double> const & ehartree) const;
+        void express_energy(std::optional<double> const & ehartree) const;
 
     private:
         //! A private member function (const).
@@ -87,7 +87,7 @@ namespace schrac {
         /*!
             全エネルギーを表示する
         */
-        void total_energy(boost::optional<double> const & ehartree) const;
+        void total_energy(std::optional<double> const & ehartree) const;
 
         // #endregion メンバ関数
 

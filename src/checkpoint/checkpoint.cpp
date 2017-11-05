@@ -7,11 +7,11 @@
 
 #include "checkpoint.h"
 #include <iostream>             // for std::cout
+#include <optional>				// for std::optional
 #include <system_error>         // for std::system_category
 #include <boost/assert.hpp>     // for boost::assert
 #include <boost/cast.hpp>       // for boost::numeric_cast
 #include <boost/format.hpp>     // for boost::format
-#include <boost/optional.hpp>   // for boost::optional
 
 #ifdef _WIN32
     #include <Windows.h>        // for GetCurrentProcess
@@ -53,7 +53,7 @@ namespace checkpoint {
     {
         using namespace std::chrono;
 
-        boost::optional<high_resolution_clock::time_point> prevreal(boost::none);
+        std::optional<high_resolution_clock::time_point> prevreal(std::nullopt);
 
         auto itr = cfp->points.begin();
         for (auto i = 0; i < cfp->cur; ++i, ++itr) {
@@ -63,7 +63,7 @@ namespace checkpoint {
                           << boost::format(" elapsed time = %.4f (msec)\n") % realtime.count();
             }
 
-            prevreal = boost::optional<high_resolution_clock::time_point>(itr->realtime);
+            prevreal = std::optional<high_resolution_clock::time_point>(itr->realtime);
         }
     }
 

@@ -11,8 +11,8 @@
 #pragma once
 
 #include "normalize.h"
-#include <tuple>                                // for std::tuple
-#include <boost/optional.hpp>                   // for boost::optional
+#include <optional>		// for std::optional
+#include <tuple>        // for std::tuple
 
 namespace schrac {
     //! A class.

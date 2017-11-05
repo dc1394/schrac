@@ -24,11 +24,11 @@ namespace schrac {
 
             return;
         }
-        else if (pdata->rho0_c_ == boost::none || pdata->rho0_alpha_ == boost::none) {
+        else if (pdata->rho0_c_ == std::nullopt || pdata->rho0_alpha_ == std::nullopt) {
             // デフォルト値を代入
             auto const w = 2.0;
-            pdata->rho0_c_ = boost::optional<double>(std::pow(w, 4) / 16.0);
-            pdata->rho0_alpha_ = boost::optional<double>(0.5 * w);
+            pdata->rho0_c_ = std::optional<double>(std::pow(w, 4) / 16.0);
+            pdata->rho0_alpha_ = std::optional<double>(0.5 * w);
             *pdata->rho0_c_ *= (pdata->Z_ / w);
         }
 

@@ -135,7 +135,7 @@ namespace schrac {
         std::cerr << line << "行目, 未知のトークン:" << s2.c_str() << std::endl;
     }
 
-    std::pair<std::int32_t, boost::optional<ReadInputFile::strvec>> ReadInputFile::getToken(ci_string const & article)
+    std::pair<std::int32_t, std::optional<ReadInputFile::strvec>> ReadInputFile::getToken(ci_string const & article)
     {
         using namespace boost::algorithm;
 
@@ -146,7 +146,7 @@ namespace schrac {
         // もし一文字も読めなかったら
         if (!ifs_.gcount()) {
             errorMessage(article);
-            return std::make_pair(-1, boost::none);
+            return std::make_pair(-1, std::nullopt);
         }
 
         // 読み込んだ行が空、あるいはコメント行でないなら
@@ -159,13 +159,13 @@ namespace schrac {
 
             if (*itr != article) {
                 errorMessage(lineindex_, article, *itr);
-                return std::make_pair(-1, boost::none);
+                return std::make_pair(-1, std::nullopt);
             }
 
-            return std::make_pair(0, boost::optional<strvec>(std::move(tokens)));
+            return std::make_pair(0, std::optional<strvec>(std::move(tokens)));
         }
         else {
-            return std::make_pair(1, boost::none);
+            return std::make_pair(1, std::nullopt);
         }
     }
 
@@ -279,7 +279,7 @@ namespace schrac {
         return true;
     }
 
-    boost::optional<ci_string> ReadInputFile::readData(ci_string const & article)
+    std::optional<ci_string> ReadInputFile::readData(ci_string const & article)
     {
         for (; true; lineindex_++) {
             auto const ret(getToken(article));
@@ -287,7 +287,7 @@ namespace schrac {
             switch (std::get<0>(ret))
             {
             case -1:
-                return boost::none;
+                return std::nullopt;
                 break;
 
             case 0:
@@ -297,7 +297,7 @@ namespace schrac {
                 // 読み込んだトークンの数がもし2個以外だったら
                 if (tokens.size() != 2 || tokens[1].empty()) {
                     std::cerr << "インプットファイル" << lineindex_ << "行目の、[" << article.c_str() << "]の行が正しくありません。\n";
-                    return boost::none;
+                    return std::nullopt;
                 }
 
                 ++lineindex_;
@@ -313,7 +313,7 @@ namespace schrac {
         }
     }
 
-    boost::optional<ci_string> ReadInputFile::readData(ci_string const & article, ci_string const & def)
+    std::optional<ci_string> ReadInputFile::readData(ci_string const & article, ci_string const & def)
     {
         // グリッドを読み込む
         for (; true; lineindex_++) {
@@ -322,7 +322,7 @@ namespace schrac {
             switch (std::get<0>(ret))
             {
             case -1:
-                return boost::none;
+                return std::nullopt;
                 break;
 
             case 0:
@@ -352,7 +352,7 @@ namespace schrac {
                         }
                         else if ((*(++itr))[0] != '#') {
                             errorMessage(lineindex_ - 1, article, *itr);
-                            return boost::none;
+                            return std::nullopt;
                         }
 
                         return val;
@@ -371,7 +371,7 @@ namespace schrac {
         }
     }
 
-    boost::optional<ci_string> ReadInputFile::readDataAuto(ci_string const & article)
+    std::optional<ci_string> ReadInputFile::readDataAuto(ci_string const & article)
     {
         for (; true; lineindex_++) {
             auto const ret(getToken(article));
@@ -379,7 +379,7 @@ namespace schrac {
             switch (std::get<0>(ret))
             {
             case -1:
-                return boost::none;
+                return std::nullopt;
                 break;
 
             case 0:
@@ -391,12 +391,12 @@ namespace schrac {
                 // 読み込んだトークンの数をはかる
                 switch (tokens.size()) {
                 case 1:
-                    return boost::none;
+                    return std::nullopt;
                     break;
 
                 case 2:
                     return (*itr == "DEFAULT" || *itr == "AUTO") ?
-                        boost::optional<ci_string>(ci_string()) : boost::optional<ci_string>(*itr);
+                        std::optional<ci_string>(ci_string()) : std::optional<ci_string>(*itr);
                     break;
 
                 default:
@@ -405,15 +405,15 @@ namespace schrac {
 
                         if (val == "DEFAULT" || val == "AUTO" || val[0] == '#') {
                             // デフォルト値を返す
-                            return boost::optional<ci_string>(ci_string());
+                            return std::optional<ci_string>(ci_string());
                         } else if ((*(++itr))[0] != '#') {
                             errorMessage(lineindex_ - 1, article, *itr);
 
                             // エラー
-                            return boost::none;
+                            return std::nullopt;
                         }
 
-                        return boost::optional<ci_string>(std::move(val));
+                        return std::optional<ci_string>(std::move(val));
                     }
                 }
             }

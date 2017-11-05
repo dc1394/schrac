@@ -24,7 +24,7 @@ namespace schrac {
     
     // #region メンバ関数
 
-    void Energy::express_energy(boost::optional<double> const & ehartree) const
+    void Energy::express_energy(std::optional<double> const & ehartree) const
     {
         kinetic_energy();
         if (ehartree) {
@@ -64,7 +64,7 @@ namespace schrac {
         std::cout << "E(Potential Energy)\t= " << potcoulomb_energy_ << std::endl;
     }
 
-    void Energy::total_energy(boost::optional<double> const & ehartree) const
+    void Energy::total_energy(std::optional<double> const & ehartree) const
     {
         std::cout << "E(Total Energy)\t\t= "; 
         std::cout << (ehartree ? 2.0 * pdiffdata_->E_ - *ehartree : pdiffdata_->E_);

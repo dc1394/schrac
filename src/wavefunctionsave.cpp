@@ -8,7 +8,6 @@
 #include "wavefunctionsave.h"
 #include <cstdlib>              // for std::fclose, std::fprintf
 #include <iostream>             // for std::cerr
-#include <tuple>                // for std::tie
 
 namespace schrac {
     WaveFunctionSave::WaveFunctionSave(boost::container::flat_map<std::string, std::vector<double>> const & wf, std::shared_ptr<Data> const & pdata) :
@@ -17,26 +16,26 @@ namespace schrac {
     {
     }
     
-    boost::optional<std::string> WaveFunctionSave::get_spin_orbital() const
+    std::optional<std::string> WaveFunctionSave::get_spin_orbital() const
     {
         switch (pdata_->eq_type_) {
         case Data::Eq_type::DIRAC:
             if (pdata_->spin_orbital_ == Data::ALPHA) {
-                return boost::optional<std::string>("alpha");
+				return std::optional<std::string>{ "alpha" };
             }
             else {
-                return boost::optional<std::string>("beta");
+				return std::optional<std::string>{ "beta" };
             }
             break;
 
         case Data::Eq_type::SCH:
         case Data::Eq_type::SDIRAC:
-            return boost::none;
+            return std::nullopt;
             break;
 
         default:
             BOOST_ASSERT(!"何かがおかしい！");
-            return boost::none;
+            return std::nullopt;
         }
     }
 
@@ -61,8 +60,7 @@ namespace schrac {
 
     bool WaveFunctionSave::operator()()
     {
-        std::string waveffilename, rhofilename, wffilename;
-        std::tie(waveffilename, rhofilename, wffilename) = make_filename();
+        auto [waveffilename, rhofilename, wffilename] = make_filename();
 
         auto const fcloser = [](auto fp)
         {

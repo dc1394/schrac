@@ -21,7 +21,7 @@ namespace schrac {
         PData([this]{ return std::cref(pdata_); }, nullptr),
         PDiffData([this]{ return std::cref(pdiffdata_); }, nullptr),
         PEhartree([this]{ return std::cref(ehartree_); }, nullptr),
-        ehartree_(boost::none)
+        ehartree_(std::nullopt)
     {
         ReadInputFile rif(arg);         // ファイルを読み込む
         rif.readFile();
@@ -115,7 +115,7 @@ namespace schrac {
         }
 
         Simpson simpson(pdiffdata_->dx_);
-        ehartree_ = boost::optional<double>(simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
+        ehartree_ = std::optional<double>(simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
     }
 
     double ScfLoop::req_energy(double eigen) const

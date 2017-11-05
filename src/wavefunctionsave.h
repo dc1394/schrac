@@ -12,10 +12,10 @@
 
 #include "data.h"
 #include <memory>                       // for std::shared_ptr
+#include <optional>						// for std::optional
 #include <tuple>                        // for std::tuple
 #include <vector>                       // for std::vector
 #include <boost/container/flat_map.hpp> // for boost::container::flat_map
-#include <boost/optional.hpp>           // for boost::optional
 
 namespace schrac {
     //! A class.
@@ -48,9 +48,9 @@ namespace schrac {
         //!  A private member function.
         /*!
             スピン軌道を表す文字列を返す関数
-            \return スピン軌道を表す文字列が格納されたboost::optional
+            \return スピン軌道を表す文字列が格納されたstd::optional
         */
-        boost::optional<std::string> get_spin_orbital() const;
+        std::optional<std::string> get_spin_orbital() const;
 
         //!  A private member function.
         /*!

@@ -12,7 +12,7 @@
 #include "ci_string.h"
 #include <array>                // for std::array
 #include <cstdint>              // for std::int32_t, std::uint8_t
-#include <boost/optional.hpp>   // for boost::optional
+#include <optional>				// for std::optional
 
 namespace schrac {
     //! A global variable (constant expression).
@@ -212,13 +212,13 @@ namespace schrac {
         /*!
             密度の初期値ρ0(r)のための係数c（ρ0(r) = c * exp(- alpha * r)
         */
-        boost::optional<double> rho0_c_;
+        std::optional<double> rho0_c_;
 
         //!  A public member variable.
         /*!
             密度の初期値ρ0(r)のための係数alpha（ρ0(r) = c * exp(- alpha * r)
         */
-        boost::optional<double> rho0_alpha_;
+        std::optional<double> rho0_alpha_;
 
         //!  A public member variable.
         /*!
@@ -242,7 +242,7 @@ namespace schrac {
         /*!
             固有値探索を始める値
         */
-        boost::optional<double> search_lowerE_;
+        std::optional<double> search_lowerE_;
 
         //!  A public member variable.
         /*!

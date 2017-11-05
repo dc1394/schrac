@@ -9,7 +9,6 @@
 #include <cmath>                // for std::fabs, std::log10
 #include <iomanip>              // for std::setprecision
 #include <iostream>             // for std::cot, std::cerr
-#include <tuple>                // for std::tie
 #include <boost/assert.hpp>     // for BOOST_ASSERT
 #include <boost/cast.hpp>       // for boost::numeric_cast
 #include <gsl/gsl_errno.h>      // for GSL_SUCCESS
@@ -238,8 +237,7 @@ namespace schrac {
         EigenValueSearch::nodeok = 
             pdiffsolver->PDiffData()->node_ == pdiffsolver->PDiffData()->thisnode_;
 
-        myarray L, M;
-        std::tie(L, M) = pdiffsolver->getMPval();
+        auto [L, M] = pdiffsolver->getMPval();
         return M[0] - (L[0] / L[1]) * M[1];
     }
 

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "diffsolver.h"
-#include <boost/optional.hpp>   // for boost::optional
+#include <optional>			// for std::optional
 
 namespace schrac {
     class ScfLoop final {
@@ -152,7 +152,7 @@ namespace schrac {
             Hartreeエネルギーを得る
             \return Hartreeエネルギー
         */
-        Property<boost::optional<double>> const PEhartree;
+        Property<std::optional<double>> const PEhartree;
 
         // #endregion プロパティ
 
@@ -163,7 +163,7 @@ namespace schrac {
         /*!
             Hartreeエネルギー
         */
-        boost::optional<double> ehartree_;
+        std::optional<double> ehartree_;
 
         //!  A private member variable (constant).
         /*!
