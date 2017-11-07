@@ -16,25 +16,25 @@
 namespace schrac {
     // #region staticメンバ変数
 
-    const ci_string ReadInputFile::CHEMICAL_SYMBOL = "chemical.symbol";
-    const ci_string ReadInputFile::EQ_TYPE_DEFAULT = "sch";
-    const ci_string ReadInputFile::EQ_TYPE = "eq.type";
-    const std::array<ci_string, 4> ReadInputFile::EQ_TYPE_ARRAY =
+    ci_string const ReadInputFile::CHEMICAL_SYMBOL = "chemical.symbol";
+	ci_string const ReadInputFile::EQ_TYPE_DEFAULT = "sch";
+	ci_string const ReadInputFile::EQ_TYPE = "eq.type";
+    std::array<ci_string, 4> const ReadInputFile::EQ_TYPE_ARRAY =
     {
         ci_string("sch"),
         ci_string("sdirac"),
         ci_string("dirac")
     };
-    const ci_string ReadInputFile::ORBITAL = "orbital";
+    ci_string const ReadInputFile::ORBITAL = "orbital";
     const std::array<ci_string, 4> ReadInputFile::SOLVER_TYPE_ARRAY =
     {
         ci_string("adams_bashforth_moulton"),
         ci_string("bulirsch_stoer"),
         ci_string("controlled_runge_kutta")
     };
-    const ci_string ReadInputFile::SOLVER_TYPE_DEFAULT = "controlled_runge_kutta";
-    const ci_string ReadInputFile::SPIN_ORBITAL = "spin.orbital";
-    const ci_string ReadInputFile::SPIN_ORBITAL_DEFAULT = "alpha";
+    ci_string const ReadInputFile::SOLVER_TYPE_DEFAULT = "controlled_runge_kutta";
+	ci_string const ReadInputFile::SPIN_ORBITAL = "spin.orbital";
+	ci_string const ReadInputFile::SPIN_ORBITAL_DEFAULT = "alpha";
 
     // #endregion staticメンバ変数
 
