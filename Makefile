@@ -36,12 +36,12 @@ CXX = clang++
 #
 # C++コンパイラに与える、（最適化等の）オプション
 #
-CXXFLAGS = -Wextra -O3 -pipe -std=c++14
+CXXFLAGS = -Wextra -O3 -pipe -std=c++17
 
 #
 # リンク対象に含めるライブラリの指定
 #
-LDFLAGS = -L/home/dc1394/oss/boost_1_62_0/stage/clang/lib/ -lboost_program_options \
+LDFLAGS = -L/home/dc1394/oss/boost_1_65_1/stage/gcc/lib/ -lboost_program_options \
 		  -lgsl -lgslcblas -lm -ltbb
 
 #
