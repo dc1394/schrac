@@ -10,10 +10,10 @@
 
 #pragma once
 
-#include "deleter.h"
 #include "diffdata.h"
 #include "property.h"
-#include <memory>       // for std::unique_ptr
+#include <memory>           // for std::unique_ptr
+#include <gsl/gsl_spline.h> // for gsl_interp_accel, gsl_interp_accel_free, gsl_spline, gsl_spline_free
 
 namespace schrac {
     //! A class.
@@ -94,7 +94,7 @@ namespace schrac {
         /*!
             gsl_interp_accelへのスマートポインタ
         */
-        std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc_;
+        std::unique_ptr<gsl_interp_accel, decltype(&gsl_interp_accel_free)> const acc_;
         
         //! A private member variable.
         /*!
@@ -106,7 +106,7 @@ namespace schrac {
         /*!
             gsl_interp_typeへのスマートポインタ
         */
-        std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline_;
+        std::unique_ptr<gsl_spline, decltype(&gsl_spline_free)> const spline_;
 
         //! A private member variable.
         /*!

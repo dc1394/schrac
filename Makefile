@@ -31,17 +31,17 @@ DEPS = $(OBJS:.o=.d)
 #
 # C++コンパイラの指定
 #
-CXX = clang++
+CXX = g++
 
 #
 # C++コンパイラに与える、（最適化等の）オプション
 #
-CXXFLAGS = -Wextra -O3 -pipe -std=c++17
+CXXFLAGS = -Wall -Wextra -O3 -std=c++17 -mtune=native -march=native
 
 #
 # リンク対象に含めるライブラリの指定
 #
-LDFLAGS = -L/home/dc1394/oss/boost_1_65_1/stage/gcc/lib/ -lboost_program_options \
+LDFLAGS = -L/home/dc1394/oss/boost_1_73_0/stage/clang/lib -lboost_program_options \
 		  -lgsl -lgslcblas -lm -ltbb
 
 #
@@ -58,7 +58,7 @@ all: $(PROG) ; rm -f $(OBJS) $(DEPS)
 # プログラムのリンク
 #
 $(PROG): $(OBJS)
-		$(CXX) $(LDFLAGS) $(CXXFLAGS) -o $@ $^
+		$(CXX) $^ $(LDFLAGS) $(CXXFLAGS) -o $@
 
 #
 # プログラムのコンパイル

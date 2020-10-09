@@ -14,9 +14,9 @@ namespace schrac {
     
     Vhartree::Vhartree(std::vector<double> const & r_mesh) :
         Vhart([this]{ return std::cref(vhart_); }, [this](std::vector<double> const & v) { return vhart_ = v; }),
-        acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
+        acc_(gsl_interp_accel_alloc(), gsl_interp_accel_free),
         r_mesh_(r_mesh),
-        spline_(gsl_spline_alloc(gsl_interp_cspline, r_mesh.size()), gsl_spline_deleter)
+        spline_(gsl_spline_alloc(gsl_interp_cspline, r_mesh.size()), gsl_spline_free)
     {
         vhart_.reserve(r_mesh.size());
     }

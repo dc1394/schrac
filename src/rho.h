@@ -6,10 +6,10 @@
 */
 
 #include "data.h"
-#include "deleter.h"
 #include "property.h"
-#include <memory>
-#include <vector>
+#include <memory>           // for std::unique_ptr 
+#include <vector>           // for std::vector
+#include <gsl/gsl_spline.h> // for gsl_interp_accel, gsl_interp_accel_free, gsl_spline, gsl_spline_free
 
 namespace schrac {
     //! A class.
@@ -65,7 +65,7 @@ namespace schrac {
         /*!
             電子密度が格納された可変長配列へのプロパティ
         */
-        Property<std::vector<double>> const PRho;
+        Property< std::vector<double> > const PRho;
 
         // #endregion プロパティ
 
@@ -76,7 +76,7 @@ namespace schrac {
         /*!
             gsl_interp_accelへのスマートポインタ
         */
-        std::unique_ptr<gsl_interp_accel, decltype(gsl_interp_accel_deleter)> const acc_;
+        std::unique_ptr<gsl_interp_accel, decltype(&gsl_interp_accel_free)> const acc_;
 
         //!  A private member variable.
         /*!
@@ -94,7 +94,7 @@ namespace schrac {
         /*!
             gsl_splineへのスマートポインタ
         */
-        std::unique_ptr<gsl_spline, decltype(gsl_spline_deleter)> const spline_;
+        std::unique_ptr<gsl_spline, decltype(&gsl_spline_free)> const spline_;
 
         // #endregion メンバ変数
 

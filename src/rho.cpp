@@ -14,9 +14,9 @@ namespace schrac {
 
     Rho::Rho(std::shared_ptr<DiffData> const & pdiffdata) :
         PRho([this] { return std::cref(rho_); }, nullptr),
-        acc_(gsl_interp_accel_alloc(), gsl_interp_accel_deleter),
+        acc_(gsl_interp_accel_alloc(), gsl_interp_accel_free),
         pdiffdata_(pdiffdata),
-        spline_(gsl_spline_alloc(gsl_interp_cspline, pdiffdata->r_mesh_.size()), gsl_spline_deleter)
+        spline_(gsl_spline_alloc(gsl_interp_cspline, pdiffdata->r_mesh_.size()), gsl_spline_free)
     {
         auto const & pdata = pdiffdata_->pdata_;
         if (pdata->chemical_symbol_ == Data::Chemical_Symbol[0]) {
