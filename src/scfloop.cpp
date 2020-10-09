@@ -115,7 +115,7 @@ namespace schrac {
         }
 
         Simpson simpson(pdiffdata_->dx_);
-        ehartree_ = std::optional<double>(simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
+        ehartree_.emplace(simpson(vhartree, u2, pdiffdata_->r_mesh_, 1));
     }
 
     double ScfLoop::req_energy(double eigen) const
