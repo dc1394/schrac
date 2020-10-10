@@ -24,7 +24,6 @@
   <ItemGroup>
     <ClInclude Include="ci_string.h" />
     <ClInclude Include="data.h" />
-    <ClInclude Include="deleter.h" />
     <ClInclude Include="diffsolver.h" />
     <ClInclude Include="diffdata.h" />
     <ClInclude Include="diracnormalize.h" />

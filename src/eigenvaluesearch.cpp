@@ -67,13 +67,9 @@ namespace schrac {
 
     bool EigenValueSearch::brent()
     {
-        auto const fsolver_deleter = [](gsl_root_fsolver * s)
-        {
-            gsl_root_fsolver_free(s);
-        };
-        std::unique_ptr<gsl_root_fsolver, decltype(fsolver_deleter)> s(
+        std::unique_ptr<gsl_root_fsolver, decltype(&gsl_root_fsolver_free)> s(
             gsl_root_fsolver_alloc(gsl_root_fsolver_brent),
-            fsolver_deleter);
+            gsl_root_fsolver_free);
 
         gsl_function F;
 

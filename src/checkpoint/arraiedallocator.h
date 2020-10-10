@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <cstddef>                  // for std::size_t
 #include <cstdint>                  // for std::uint32_t
 #include <boost/static_assert.hpp>  // for BOOST_STATIC_ASSERT
 

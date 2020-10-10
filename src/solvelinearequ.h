@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <array>
-#include <gsl/gsl_linalg.h>    // for gsl_linalg
+#include <array>    // for std::array
+
 
 namespace schrac {
     //!  A static variable (constant expression).

@@ -10,6 +10,7 @@
 #include <memory>           // for std::unique_ptr
 #include <stdexcept>        // for std::runtime_error
 #include <string>           // for std::to_string
+#include <gsl/gsl_linalg.h> // for gsl_linalg
 
 namespace schrac {
     myvector solve_linear_equ(std::array<double, AMMAX * AMMAX> & a, myvector & b)
@@ -25,21 +26,13 @@ namespace schrac {
         auto m = gsl_matrix_view_array(a.data(), AMMAX, AMMAX);
         auto const v = gsl_vector_view_array(b.data(), AMMAX);
 
-        auto const gsl_vector_deleter = [](gsl_vector * p)
-        {
-            gsl_vector_free(p);
-        };
-        std::unique_ptr<gsl_vector, decltype(gsl_vector_deleter)> x(
+        std::unique_ptr<gsl_vector, decltype(&gsl_vector_free)> x(
             gsl_vector_alloc(AMMAX),
-            gsl_vector_deleter);
+            gsl_vector_free);
 
-        auto const gsl_perm_deleter = [](gsl_permutation * p)
-        {
-            gsl_permutation_free(p);
-        };
-        std::unique_ptr<gsl_permutation, decltype(gsl_perm_deleter)> p(
+        std::unique_ptr<gsl_permutation, decltype(&gsl_permutation_free)> p(
             gsl_permutation_alloc(AMMAX),
-            gsl_perm_deleter);
+            gsl_permutation_free);
 
         std::int32_t s;
         gsl_linalg_LU_decomp(&m.matrix, p.get(), &s);
