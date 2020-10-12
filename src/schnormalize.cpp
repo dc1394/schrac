@@ -7,7 +7,8 @@
 
 #include "schnormalize.h"
 #include "simpson.h"
-#include <utility>                              // for std::move
+#include <cmath>            // for std::pow
+#include <utility>          // for std::move
 
 namespace schrac {
     // #region publicメンバ関数

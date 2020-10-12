@@ -316,7 +316,7 @@ namespace schrac {
                     break;
 
                 case 2:
-                    if (*(++itr) == "DEFAULT") {
+                    if (*itr == "DEFAULT") {
                         // デフォルト値を返す
                         return std::make_optional<T>(default_value);
                     }

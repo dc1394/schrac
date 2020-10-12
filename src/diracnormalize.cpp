@@ -7,6 +7,7 @@
 
 #include "diracnormalize.h"
 #include "simpson.h"
+#include <cmath>            // for std::pow
 #include <utility>          // for std::move
 
 namespace schrac {
