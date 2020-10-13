@@ -83,7 +83,7 @@ namespace schrac {
         readValue("eps", EPS_DEFAULT, pdata_->eps_);
 
         // 解く方程式のタイプを読み込む
-        if (!readType()) {
+        if (!readSolverType()) {
             errorendfunc();
         }
 
@@ -467,7 +467,7 @@ namespace schrac {
         return true;
     }
 
-    bool ReadInputFile::readType()
+    bool ReadInputFile::readSolverType()
     {
         auto const psolvetype(readData("solver.type", ReadInputFile::SOLVER_TYPE_DEFAULT));
         if (!psolvetype) {

@@ -145,7 +145,7 @@ namespace schrac {
             微分方程式の解法を読み込む
             \return 読み込みが成功したかどうか
         */
-        bool readType();
+        bool readSolverType();
 
         template <typename T>
         //! A private member function.
