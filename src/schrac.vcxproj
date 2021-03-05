@@ -53,7 +53,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\mylib64\gsl\x86\include;C:\mylib64\tbb\include;C:\mylib64\boost_1_75_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\mylib64\gsl\x86\lib\gsl;C:\mylib64\tbb\lib\ia32\vc14;C:\mylib64\boost_1_75_0\stage\x86\vc14_2\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
