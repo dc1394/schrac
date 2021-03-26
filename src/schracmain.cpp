@@ -55,7 +55,7 @@ int main(int argc, char * argv[])
 
         auto [pdiffdata, wavefunctions] = sl();
 
-        cp.checkpoint("微分方程式の積分と固有値探索処理及び正規化処理", __LINE__);
+        cp.checkpoint("微分方程式の積分と固有値探索処理及び規格化処理", __LINE__);
 
         Energy(
             pdiffdata,

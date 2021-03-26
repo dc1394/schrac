@@ -2,15 +2,15 @@
 # Chemical Symbol and orbital
 #
 
-chemical.symbol             He
-orbital                     1s
-spin.orbital                alpha           # alpha|beta default = alpha
+chemical.symbol             H
+orbital                     2p
+spin.orbital                beta          # alpha|beta default = alpha
 
 #
 # Calculation type
 #
 
-eq.type                     sch             # sch|sdirac|dirac default = sch
+eq.type                     dirac             # sch|sdirac|dirac default = sch
 
 #
 # Parameters for solving 1D-differential equations

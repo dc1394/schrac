@@ -41,8 +41,9 @@ CXXFLAGS = -Wall -Wextra -O3 -std=c++17 -mtune=native -march=native
 #
 # リンク対象に含めるライブラリの指定
 #
-LDFLAGS = -L/home/dc1394/oss/boost_1_73_0/stage/clang/lib -lboost_program_options \
-		  -lgsl -lgslcblas -lm -ltbb
+LDFLAGS = -L/home/dc1394/oss/boost_1_75_0/stage/gcc/lib -lboost_program_options \
+		  -L/home/dc1394/oss/tbb/lib/intel64/gcc4.8 -ltbb \
+		  -lgsl -lgslcblas -lm
 
 #
 # makeの動作

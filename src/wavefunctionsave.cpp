@@ -62,35 +62,27 @@ namespace schrac {
     {
         auto [waveffilename, rhofilename, wffilename] = make_filename();
 
-        auto const fcloser = [](auto fp)
-        {
-            if (fp) {
-                std::fclose(fp);
-            }
-        };
-
-        std::unique_ptr<FILE, decltype(fcloser)> waveffp(
+        std::unique_ptr<FILE, decltype(&fclose)> waveffp(
             std::fopen(waveffilename.c_str(), "w"),
-            fcloser);
+            fclose);
 
         if (!waveffp) {
             std::cerr << "波動関数のファイルが作成できませんでした。" << std::endl;
             return false;
         }
         
-        std::unique_ptr<FILE, decltype(fcloser)> rhofp(
+        std::unique_ptr<FILE, decltype(&fclose)> rhofp(
             std::fopen(rhofilename.c_str(), "w"),
-            fcloser);
+            fclose);
 
         if (!rhofp) {
             std::cerr << "電子密度のファイルが作成できませんでした。" << std::endl;
             return false;
         }
 
-
-        std::unique_ptr<FILE, decltype(fcloser)> wffp(
+        std::unique_ptr<FILE, decltype(&fclose)> wffp(
             std::fopen(wffilename.c_str(), "w"),
-            fcloser);
+            fclose);
 
         if (!wffp) {
             std::cerr << "動径波動関数のファイルが作成できませんでした。" << std::endl;

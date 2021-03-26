@@ -53,10 +53,10 @@ namespace schrac {
             << "軌道";
 
         if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::ALPHA) {
-            std::cout << "スピン上向きの";
+            std::cout << "、スピン上向き";
         }
         else if (pdata_->eq_type_ == Data::Eq_type::DIRAC && pdata_->spin_orbital_ == Data::BETA) {
-            std::cout << "スピン下向きの";
+            std::cout << "、スピン下向き";
         }
 
         std::cout << "の波動関数と固有値を計算します。\n";

@@ -31,8 +31,6 @@ namespace schrac {
 #ifndef _MSC_VER
     int memIcmp(char const * s1, char const * s2, std::size_t n)
     {
-        using ci_diff_pair = std::pair<char const *, char const *>;
-
         auto const p = std::mismatch(s1, s1 + n, s2, [](char left, char right) {
             return std::toupper(left) == std::toupper(right);
         });
