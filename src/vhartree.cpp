@@ -39,7 +39,7 @@ namespace schrac {
 
     void Vhartree::set_vhartree_boundary_condition(double Z)
     {
-        for (auto & v : vhart_) {
+        for (auto && v : vhart_) {
             v += (Z / r_mesh_.back() - vhart_.back());
         }
     }
