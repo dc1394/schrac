@@ -10,6 +10,7 @@
 #include "readinputfile.h"
 #include "scfloop.h"
 #include "simpson.h"
+#include <iomanip>                              // for std::setw    
 #include <iostream>                             // for std::cout
 #include <stdexcept>                            // for std::runtime_error
 #include <boost/math/constants/constants.hpp>   // for boost::math::constants
@@ -81,8 +82,9 @@ namespace schrac {
         auto const res = req_normrd(newrho, prho_->PRho);
 
         req_hartree_energy(newrho, pvh_->Vhart);
-        std::cout << "SCF = " << scfloop
-            << ", NormRD = " << res
+        std::cout << std::setw(2) << "Iteration # "
+            << scfloop
+            << ": NormRD = " << res
             << ", Energy = " << req_energy(pdiffdata_->E_)
             << std::endl;
 
