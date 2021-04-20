@@ -79,16 +79,16 @@ namespace schrac {
     
     bool ScfLoop::check_converge(dvector const & newrho, std::int32_t scfloop)
     {
-        auto const res = req_normrd(newrho, prho_->PRho);
+        auto const normrd = std::abs(req_normrd(newrho, prho_->PRho));
 
         req_hartree_energy(newrho, pvh_->Vhart);
         std::cout << std::setw(2) << "Iteration # "
             << scfloop
-            << ": NormRD = " << res
+            << ": NormRD = " << normrd
             << ", Energy = " << req_energy(pdiffdata_->E_)
             << std::endl;
 
-        return std::abs(res) < pdata_->scf_criterion_;
+        return normrd < pdata_->scf_criterion_;
     }
 
     void ScfLoop::initialize()
