@@ -12,7 +12,6 @@
 
 #include <array>    // for std::array
 
-
 namespace schrac {
     //!  A static variable (constant expression).
     /*!
