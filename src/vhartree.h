@@ -56,9 +56,8 @@ namespace schrac {
         //!  A public member function.
         /*!
             Hartreeポテンシャルが境界条件を満たすようにセットする
-            \param Z 原子核の電荷
         */
-        void set_vhartree_boundary_condition(double Z);
+        void set_vhartree_boundary_condition();
 
         //!  A public member function.
         /*!

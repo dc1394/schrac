@@ -37,10 +37,10 @@ namespace schrac {
         return gsl_spline_eval_deriv(spline_.get(), r, acc_.get());
     }
 
-    void Vhartree::set_vhartree_boundary_condition(double Z)
+    void Vhartree::set_vhartree_boundary_condition()
     {
         for (auto && v : vhart_) {
-            v += (Z / r_mesh_.back() - vhart_.back());
+            v += (1 / r_mesh_.back() - vhart_.back());
         }
     }
 

@@ -36,19 +36,19 @@ CXX = g++
 #
 # C++コンパイラに与える、（最適化等の）オプション
 #
-CXXFLAGS = -Wall -Wextra -O3 -std=c++17 -mtune=native -march=native
+CXXFLAGS = -Wall -Wextra -O3 -std=c++17 -mtune=native -march=native -I/home/dc1394/oss/gsl-2.7/
 
 #
 # リンク対象に含めるライブラリの指定
 #
-LDFLAGS = -L/home/dc1394/oss/boost_1_75_0/stage/gcc/lib -lboost_program_options \
+LDFLAGS = -L/home/dc1394/oss/boost_1_87_0/stage/gcc/lib -lboost_program_options \
 		  -L/home/dc1394/oss/tbb/lib/intel64/gcc4.8 -ltbb \
 		  -lgsl -lgslcblas -lm
 
 #
 # makeの動作
 #
-all: $(PROG) ; rm -f $(OBJS) $(DEPS)
+all: $(PROG)
 
 #
 # 依存関係を解決するためのinclude文

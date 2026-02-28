@@ -104,7 +104,7 @@ namespace schrac {
     void ScfLoop::make_vhartree()
     {
         pdiffsolver_->solve_poisson();
-        pvh_->set_vhartree_boundary_condition(pdata_->Z_);
+        pvh_->set_vhartree_boundary_condition();
         pvh_->vhart_init();
     }
 

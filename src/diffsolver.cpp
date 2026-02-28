@@ -358,6 +358,10 @@ namespace schrac {
 
         std::vector<double> vhart;
         vhart.reserve(pdiffdata_->r_mesh_.size());
+        
+        // 最初の点のV_Hを格納
+        vhart.push_back(state[0] / pdiffdata_->r_mesh_[0]);
+        
         for (auto i = 0U; i < loop; i++) {
             integrate_adaptive(
                 stepper,
@@ -370,11 +374,9 @@ namespace schrac {
             pdiffdata_->r_mesh_[i + 1],
             pdiffdata_->r_mesh_[i + 1] - pdiffdata_->r_mesh_[i]);
 
-            vhart.push_back(state[0] / pdiffdata_->r_mesh_[i]);
-         
+            vhart.push_back(state[0] / pdiffdata_->r_mesh_[i + 1]);  // ← r[i+1]で割る
         }
 
-        vhart.push_back(state[0] / pdiffdata_->r_mesh_.back());
         pvh_->Vhart(vhart);
     }
 

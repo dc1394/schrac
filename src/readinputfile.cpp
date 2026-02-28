@@ -9,7 +9,7 @@
 #include <iostream>                     // for std::cerr
 #include <stdexcept>                    // for std::runtime_error
 #include <boost/algorithm/string.hpp>   // for boost::algorithm
-#include <boost/assert.hpp>             // for BPOOST_ASSERT
+#include <boost/assert.hpp>             // for BOOST_ASSERT
 #include <boost/cast.hpp>               // for boost::numeric_cast
 #include <boost/range/algorithm.hpp>    // for boost::find
 
